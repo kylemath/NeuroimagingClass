@@ -1,0 +1,48 @@
+[build]
+  # Build command to prepare site for deployment
+  command = "./_build.sh"
+  # Directory to publish (current directory)
+  publish = "."
+
+# Redirect rules
+[[redirects]]
+  # Redirect root to index.html
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  # Handle 404s by serving index.html (for client-side routing if needed)
+  from = "/*"
+  to = "/index.html"
+  status = 404
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Cache static assets
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    # Don't cache HTML files as aggressively
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    # Cache CSS files longer
+    Cache-Control = "public, max-age=31536000"
+
+# Prevent access to private files (double protection)
+[[redirects]]
+  from = "/plan.md"
+  to = "/index.html"
+  status = 404

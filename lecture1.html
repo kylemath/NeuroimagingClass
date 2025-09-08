@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lecture 1: Course Introduction & History of Neuroimaging</title>
+    <meta name="description" content="First lecture outline for PSYCH 403A1: Course introduction and the engineering evolution of brain measurement technologies.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 880px;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+
+      p { margin: 0.85em 0; }
+
+      .lecture-meta {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 16px 16px 18px;
+        color: var(--text);
+        margin: 18px 0 8px;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .time-block {
+        background: linear-gradient(90deg, rgba(214,51,132,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .materials {
+        background: rgba(32,201,151,0.05);
+        border: 1px solid rgba(32,201,151,0.3);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(214,51,132,0.25);
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">PSYCH 403A1 — Lecture 1</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./syllabus.html" class="tag" style="text-transform:none">Syllabus</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>Lecture 1: Course Introduction & History of Neuroimaging</h1>
+        
+        <div class="lecture-meta">
+          <p><strong>Date:</strong> September 8, 2025<br>
+          <strong>Duration:</strong> 3 hours (9:00-12:00 PM)<br>
+          <strong>Location:</strong> T B-05 - Henry Marshall Tory Building</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="time-block">Opening: Welcome & Course Philosophy (20 minutes)</div>
+
+        <p>Begin with introductions and establish the core premise that this course is fundamentally different from typical psychology classes. We're not just learning about the brain as users of neuroimaging tools, but as engineers who understand how these devices actually work, what they're made of, and how to build better ones. Share your background and research experience, then have students briefly introduce themselves with particular attention to any programming, electronics, or engineering experience they bring.</p>
+
+        <p>Introduce the teaching assistants Tamari Shalamberidze and Sijie Ling, emphasizing their role not just as graders but as project mentors who will help students navigate the technical challenges of building and analyzing throughout the semester. Quickly tour the course website to show the integrated project timeline and practical exam structure, but don't dwell on administrative details.</p>
+
+        <div class="time-block">Equipment Showcase & Unconventional Bioelectricity (35 minutes)</div>
+
+        <p>Rather than lengthy explanations of assessment structure, dive directly into the physical reality of what we'll be working with. Demonstrate the 25 Muse EEG systems, showing students the actual electrodes, the wireless connectivity, and the real-time signal acquisition. Let them handle the devices and see the raw electrical signals from their own brains displayed on screen.</p>
+
+        <p>Show the fNIRS system and explain how near-infrared light actually penetrates skull and measures blood oxygenation changes. Demonstrate the tDCS device with emphasis on the safety protocols and current parameters. This isn't theoretical - these are the actual tools they'll be using to collect data and build projects.</p>
+
+        <h3>Beyond Human Brains: Unconventional Bioelectricity Measurement</h3>
+
+        <p>Here's where things get interesting - bioelectricity isn't limited to human brains. Demonstrate the Backyard Brains SpikerBox device with its needle-tip electrodes, showing how the same principles of electrical measurement can be applied to completely different biological systems. Play the actual sounds of electrical activity from mushroom mycelium through speakers, demonstrating how fungi generate measurable electrical patterns that some researchers believe might represent primitive information processing.</p>
+
+        <p>Show recordings from plant tissues - Venus flytraps generating action potentials when stimulated, the electrical responses of sensitive plants to touch, and the surprising electrical communication networks that exist in root systems. Move to insect preparations, demonstrating how we can record from cricket legs or other insect appendages to understand their neural control systems. These aren't just curiosities - they represent the fundamental universality of bioelectricity across all living systems and show how the engineering principles we use for human neuroimaging can be adapted to study any electrically active biological tissue.</p>
+
+        <div class="time-block">15-MINUTE BREAK</div>
+
+        <div class="time-block">The Engineering Evolution of Brain Measurement (90 minutes)</div>
+
+        <h3>The Fundamental Challenge</h3>
+
+        <p>The central engineering problem has remained constant for over 200 years: how do you measure electrical activity happening inside a skull without opening it up? Every breakthrough in neuroimaging represents a clever engineering solution to this seemingly impossible challenge, and understanding these solutions teaches us both the capabilities and fundamental limitations of each technique.</p>
+
+        <h3>Mechanical Solutions: The Phrenology Era</h3>
+
+        <p>The earliest attempts were purely mechanical. Phrenologists in the 1800s built elaborate measuring devices - calipers, rulers, and mapping tools - to quantify skull shape with millimeter precision. Their brass instruments and measurement protocols were sophisticated for their time, based on the reasonable assumption that brain shape might influence skull shape. The engineering was sound, but the underlying theory was wrong. What's fascinating is how their measurement techniques and systematic data collection methods laid groundwork for more scientific approaches.</p>
+
+        <h3>Electrical Detection: Building the First EEG Machines</h3>
+
+        <p>The breakthrough came when engineers realized they could detect electrical activity directly through the skull. The first EEG machines in the 1920s were massive mechanical contraptions - room-sized assemblies of vacuum tubes, mechanical pen recorders, and delicate galvanometers that could detect microvolts of electrical activity. These machines required constant calibration and produced traces on moving paper rolls, creating those characteristic wavy lines we associate with brain activity.</p>
+
+        <p>The engineering challenge was enormous: amplifying signals a million times while filtering out electrical noise from lights, motors, and other equipment. Early EEG systems used differential amplification - comparing signals between electrode pairs to cancel out common electrical interference. The electrode technology itself was primitive by today's standards - metal discs attached with conductive paste, requiring careful skin preparation and often producing artifacts from movement or poor contact.</p>
+
+        <h3>Structural Imaging: X-rays and Magnetic Engineering</h3>
+
+        <p>CT scanners represented a completely different engineering approach - instead of detecting natural electrical activity, they created detailed structural images using X-ray technology. The engineering breakthrough was computational: taking hundreds of X-ray projections from different angles and using mathematical algorithms to reconstruct cross-sectional images. The early CT machines were enormous, requiring specialized rooms and massive computing power for the reconstruction calculations.</p>
+
+        <p>MRI systems pushed engineering even further, using superconducting magnets cooled with liquid helium to create magnetic fields thousands of times stronger than Earth's magnetic field. The engineering complexity is staggering - maintaining superconducting temperatures, precisely controlling radio frequency pulses, and detecting the tiny signals emitted by hydrogen atoms as they realign with magnetic fields. The machines themselves are architectural marvels, requiring specially constructed rooms with no ferromagnetic materials anywhere nearby.</p>
+
+        <h3>Functional Measurement: From Structure to Activity</h3>
+
+        <p>The next engineering leap was measuring brain function, not just structure. fMRI systems combine the magnetic engineering of structural MRI with sophisticated pulse sequences that can detect blood oxygenation changes. The engineering insight was that active brain regions consume more oxygen, changing the magnetic properties of blood in those areas. The detection requires incredibly precise timing - pulse sequences measured in milliseconds, with signal processing that can distinguish tiny changes in magnetic resonance signals.</p>
+
+        <h3>Optical Solutions: Light-Based Brain Imaging</h3>
+
+        <p>fNIRS systems represent a completely different engineering approach - using near-infrared light that can penetrate several centimeters into brain tissue. The engineering challenge is detecting incredibly small changes in light absorption as blood oxygenation changes. Modern fNIRS systems use laser diodes and sensitive photodetectors, with sophisticated algorithms to separate brain signals from contamination by scalp blood flow, hair, and movement artifacts.</p>
+
+        <p>The beauty of fNIRS engineering is its portability - no massive magnets or specialized rooms required. The systems we'll use consist of lightweight fiber optic cables, LED light sources, and photodetectors that can be worn during natural activities. This represents a fundamental engineering trade-off: reduced spatial resolution and depth penetration in exchange for mobility and real-world applicability.</p>
+
+        <h3>Stimulation Technology: From Measurement to Modification</h3>
+
+        <p>The newest engineering frontier involves not just measuring brain activity but actively modifying it. TMS systems use powerful electromagnetic coils to create focused magnetic fields that can temporarily disrupt or enhance neural activity in specific brain regions. The engineering challenges include creating precisely shaped magnetic fields, managing the enormous electrical currents required, and controlling the timing with millisecond precision.</p>
+
+        <p>tDCS systems take a different approach - applying weak electrical currents directly to the scalp to modify neural excitability. The engineering is deceptively simple - current sources, electrodes, and safety monitoring - but the precision required for safe and effective stimulation involves sophisticated current control and real-time impedance monitoring.</p>
+
+        <div class="time-block">Hands-On Engineering Analysis (40 minutes)</div>
+
+        <p>Rather than creating historical timelines, we'll reverse-engineer the solutions. Students will work individually or in pairs to examine actual neuroimaging data and identify what engineering challenges each technique solved and what new problems it created. Using real EEG signals from the Muse systems, fMRI datasets from OpenNeuro, fNIRS data from our lab, and bioelectrical recordings from the Backyard Brains device, students will analyze the trade-offs between temporal resolution, spatial resolution, portability, and cost.</p>
+
+        <p>Each student or pair will pick one technique and create a simple engineering diagram showing the signal path from biological tissue to computer - what physical phenomena are being detected, how the sensors work, what processing is required, and where the fundamental limitations arise. This includes the unconventional applications: how does measuring electrical activity in mushroom mycelium compare to measuring neural activity in insect legs? What are the engineering similarities and differences? This isn't about memorizing historical facts but understanding the engineering principles that determine what each technique can and cannot measure across all biological systems.</p>
+
+        <div class="time-block">Course Preview & Next Steps (20 minutes)</div>
+
+        <p>With this engineering foundation, students now understand the breadth of bioelectrical measurement possibilities - from human neuroimaging to fungal networks to insect neural control. Over the semester, they'll have opportunities to work with all these systems, understanding not just how to use them but how to improve them and adapt them to new applications.</p>
+
+        <p>For next week, students should explore the technical specifications of the equipment we'll be using. Instead of reading historical accounts, they should examine the actual device manuals, signal processing algorithms, and engineering trade-offs. The goal is to think like engineers who could improve these systems, not just users who apply them. Consider bringing interesting biological specimens - leaves, mushrooms, insects - that we might explore with the bioelectricity measurement devices.</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="materials">
+          <h3>Materials Needed</h3>
+          <p>Muse EEG headsets for demonstration, laptop with real-time signal display, fNIRS system for hands-on examination, tDCS device for safety demonstration, Backyard Brains SpikerBox with needle electrodes, speakers/headphones for bioelectricity audio, mushroom specimens, plant materials (Venus flytrap if available), preserved insect legs or other specimens, large paper for engineering diagrams, access to OpenNeuro datasets, printed device specifications and technical manuals.</p>
+        </div>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">Lecture Outline</span>
+          <span class="tag">Engineering Focus</span>
+          <span class="tag">Bioelectricity</span>
+        </div>
+        <div>© <span id="year"></span> Kyle Mathewson</div>
+      </footer>
+    </div>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
