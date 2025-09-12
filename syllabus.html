@@ -3,12 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20250108-v1">
     <title>Neuroimaging and Neurostimulation — Syllabus</title>
     <meta name="description" content="Course syllabus for PSYCH 403A1: evaluation, schedule, policies, and resources for neuroimaging and neurostimulation.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20250108" rel="stylesheet">
     <style>
+      /* Cache-busted styles - v20250108 */
       :root { --bg:#f8f4f8; --text:#2d1b2d; --muted:#6b5a6b; --accent:#d63384; --accent-2:#20c997; --glow:rgba(214,51,132,0.3); --maxw:880px; }
       html,body{height:100%}
       body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.65;letter-spacing:.1px;background:linear-gradient(135deg,#f8f4f8 0%,#ede8ed 25%,#f0ebf2 50%,#ebf2f0 75%,#f4f8f8 100%);color:var(--text)}
@@ -230,6 +235,14 @@
       </footer>
     </div>
 
-    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <script>
+      // Cache busting script - v20250108
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Force reload if page is cached
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
+    </script>
   </body>
 </html>

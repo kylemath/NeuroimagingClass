@@ -3,12 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20250108-v1">
     <title>Lecture 1: Course Introduction & History of Neuroimaging</title>
     <meta name="description" content="First lecture outline for PSYCH 403A1: Course introduction and the engineering evolution of brain measurement technologies.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20250108" rel="stylesheet">
     <style>
+      /* Cache-busted styles - v20250108 */
       :root {
         --bg: #f8f4f8;
         --bg-2: #ede8ed;
@@ -280,7 +285,13 @@
     </div>
 
     <script>
+      // Cache busting script - v20250108
       document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Force reload if page is cached
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
     </script>
   </body>
 </html>
