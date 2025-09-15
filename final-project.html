@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20250915-v1">
+    <title>Final Project — Neuroimaging and Neurostimulation</title>
+    <meta name="description" content="Final project options, timeline, and requirements for PSYCH 403A1: data analysis, device design, or software development in neuroimaging.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20250915" rel="stylesheet">
+    <style>
+      /* Cache-busted styles - v20250915 */
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 880px;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+
+      p { margin: 0.85em 0; }
+
+      .project-overview {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .project-option {
+        background: rgba(214,51,132,0.05);
+        border: 1px solid rgba(214,51,132,0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        transition: all 0.3s ease;
+      }
+      .project-option:hover {
+        box-shadow: 0 6px 20px rgba(214,51,132,0.15);
+        transform: translateY(-2px);
+      }
+
+      .option-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .option-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+      }
+
+      .icon-analysis { background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+      .icon-device { background: linear-gradient(135deg, var(--accent-2), var(--accent)); }
+      .icon-software { background: linear-gradient(135deg, #6f42c1, var(--accent)); }
+
+      .option-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--accent);
+        margin: 0;
+      }
+
+      .timeline-grid {
+        display: grid;
+        gap: 16px;
+        margin: 20px 0;
+      }
+      @media (min-width: 900px) {
+        .timeline-grid { grid-template-columns: 1fr 1fr; }
+      }
+
+      .timeline-item {
+        background: rgba(32,201,151,0.05);
+        border-left: 4px solid var(--accent-2);
+        padding: 16px;
+        border-radius: 8px;
+      }
+
+      .timeline-date {
+        font-weight: 600;
+        color: var(--accent-2);
+        margin-bottom: 8px;
+      }
+
+      .deliverable-list {
+        background: rgba(32,201,151,0.05);
+        border: 1px solid rgba(32,201,151,0.3);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+      }
+
+      .example-projects {
+        background: linear-gradient(135deg, rgba(214,51,132,0.08), rgba(32,201,151,0.06));
+        border: 2px solid rgba(214,51,132,0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 6px 20px rgba(214,51,132,0.1);
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(214,51,132,0.25);
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+      .grading-rubric {
+        background: rgba(214,51,132,0.05);
+        border: 1px solid rgba(214,51,132,0.3);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+      }
+
+      .rubric-grid {
+        display: grid;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      @media (min-width: 700px) {
+        .rubric-grid { grid-template-columns: 1fr 1fr 1fr; }
+      }
+
+      .rubric-item {
+        background: rgba(255,255,255,0.5);
+        padding: 12px;
+        border-radius: 6px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">PSYCH 403A1 — Final Project</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./assignments.html" class="tag" style="text-transform:none">Assignments</a>
+          <a href="./syllabus.html" class="tag" style="text-transform:none">Syllabus</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>Final Project</h1>
+        
+        <div class="project-overview">
+          <p><strong>Weight:</strong> 30% of final grade<br>
+          <strong>Team Size:</strong> 2-3 students (individual projects possible with approval)<br>
+          <strong>Duration:</strong> Developed progressively throughout the semester<br>
+          <strong>Final Presentation:</strong> December 7, 2025 (15 minutes per team)</p>
+          <p>Your final project should demonstrate mastery of neuroimaging/neurostimulation concepts through original research, device development, or software creation. Projects are integrated throughout the course, not a last-minute assignment.</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Project Options</h2>
+
+        <div class="project-option">
+          <div class="option-header">
+            <div class="option-icon icon-analysis">📊</div>
+            <h3 class="option-title">Data Analysis Project</h3>
+          </div>
+          <p>Design and conduct an original data analysis addressing a specific research question using neuroimaging data.</p>
+          <div class="deliverable-list">
+            <strong>What you'll create:</strong>
+            <ul>
+              <li>Research question with literature review</li>
+              <li>Data collection protocol (in-person or online)</li>
+              <li>Complete analysis pipeline with statistical validation</li>
+              <li>Scientific report with publication-quality figures</li>
+              <li>Reproducible code and documentation</li>
+            </ul>
+          </div>
+          <p><strong>Examples:</strong> ERP study of attention, fMRI connectivity in meditation, EEG-based emotion recognition, mobile EEG during physical activity</p>
+        </div>
+
+        <div class="project-option">
+          <div class="option-header">
+            <div class="option-icon icon-device">🔧</div>
+            <h3 class="option-title">Device Design Project</h3>
+          </div>
+          <p>Design and build a novel neuroimaging or neurostimulation device, or significantly improve an existing system.</p>
+          <div class="deliverable-list">
+            <strong>What you'll create:</strong>
+            <ul>
+              <li>Engineering specifications and design rationale</li>
+              <li>Prototype device (physical or detailed simulation)</li>
+              <li>Safety analysis and regulatory considerations</li>
+              <li>Performance validation with test data</li>
+              <li>User manual and technical documentation</li>
+            </ul>
+          </div>
+          <p><strong>Examples:</strong> Low-cost EEG amplifier, portable tDCS device, fNIRS probe optimization, artifact reduction hardware</p>
+        </div>
+
+        <div class="project-option">
+          <div class="option-header">
+            <div class="option-icon icon-software">💻</div>
+            <h3 class="option-title">Software Development Project</h3>
+          </div>
+          <p>Develop software tools, applications, or platforms that advance neuroimaging research or clinical applications.</p>
+          <div class="deliverable-list">
+            <strong>What you'll create:</strong>
+            <ul>
+              <li>Functional software application with user interface</li>
+              <li>Technical documentation and API reference</li>
+              <li>Validation with real data and user testing</li>
+              <li>Open-source code repository with clear documentation</li>
+              <li>Deployment guide and installation instructions</li>
+            </ul>
+          </div>
+          <p><strong>Examples:</strong> Real-time BCI application, EEG analysis web app, VR neurofeedback system, automated preprocessing pipeline</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Project Timeline</h2>
+        <div class="timeline-grid">
+          <div class="timeline-item">
+            <div class="timeline-date">September 15</div>
+            <p><strong>Project Introduction</strong><br>Overview of options, team formation begins</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">September 22</div>
+            <p><strong>Research Question Development</strong><br>Teams finalize and begin literature review</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">September 29</div>
+            <p><strong>Literature Review & Methodology</strong><br>Background research and method planning</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">October 6</div>
+            <p><strong>Project Proposals</strong><br>5-minute presentations to class for feedback</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">October 27</div>
+            <p><strong>Data Collection Planning</strong><br>Ethics considerations, protocol finalization</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">November 3</div>
+            <p><strong>Data Collection Begins</strong><br>Implementation phase starts</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">November 17</div>
+            <p><strong>Progress Check-ins</strong><br>Individual team meetings, troubleshooting</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">November 24</div>
+            <p><strong>Results & Interpretation</strong><br>Data analysis, visualization preparation</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">December 1</div>
+            <p><strong>Presentation Preparation</strong><br>Final report writing, presentation practice</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">December 7</div>
+            <p><strong>Final Presentations</strong><br>15-minute team presentations + Q&A</p>
+          </div>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Grading Rubric</h2>
+        <div class="grading-rubric">
+          <p><strong>Total: 30% of final course grade</strong></p>
+          <div class="rubric-grid">
+            <div class="rubric-item">
+              <strong>Technical Quality (40%)</strong><br>
+              <small>Methodology, analysis, implementation</small>
+            </div>
+            <div class="rubric-item">
+              <strong>Innovation (25%)</strong><br>
+              <small>Originality, creativity, problem-solving</small>
+            </div>
+            <div class="rubric-item">
+              <strong>Communication (20%)</strong><br>
+              <small>Presentation, documentation, clarity</small>
+            </div>
+            <div class="rubric-item">
+              <strong>Scientific Rigor (10%)</strong><br>
+              <small>Literature review, validation, reproducibility</small>
+            </div>
+            <div class="rubric-item">
+              <strong>Collaboration (5%)</strong><br>
+              <small>Teamwork, peer interaction, contribution</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="example-projects">
+          <h2>Example Project Ideas</h2>
+          
+          <h3>Data Analysis Projects</h3>
+          <ul>
+            <li><strong>Mobile EEG during Exercise:</strong> Compare alpha/beta rhythms during stationary vs. cycling conditions</li>
+            <li><strong>Meditation and Connectivity:</strong> fMRI analysis of default mode network changes during mindfulness</li>
+            <li><strong>Music and Emotion:</strong> EEG responses to different musical genres using affective computing</li>
+            <li><strong>Sleep Stage Classification:</strong> Machine learning approach to automated sleep scoring from EEG</li>
+            <li><strong>fNIRS Language Study:</strong> Hemispheric activation patterns during bilingual word processing</li>
+          </ul>
+
+          <h3>Device Design Projects</h3>
+          <ul>
+            <li><strong>Arduino-based EEG:</strong> Low-cost 8-channel EEG system with smartphone app</li>
+            <li><strong>Wearable tDCS:</strong> Portable stimulation device with safety monitoring</li>
+            <li><strong>fNIRS Probe Optimization:</strong> 3D-printed optode holders for improved signal quality</li>
+            <li><strong>Artifact Reduction Hardware:</strong> Active shielding system for mobile EEG</li>
+            <li><strong>Hybrid EEG-fNIRS:</strong> Combined system for simultaneous electrical and optical recording</li>
+          </ul>
+
+          <h3>Software Development Projects</h3>
+          <ul>
+            <li><strong>Real-time BCI Speller:</strong> Web-based SSVEP typing interface</li>
+            <li><strong>EEG Analysis Dashboard:</strong> Interactive visualization tool for preprocessing and analysis</li>
+            <li><strong>VR Neurofeedback:</strong> Immersive environment controlled by real-time EEG</li>
+            <li><strong>Mobile EEG App:</strong> Smartphone application for data collection and basic analysis</li>
+            <li><strong>Automated Preprocessing:</strong> Machine learning pipeline for artifact detection and removal</li>
+          </ul>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Resources & Support</h2>
+
+        <h3>Equipment Available</h3>
+        <ul>
+          <li>25 Muse EEG headsets for data collection</li>
+          <li>Access to campus MRI facility (with supervision)</li>
+          <li>fNIRS system for optical brain imaging</li>
+          <li>tDCS and TMS devices for stimulation projects</li>
+          <li>Electronics lab with Arduino, Raspberry Pi, 3D printer</li>
+          <li>High-performance computing resources for analysis</li>
+        </ul>
+
+        <h3>Software & Computing</h3>
+        <ul>
+          <li><strong>Analysis:</strong> Python (MNE, SciPy), MATLAB (EEGLAB, SPM), R</li>
+          <li><strong>Development:</strong> Web technologies (JavaScript, React), mobile (React Native, Flutter)</li>
+          <li><strong>Hardware:</strong> Arduino IDE, KiCad for PCB design, Fusion 360 for 3D modeling</li>
+          <li><strong>Computing:</strong> Google Colab Pro, university HPC cluster access</li>
+        </ul>
+
+        <h3>Mentorship</h3>
+        <ul>
+          <li>Weekly office hours with instructor and TAs</li>
+          <li>Individual team consultations throughout the semester</li>
+          <li>Access to graduate student mentors in related research areas</li>
+          <li>Industry connections for device design and software projects</li>
+        </ul>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Submission Requirements</h2>
+
+        <h3>Final Report (Due December 7)</h3>
+        <ul>
+          <li><strong>Length:</strong> 8-12 pages (excluding references and appendices)</li>
+          <li><strong>Format:</strong> Scientific paper style with abstract, introduction, methods, results, discussion</li>
+          <li><strong>Figures:</strong> Publication-quality plots, diagrams, and photographs</li>
+          <li><strong>Code:</strong> Complete, documented, and reproducible (GitHub repository preferred)</li>
+          <li><strong>Data:</strong> Raw and processed data with clear documentation</li>
+        </ul>
+
+        <h3>Final Presentation (December 7)</h3>
+        <ul>
+          <li><strong>Duration:</strong> 15 minutes presentation + 5 minutes Q&A</li>
+          <li><strong>Format:</strong> Professional slides with live demonstration if applicable</li>
+          <li><strong>Content:</strong> Problem motivation, approach, results, implications, future work</li>
+          <li><strong>Audience:</strong> Classmates, instructor, invited guests from industry/academia</li>
+        </ul>
+
+        <p class="note"><strong>Ethics Note:</strong> All projects involving human participants must receive ethics approval. We'll work together to ensure proper protocols are followed for data collection.</p>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">Original Research</span>
+          <span class="tag">Team Collaboration</span>
+          <span class="tag">Real-world Applications</span>
+          <span class="tag">Professional Presentation</span>
+        </div>
+        <div>© <span id="year"></span> Kyle Mathewson</div>
+      </footer>
+    </div>
+
+    <script>
+      // Cache busting script - v20250915
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Force reload if page is cached
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+mne>=1.5.0
+matplotlib>=3.5.0
+numpy>=1.21.0
+scipy>=1.7.0
+requests>=2.25.0
+jupyter>=1.0.0

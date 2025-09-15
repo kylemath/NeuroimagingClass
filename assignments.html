@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20250915-v1">
+    <title>Assignments & Lab Components — Neuroimaging and Neurostimulation</title>
+    <meta name="description" content="Lab assignments, practical tasks, and hands-on components for PSYCH 403A1: progressive skill building through real neuroimaging data analysis.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20250915" rel="stylesheet">
+    <style>
+      /* Cache-busted styles - v20250915 */
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 880px;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+
+      p { margin: 0.85em 0; }
+
+      .assignment-card {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .assignment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .assignment-title {
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--accent);
+        margin: 0;
+      }
+
+      .due-date {
+        background: rgba(214,51,132,0.15);
+        border: 1px solid rgba(214,51,132,0.4);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .skills-focus {
+        background: linear-gradient(90deg, rgba(214,51,132,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent);
+        padding: 10px 12px 10px 14px;
+        margin: 12px 0;
+        border-radius: 6px;
+        font-style: italic;
+        color: var(--muted);
+      }
+
+      .deliverables {
+        background: rgba(32,201,151,0.05);
+        border: 1px solid rgba(32,201,151,0.3);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 12px 0;
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      .grading-breakdown {
+        display: grid;
+        gap: 16px;
+        margin: 20px 0;
+      }
+      @media (min-width: 900px) {
+        .grading-breakdown { grid-template-columns: 1fr 1fr; }
+      }
+
+      .grading-card {
+        background: rgba(214,51,132,0.05);
+        border: 1px solid rgba(214,51,132,0.3);
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(214,51,132,0.25);
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+      .code-example {
+        background: #2d1b2d;
+        color: #f8f4f8;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 14px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">PSYCH 403A1 — Assignments & Lab Components</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./final-project.html" class="tag" style="text-transform:none">Final Project</a>
+          <a href="./syllabus.html" class="tag" style="text-transform:none">Syllabus</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>Assignments & Lab Components</h1>
+        <p>Progressive hands-on assignments build practical skills in neuroimaging data analysis, device understanding, and software development. Each assignment connects directly to lecture content and prepares you for the practical midterm exams.</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Grading Structure (30% of final grade)</h2>
+        <div class="grading-breakdown">
+          <div class="grading-card" style="max-width: 600px; margin: 0 auto;">
+            <h3 style="margin-top: 0; color: var(--accent);">Weekly Lab Assignments</h3>
+            <p><strong>30% of final grade</strong></p>
+            <ul>
+              <li>Hands-on data analysis and programming tasks</li>
+              <li>Short reports (1-2 pages) with code and visualizations</li>
+              <li>Progressive skill building through real neuroimaging data</li>
+              <li>Due by midnight the Monday following each lab session</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Assignment Schedule</h2>
+
+        <div class="assignment-card">
+          <div class="assignment-header">
+            <h3 class="assignment-title">Assignment 1: EEG Data Loading and Basic Filtering</h3>
+            <span class="due-date">Due: Sep 22</span>
+          </div>
+          <p>Load a real EEG dataset in BIDS format and create visualizations comparing raw data with filtered data. This assignment introduces you to neuroimaging data structures and basic signal processing.</p>
+          <div class="skills-focus">
+            <strong>Skills Focus:</strong> BIDS format, data loading, basic filtering, scientific plotting
+          </div>
+          <div class="deliverables">
+            <strong>Dataset:</strong> <a href="https://openneuro.org/datasets/ds003061/versions/1.0.1" target="_blank">OpenNeuro ds003061 - EEG during Visual Working Memory</a>
+            <br><strong>Specific File:</strong> <code>sub-01/eeg/sub-01_task-workingmemory_eeg.set</code>
+            <br><br><strong>Create a Python or MATLAB script that:</strong>
+            <ul>
+              <li>Downloads and loads the specified EEG file using MNE-Python or EEGLAB</li>
+              <li>Plots 10 seconds of raw EEG data from all channels</li>
+              <li>Applies a bandpass filter (1-40 Hz) to the same data segment</li>
+              <li>Creates a side-by-side comparison plot (raw vs filtered)</li>
+              <li>Calculates and plots the power spectral density for both conditions</li>
+              <li>Includes proper axis labels, titles, and a brief code comment explaining each step</li>
+            </ul>
+            <strong>Submission:</strong> Submit your script file (.py or .m) and the generated plots as a single PDF
+          </div>
+          <div class="code-example">
+<span style="color: #6a9955;"># Starter code template (Python with MNE)</span>
+<span style="color: #c586c0;">import</span> mne
+<span style="color: #c586c0;">import</span> matplotlib.pyplot <span style="color: #c586c0;">as</span> plt
+<span style="color: #c586c0;">import</span> numpy <span style="color: #c586c0;">as</span> np
+
+<span style="color: #6a9955;"># Download dataset from OpenNeuro (you'll need to register)</span>
+<span style="color: #6a9955;"># Load the .set file</span>
+raw = mne.io.<span style="color: #dcdcaa;">read_raw_eeglab</span>(<span style="color: #ce9178;">'path/to/sub-01_task-workingmemory_eeg.set'</span>, preload=<span style="color: #569cd6;">True</span>)
+
+<span style="color: #6a9955;"># Your analysis code here...</span>
+<span style="color: #6a9955;"># 1. Plot raw data</span>
+<span style="color: #6a9955;"># 2. Apply filter</span>  
+<span style="color: #6a9955;"># 3. Plot filtered data</span>
+<span style="color: #6a9955;"># 4. Compare power spectra</span>
+          </div>
+          
+          <div style="margin: 16px 0; padding: 16px; background: linear-gradient(135deg, rgba(32,201,151,0.1), rgba(214,51,132,0.05)); border-radius: 12px; border: 1px solid rgba(32,201,151,0.3);">
+            <h4 style="margin: 0 0 12px 0; color: var(--accent-2);">🚀 Interactive Assignment Notebook (Open Source)</h4>
+            
+            <!-- Interactive options -->
+            <div style="margin: 12px 0; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+              <a href="https://mybinder.org/v2/gh/kylemathewson/Psych403A1-NeuroimagingNeurostim/main?filepath=assignment1_eeg_filtering.ipynb" 
+                 target="_blank" 
+                 style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: #E66581; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 8px rgba(230,101,129,0.3);">
+                <img src="https://mybinder.org/static/favicon-32x32.png" width="20" height="20" alt="Binder">
+                Launch Interactive Notebook
+              </a>
+              <a href="./assignment1_eeg_filtering.ipynb" 
+                 download
+                 style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--accent-2); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 8px rgba(32,201,151,0.3);">
+                📥 Download Notebook
+              </a>
+              <button onclick="toggleNotebookPreview()" 
+                      style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(255,255,255,0.8); color: var(--text); border: 1px solid rgba(32,201,151,0.4); border-radius: 6px; font-weight: 500; font-size: 13px; cursor: pointer;">
+                👁️ Preview
+              </button>
+            </div>
+            
+            <!-- Embedded notebook preview (initially hidden) -->
+            <div id="notebook-preview" style="display: none; margin: 16px 0;">
+              <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div style="background: #f8f9fa; padding: 12px; border-bottom: 1px solid #dee2e6; display: flex; align-items: center; gap: 8px;">
+                  <img src="https://jupyter.org/assets/logos/rectanglelogo-greytext-orangebody-greymoons.svg" width="80" height="16" alt="Jupyter">
+                  <span style="font-weight: 600; color: #5f6368; font-size: 14px;">Assignment 1: EEG Data Loading and Filtering</span>
+                  <div style="margin-left: auto;">
+                    <button onclick="toggleNotebookPreview()" style="background: none; border: none; color: #5f6368; cursor: pointer; font-size: 18px;">×</button>
+                  </div>
+                </div>
+                <iframe 
+                  src="https://nbviewer.org/github/kylemathewson/Psych403A1-NeuroimagingNeurostim/blob/main/assignment1_eeg_filtering.ipynb"
+                  width="100%" 
+                  height="600px" 
+                  style="border: none;"
+                  title="Assignment 1 Notebook Preview">
+                </iframe>
+              </div>
+              <p style="margin: 8px 0 0 0; font-size: 12px; color: var(--muted); text-align: center;">
+                📝 <em>For full interactivity (running code, editing), click "Launch Interactive Notebook" above</em>
+              </p>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.5); padding: 12px; border-radius: 6px; margin-top: 12px;">
+              <h5 style="margin: 0 0 6px 0; color: var(--accent); font-size: 14px;">✨ Three ways to complete the assignment:</h5>
+              <div style="display: grid; gap: 8px; margin: 8px 0; font-size: 13px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: #E66581; font-weight: bold;">🌐</span>
+                  <strong>Browser (Recommended):</strong> Click "Launch Interactive Notebook" - runs entirely in your browser, no installation needed!
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: var(--accent-2); font-weight: bold;">💻</span>
+                  <strong>Local:</strong> Download the notebook and run with Jupyter Lab/Notebook on your computer
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: var(--muted); font-weight: bold;">👁️</span>
+                  <strong>Preview:</strong> View the notebook structure before deciding how to complete it
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: rgba(230,101,129,0.1); padding: 10px; border-radius: 6px; margin-top: 8px; border: 1px solid rgba(230,101,129,0.3);">
+              <p style="margin: 0; font-size: 12px; color: var(--text);">
+                <strong>🔓 Open Source & Privacy-Friendly:</strong> Uses Binder (mybinder.org) - no Google account required, 
+                no data tracking, fully open source. Your work stays private and you can save/download everything locally.
+              </p>
+            </div>
+          </div>
+          
+          <script>
+            function toggleNotebookPreview() {
+              const preview = document.getElementById('notebook-preview');
+              if (preview.style.display === 'none') {
+                preview.style.display = 'block';
+                // Scroll to the preview
+                preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              } else {
+                preview.style.display = 'none';
+              }
+            }
+          </script>
+        </div>
+
+        <div class="assignment-card" style="opacity: 0.6; border: 1px dashed rgba(214,51,132,0.3);">
+          <div class="assignment-header">
+            <h3 class="assignment-title">Assignment 2: Advanced EEG Preprocessing</h3>
+            <span class="due-date" style="background: rgba(150,150,150,0.3); color: var(--muted);">Available after Assignment 1</span>
+          </div>
+          <p style="color: var(--muted); font-style: italic;">This assignment will be revealed after you complete Assignment 1. It will focus on advanced preprocessing techniques including artifact detection and removal.</p>
+        </div>
+
+        <div class="assignment-card" style="opacity: 0.6; border: 1px dashed rgba(214,51,132,0.3);">
+          <div class="assignment-header">
+            <h3 class="assignment-title">Assignment 3: Event-Related Potentials</h3>
+            <span class="due-date" style="background: rgba(150,150,150,0.3); color: var(--muted);">Available after Assignment 2</span>
+          </div>
+          <p style="color: var(--muted); font-style: italic;">This assignment will be revealed after you complete Assignment 2. It will focus on ERP analysis and averaging techniques.</p>
+        </div>
+
+        <div class="assignment-card" style="opacity: 0.6; border: 1px dashed rgba(214,51,132,0.3);">
+          <div class="assignment-header">
+            <h3 class="assignment-title">Assignment 4: Brain-Computer Interface</h3>
+            <span class="due-date" style="background: rgba(150,150,150,0.3); color: var(--muted);">Available after Assignment 3</span>
+          </div>
+          <p style="color: var(--muted); font-style: italic;">This assignment will be revealed after you complete Assignment 3. It will focus on building a simple BCI application.</p>
+        </div>
+
+        <div class="assignment-card" style="opacity: 0.6; border: 1px dashed rgba(214,51,132,0.3);">
+          <div class="assignment-header">
+            <h3 class="assignment-title">Assignment 5: Neurostimulation Protocol</h3>
+            <span class="due-date" style="background: rgba(150,150,150,0.3); color: var(--muted);">Available after Assignment 4</span>
+          </div>
+          <p style="color: var(--muted); font-style: italic;">This assignment will be revealed after you complete Assignment 4. It will focus on neurostimulation protocol design.</p>
+        </div>
+
+        <div class="assignment-card" style="opacity: 0.6; border: 1px dashed rgba(214,51,132,0.3);">
+          <div class="assignment-header">
+            <h3 class="assignment-title">Assignment 6: fMRI Data Analysis</h3>
+            <span class="due-date" style="background: rgba(150,150,150,0.3); color: var(--muted);">Available after Assignment 5</span>
+          </div>
+          <p style="color: var(--muted); font-style: italic;">This assignment will be revealed after you complete Assignment 5. It will focus on fMRI data processing and analysis.</p>
+        </div>
+
+        <div class="assignment-card" style="opacity: 0.6; border: 1px dashed rgba(214,51,132,0.3);">
+          <div class="assignment-header">
+            <h3 class="assignment-title">Assignment 7: fNIRS Signal Processing</h3>
+            <span class="due-date" style="background: rgba(150,150,150,0.3); color: var(--muted);">Available after Assignment 6</span>
+          </div>
+          <p style="color: var(--muted); font-style: italic;">This assignment will be revealed after you complete Assignment 6. It will focus on fNIRS data processing techniques.</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Assignment Resources</h2>
+
+        <h3>Current Assignment Resources</h3>
+        <ul>
+          <li><strong>Assignment 1 Dataset:</strong> <a href="https://openneuro.org/datasets/ds003061/versions/1.0.1">OpenNeuro ds003061 - EEG during Visual Working Memory</a></li>
+          <li><strong>MNE-Python Tutorial:</strong> <a href="https://mne.tools/stable/auto_tutorials/io/plot_10_reading_meg_data.html">Loading EEG Data</a></li>
+          <li><strong>BIDS Format Guide:</strong> <a href="https://bids.neuroimaging.io/">Brain Imaging Data Structure</a></li>
+          <li><strong>Filtering Tutorial:</strong> <a href="https://mne.tools/stable/auto_tutorials/preprocessing/plot_30_filtering_resampling.html">MNE Filtering Guide</a></li>
+        </ul>
+        
+        <p class="note"><strong>Note:</strong> Additional datasets and resources will be provided as new assignments become available.</p>
+
+        <h3>Software & Tools</h3>
+        <ul>
+          <li><strong>Python:</strong> MNE-Python, SciPy, NumPy, Matplotlib, Seaborn</li>
+          <li><strong>MATLAB:</strong> EEGLAB, FieldTrip, SPM, Homer3</li>
+          <li><strong>Web:</strong> JavaScript, D3.js, eegedu.com framework</li>
+          <li><strong>Analysis:</strong> Jupyter notebooks, Google Colab (for GPU access)</li>
+        </ul>
+
+        <h3>Submission Guidelines</h3>
+        <ul>
+          <li><strong>Format:</strong> PDF report + code files (Python/MATLAB/JavaScript)</li>
+          <li><strong>Code:</strong> Well-commented, reproducible, with clear documentation</li>
+          <li><strong>Figures:</strong> High-quality plots with proper labels and captions</li>
+          <li><strong>Writing:</strong> Clear, concise, scientifically accurate</li>
+          <li><strong>Submission:</strong> Upload to course management system by midnight on due date</li>
+        </ul>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Late Policy & Extensions</h2>
+        <p>Assignments submitted late will be penalized 10% per day unless prior arrangements are made. Extensions may be granted for documented medical or personal emergencies. Contact the instructor as soon as possible if you anticipate difficulties meeting a deadline.</p>
+
+        <p class="note"><strong>Academic Integrity:</strong> While collaboration is encouraged during lab sessions, individual assignments must represent your own work. Proper citation of code sources and datasets is required. Plagiarism will result in course failure.</p>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">Hands-on Analysis</span>
+          <span class="tag">Progressive Skills</span>
+          <span class="tag">Real Data</span>
+          <span class="tag">Practical Applications</span>
+        </div>
+        <div>© <span id="year"></span> Kyle Mathewson</div>
+      </footer>
+    </div>
+
+    <script>
+      // Cache busting script - v20250915
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Force reload if page is cached
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
+    </script>
+  </body>
+</html>
