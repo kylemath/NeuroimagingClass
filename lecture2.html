@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20250915-v1">
+    <title>Lecture 2: EEG Fundamentals & Signal Processing</title>
+    <meta name="description" content="Second lecture for PSYCH 403A1: EEG data recording, experiment creation, ERPs, SSVEPs, alpha wave research, and live data processing demos.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20250915" rel="stylesheet">
+    <style>
+      /* Cache-busted styles - v20250915 */
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 880px;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+
+      p { margin: 0.85em 0; }
+
+      .lecture-meta {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 16px 16px 18px;
+        color: var(--text);
+        margin: 18px 0 8px;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .time-block {
+        background: linear-gradient(90deg, rgba(214,51,132,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .demo-block {
+        background: linear-gradient(90deg, rgba(32,201,151,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent-2);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--accent-2);
+      }
+
+      .research-highlight {
+        background: linear-gradient(135deg, rgba(214,51,132,0.08), rgba(32,201,151,0.06));
+        border: 2px solid rgba(214,51,132,0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 6px 20px rgba(214,51,132,0.1);
+      }
+
+      .code-demo {
+        background: #2d1b2d;
+        color: #f8f4f8;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 14px;
+        overflow-x: auto;
+      }
+
+      .materials {
+        background: rgba(32,201,151,0.05);
+        border: 1px solid rgba(32,201,151,0.3);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(214,51,132,0.25);
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+      .eeg-wave {
+        display: inline-block;
+        width: 60px;
+        height: 20px;
+        background: linear-gradient(90deg, transparent, var(--accent-2), var(--accent), var(--accent-2), transparent);
+        border-radius: 10px;
+        animation: eeg-pulse 2s ease-in-out infinite;
+        margin: 0 8px;
+        vertical-align: middle;
+      }
+      @keyframes eeg-pulse {
+        0%, 100% { opacity: 0.6; transform: scaleY(1); }
+        50% { opacity: 1; transform: scaleY(1.5); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">PSYCH 403A1 — Lecture 2</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./lecture1.html" class="tag" style="text-transform:none">← Lecture 1</a>
+          <a href="./syllabus.html" class="tag" style="text-transform:none">Syllabus</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>Lecture 2: EEG Fundamentals & Signal Processing <span class="eeg-wave" aria-hidden="true"></span></h1>
+        
+        <div class="lecture-meta">
+          <p><strong>Date:</strong> September 15, 2025<br>
+          <strong>Duration:</strong> 3 hours (9:00-12:00 PM) - 180 minutes total<br>
+          <strong>Location:</strong> T B-05 - Henry Marshall Tory Building<br>
+          <strong>Focus:</strong> From raw electrical signals to meaningful brain data</p>
+        </div>
+
+        <p>Plan for this 180-minute session: 9:00–9:20 Opening and the EEG signal chain; 9:20–10:05 EEG fundamentals with an electrode placement demonstration; 10:05–10:20 break; 10:20–11:10 signal processing with brief live coding; 11:10–11:50 ERPs with research examples; 11:50–12:00 wrap-up and resources.</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="time-block">Opening: The EEG Signal Chain (20 minutes)</div>
+
+        <p><strong>Key Question:</strong> How do we extract meaningful information from noisy brain signals?</p>
+        <p><strong>EEG signal path:</strong> signals originate from synchronized postsynaptic currents in pyramidal neurons, summating into mesoscopic fields that reach the scalp. Front‑end hardware couples these microvolt‑scale potentials through contact electrodes into differential, high‑impedance instrumentation amplifiers (e.g., <a href="https://docs.openbci.com/">OpenBCI</a> front‑ends on <a href="https://www.ti.com/product/ADS1299">TI ADS1299</a>). The amplified analog signal is anti‑aliased, digitized at an appropriate sampling rate with stable clocking, and passed to software where filters, artifact models, and spectral/temporal analyses transform raw voltages into interpretable features.</p>
+        <p><strong>Live demo:</strong> connecting a Muse headset reveals unprocessed traces combining neural activity with ocular, myogenic, and mains interference. Even subtle impedance changes at the skin–electrode interface or cable motion can modulate amplitude, underscoring the need for stable contacts, reference schemes, and careful grounding. For browser streaming see <a href="https://github.com/urish/muse-js">muse‑js</a> and the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API">Web Bluetooth API</a>.</p>
+
+        <div class="time-block">EEG Fundamentals: What We're Actually Measuring (45 minutes)</div>
+
+        <h3>The Physics of EEG</h3>
+        <p>EEG reflects the summed postsynaptic activity of large populations of pyramidal neurons rather than individual action potentials, which are too brief and small at the scalp. Signals spread through tissue, giving EEG outstanding millisecond temporal precision but comparatively coarse spatial resolution on the order of centimeters.</p>
+
+        <h3>Electrode Placement and the 10-20 System</h3>
+        <p>The international 10–20 system standardizes placement using anatomical landmarks and percentage spacing so that locations like Cz are comparable across labs and participants (<a href="https://en.wikipedia.org/wiki/10%E2%80%9320_system_(EEG)">10–20 overview</a>). Mechanistically, electrode quality depends on contact impedance (skin prep, gel/dry sensor design), reference montage (linked mastoids, average reference, Laplacian), and cable/sensor shielding to limit common‑mode noise. A brief demonstration can show measuring nasion–inion and ear‑to‑ear distances, estimating 10%/20% positions, and discussing trade‑offs between gel‑based and dry electrodes.</p>
+
+        <div class="time-block">15-MINUTE BREAK</div>
+
+        <div class="time-block">Signal Processing Fundamentals (50 minutes)</div>
+
+        <h3>Filtering: Separating Signal from Noise</h3>
+        <p>EEG spans roughly 0.1–100+ Hz. High‑pass filtering suppresses slow drifts and DC offsets (capacitive skin effects, electrode polarization), low‑pass filtering reduces high‑frequency noise and myogenic activity, and band‑pass filtering isolates bands (e.g., alpha, beta) for targeted analysis. Stable filter design matters: choose linear‑phase FIR for minimal waveform distortion in ERP contexts, or well‑tuned IIR for efficiency in real‑time systems, mindful of edge artifacts, group delay, and zero‑phase offline options. See <a href="https://doi.org/10.1016/j.jneumeth.2015.08.003">Widmann, Schröger & Maess (2015)</a> and <a href="https://mne.tools/stable/auto_tutorials/preprocessing/plot_30_filtering_resampling.html">MNE filtering tutorial</a>.</p>
+
+        <h3>Artifact Detection and Removal</h3>
+        <p>Common artifacts include ocular potentials (frontopolar channels, stereotyped blink waveforms), cranial muscle activity (broadband power >20–30 Hz), motion‑induced baseline shifts, and mains contamination. Mechanistic mitigation combines hardware tactics (shielding, proper referencing, cable strain relief) with software approaches: adaptive or regression‑based EOG removal, ICA/AMICA to segregate sources, and time‑varying notch or comb filtering where appropriate—all validated by before/after topographies and spectra rather than single‑channel inspection. See <a href="https://sccn.ucsd.edu/eeglab/index.php">EEGLAB</a>, <a href="https://mne.tools/stable/auto_tutorials/preprocessing/plot_40_artifact_correction_ica.html">MNE ICA tutorial</a>, and Makoto’s preprocessing recommendations.</p>
+
+        <div class="time-block">Event-Related Potentials (ERPs) and Experimental Design (40 minutes)</div>
+
+        <h3>Time-Locked Brain Responses</h3>
+        <p>ERPs are ensemble averages of time‑locked cortical responses. The averaging operation increases SNR proportional to the square root of the number of trials under an assumption of phase‑locked signal and zero‑mean noise. Component morphology reflects overlapping neural generators convolved with the system’s temporal filtering; careful baseline correction, artifact censoring, and filter choices (e.g., avoiding excessive high‑pass) are critical to avoid distorting latency and amplitude. For fundamentals and best practice, see Luck’s <a href="https://erpinfo.org/erp-book">ERP textbook</a>.</p>
+
+        <h3>Trigger Systems and Synchronization</h3>
+        <p>Accurate ERP work hinges on precise timing. Hardware triggers (TTL) align event onsets to the EEG sampling clock with microsecond‑scale jitter; software triggers depend on OS scheduling and graphics pipelines and require drift checks. Robust stacks implement monotonic time bases, clock drift estimation, and periodic sync pulses (photodiode for visual onset) to validate actual stimulus timing. See <a href="http://psychtoolbox.org/">Psychtoolbox</a>, <a href="https://www.psychopy.org/general/timing/timing.html">PsychoPy timing</a>, <a href="https://www.jspsych.org/">jsPsych</a>, and <a href="https://github.com/sccn/labstreaminglayer">LabStreamingLayer</a>. In a visual oddball, well‑formed P300s depend as much on verified timing and clean preprocessing as on paradigm design.</p>
+
+        <div class="research-highlight">
+          <h3>🔬 Research Spotlight</h3>
+          <p><strong>Alpha entrainment:</strong> flickering visual stimulation near 10 Hz can align with intrinsic alpha rhythms, with applications to attention and cognitive performance; doing this well requires high‑refresh displays, precise timing, and spectral methods that quantify phase/power locking (review: <a href="https://doi.org/10.1016/j.tics.2011.04.003">Thut, Schyns & Gross, 2011</a>; open‑access example: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7161378/">Notbohm & Herrmann</a>; prestimulus alpha phase and awareness: <a href="https://www.jneurosci.org/content/jneuro/29/9/2725.full.pdf">Mathewson et al., 2009</a>).</p>
+          <p><strong>Mobile EEG (bike lab):</strong> moving outside the lab introduces movement and environmental artifacts; pairing wireless EEG with IMUs and robust preprocessing reveals context‑dependent changes in oscillations, such as alpha differences across uphill versus flat terrain (MoBI overview: <a href="https://www.frontiersin.org/articles/10.3389/fnhum.2014.00615/full">Gramann et al., 2014</a>).</p>
+        </div>
+
+        <h3>SSVEPs and Brain-Computer Interfaces</h3>
+        <p>With steady‑state VEPs, periodic flicker entrains visual cortex, yielding narrowband responses at the drive frequency and its harmonics. Detection hinges on spectral estimation windows aligned to integer cycles, reference montages favoring occipital SNR, and classifiers using power ratios or canonical correlation analysis (CCA) across candidate frequencies (e.g., <a href="https://doi.org/10.1109/TBME.2006.886577">Lin et al., 2006</a>; <a href="https://www.frontiersin.org/articles/10.3389/fnins.2018.00401/full">Nakanishi et al., 2018</a>). In collaboration with Steve Mann (<a href="http://www.wearcam.org/">wearcam.org</a>; see also <a href="https://caydenpierce.com/wp-content/uploads/2023/05/HumanEyeAsACamera.pdf">Human Eye as a Camera</a>), multi‑LED glasses probe gaze‑contingent selection where stimulus coding, refresh precision, and comfort constraints interact.</p>
+
+        
+
+        <div class="time-block">Wrap-Up & Resources (10 minutes)</div>
+
+        <p>We traversed the complete EEG pipeline from biophysics and electrodes to preprocessing, ERPs, and frequency‑based interfaces. The emphasis is on engineering fluency—understanding how signals are acquired, shaped, and interpreted—so you can evaluate and adapt methods as needed.</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="materials">
+          <h3>References & Resources</h3>
+          <p>Live demo tool: <a href="./eeg-demo.html">eeg-demo.html</a>. Analysis libraries: <a href="https://mne.tools/stable/auto_examples/">MNE‑Python examples</a>, <a href="https://sccn.ucsd.edu/eeglab/index.php">EEGLAB</a> (<a href="https://doi.org/10.1016/j.jneumeth.2003.10.009">Delorme & Makeig, 2004</a>), <a href="https://www.fieldtriptoolbox.org/">FieldTrip</a>, <a href="https://neuroimage.usc.edu/brainstorm/">Brainstorm</a>; acquisition SDKs: <a href="https://brainflow.readthedocs.io/en/stable/">BrainFlow</a>, <a href="https://github.com/sccn/labstreaminglayer">LabStreamingLayer</a>; standards/datasets: <a href="https://bids.neuroimaging.io/">BIDS</a> (<a href="https://doi.org/10.1038/s41597-019-0104-8">EEG‑BIDS</a>), <a href="https://openneuro.org/">OpenNeuro</a>, <a href="https://physionet.org/content/eegmmidb/1.0.0/">PhysioNet EEGMMI</a>, <a href="http://bnci-horizon-2020.eu/database/data-sets">BNCI Horizon SSVEP datasets</a>; signal processing: <a href="https://docs.scipy.org/doc/scipy/reference/signal.html">SciPy Signal</a> (<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.welch.html">Welch PSD</a>), <a href="https://github.com/indutny/fft.js">fft.js</a>; visualization: <a href="https://d3js.org/">D3</a>, <a href="https://plotly.com/javascript/">Plotly</a>, <a href="https://github.com/leeoniya/uPlot">uPlot</a>; BCI platforms: <a href="https://www.bci2000.org/">BCI2000</a>, <a href="http://openvibe.inria.fr/">OpenViBE</a>.</p>
+        </div>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">EEG Fundamentals</span>
+          <span class="tag">Signal Processing</span>
+          <span class="tag">Live Demos</span>
+          <span class="tag">Research Integration</span>
+        </div>
+        <div>© <span id="year"></span> Kyle Mathewson</div>
+      </footer>
+    </div>
+
+    <script>
+      // Cache busting script - v20250915
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Force reload if page is cached
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
+    </script>
+  </body>
+</html>

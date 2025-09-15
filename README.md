@@ -16,7 +16,13 @@ This course covers historical, contemporary, developing, and future technologies
 - `index.html` - Main course navigation and schedule
 - `syllabus.html` - Complete course syllabus with university policies
 - `lecture1.html` - First lecture outline and materials
+- `lecture2.html` - EEG fundamentals, signal processing, and research demonstrations
+- `eeg-demo.html` - Live EEG processing demo (Web Bluetooth + real-time analysis)
 - `plan.md` - Internal planning document (not public)
+
+## Course Flow (engineering-first)
+
+This course builds from the physics and hardware of sensing to robust analysis and real-world application. We begin with how signals are physically generated and captured (EEG front-ends, electrodes, amplification, digitization), then move into principled preprocessing (filtering, artifact handling, synchronization), and finally explore applications (ERPs, SSVEP-based BCIs, mobile EEG) alongside other modalities (fMRI, fNIRS) and neurostimulation (tDCS/TMS). Practical work emphasizes understanding the signal path end-to-end so students can adapt tools and methods rather than treating systems as black boxes.
 
 ## Cache Busting Implementation
 
