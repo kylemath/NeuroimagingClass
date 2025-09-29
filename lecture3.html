@@ -351,28 +351,28 @@
         </div>
 
         <div class="code-demo">
-<span style="color: #6a9955;">// 🧠 Real-time BCI with eegedu.com framework</span>
-<span style="color: #6a9955;">// This creates a simple attention monitor using alpha waves</span>
-
-<span style="color: #c586c0;">import</span> { MuseClient } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'muse-js'</span>;
-<span style="color: #c586c0;">import</span> { bandpassFilter, epoch } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'@neurosity/pipes'</span>;
-
-<span style="color: #6a9955;">// Connect to Muse headset via Bluetooth</span>
-<span style="color: #c586c0;">const</span> client = <span style="color: #c586c0;">new</span> MuseClient();
-<span style="color: #c586c0;">await</span> client.<span style="color: #dcdcaa;">connect</span>();
-
-<span style="color: #6a9955;">// Real-time attention monitoring pipeline</span>
-client.eegReadings
-  .<span style="color: #dcdcaa;">pipe</span>(
-    <span style="color: #dcdcaa;">bandpassFilter</span>({ <span style="color: #9cdcfe;">cutoffFrequencies</span>: [<span style="color: #b5cea8;">8</span>, <span style="color: #b5cea8;">12</span>] }), <span style="color: #6a9955;">// Alpha band</span>
-    <span style="color: #dcdcaa;">epoch</span>({ <span style="color: #9cdcfe;">duration</span>: <span style="color: #b5cea8;">1000</span>, <span style="color: #9cdcfe;">interval</span>: <span style="color: #b5cea8;">250</span> }), <span style="color: #6a9955;">// 1-second windows</span>
-    <span style="color: #dcdcaa;">map</span>(<span style="color: #9cdcfe;">epoch</span> => <span style="color: #dcdcaa;">calculatePower</span>(epoch)) <span style="color: #6a9955;">// Compute alpha power</span>
-  )
-  .<span style="color: #dcdcaa;">subscribe</span>(<span style="color: #9cdcfe;">alphaPower</span> => {
-    <span style="color: #6a9955;">// Update attention meter in real-time</span>
-    <span style="color: #dcdcaa;">updateAttentionMeter</span>(alphaPower);
-    <span style="color: #dcdcaa;">triggerFeedback</span>(alphaPower > threshold);
-  });
+<span style="color: #6a9955;">// 🧠 Real-time BCI with eegedu.com framework</span><br>
+<span style="color: #6a9955;">// This creates a simple attention monitor using alpha waves</span><br>
+<br>
+<span style="color: #c586c0;">import</span> { MuseClient } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'muse-js'</span>;<br>
+<span style="color: #c586c0;">import</span> { bandpassFilter, epoch } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'@neurosity/pipes'</span>;<br>
+<br>
+<span style="color: #6a9955;">// Connect to Muse headset via Bluetooth</span><br>
+<span style="color: #c586c0;">const</span> client = <span style="color: #c586c0;">new</span> MuseClient();<br>
+<span style="color: #c586c0;">await</span> client.<span style="color: #dcdcaa;">connect</span>();<br>
+<br>
+<span style="color: #6a9955;">// Real-time attention monitoring pipeline</span><br>
+client.eegReadings<br>
+&nbsp;&nbsp;.<span style="color: #dcdcaa;">pipe</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #dcdcaa;">bandpassFilter</span>({ <span style="color: #9cdcfe;">cutoffFrequencies</span>: [<span style="color: #b5cea8;">8</span>, <span style="color: #b5cea8;">12</span>] }), <span style="color: #6a9955;">// Alpha band</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #dcdcaa;">epoch</span>({ <span style="color: #9cdcfe;">duration</span>: <span style="color: #b5cea8;">1000</span>, <span style="color: #9cdcfe;">interval</span>: <span style="color: #b5cea8;">250</span> }), <span style="color: #6a9955;">// 1-second windows</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #dcdcaa;">map</span>(<span style="color: #9cdcfe;">epoch</span> => <span style="color: #dcdcaa;">calculatePower</span>(epoch)) <span style="color: #6a9955;">// Compute alpha power</span><br>
+&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;.<span style="color: #dcdcaa;">subscribe</span>(<span style="color: #9cdcfe;">alphaPower</span> => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #6a9955;">// Update attention meter in real-time</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #dcdcaa;">updateAttentionMeter</span>(alphaPower);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #dcdcaa;">triggerFeedback</span>(alphaPower > threshold);<br>
+&nbsp;&nbsp;});
         </div>
 
         <h3>Practical BCI Design Considerations</h3>
