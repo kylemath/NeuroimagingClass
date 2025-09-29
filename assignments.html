@@ -314,66 +314,35 @@
             <div id="submission-section" style="background: linear-gradient(135deg, rgba(32,201,151,0.1), rgba(214,51,132,0.05)); border: 2px solid rgba(32,201,151,0.4); border-radius: 12px; padding: 20px; margin: 20px 0; box-shadow: 0 4px 16px rgba(32,201,151,0.15);">
               <h4 style="margin: 0 0 16px 0; color: var(--accent-2); text-align: center;">📤 Submit Your Assignment</h4>
               
-              <form id="assignment-submission-form" style="display: grid; gap: 16px;">
-                <!-- Student Info -->
-                <div style="display: grid; gap: 12px; grid-template-columns: 1fr 1fr;">
-                  <div>
-                    <label for="student-name" style="display: block; font-weight: 600; margin-bottom: 4px; color: var(--text);">👤 Your Name:</label>
-                    <input type="text" id="student-name" name="studentName" required 
-                           placeholder="e.g., Alex Smith"
-                           style="width: 100%; padding: 8px 12px; border: 1px solid rgba(32,201,151,0.4); border-radius: 6px; font-size: 14px;">
-                  </div>
-                  <div>
-                    <label for="student-id" style="display: block; font-weight: 600; margin-bottom: 4px; color: var(--text);">🆔 Student ID:</label>
-                    <input type="text" id="student-id" name="studentId" required 
-                           placeholder="e.g., 123456789"
-                           style="width: 100%; padding: 8px 12px; border: 1px solid rgba(32,201,151,0.4); border-radius: 6px; font-size: 14px;">
-                  </div>
-                </div>
+              <div style="text-align: center; margin-bottom: 20px;">
+                <p style="margin: 0 0 16px 0; color: var(--text); font-size: 16px;">
+                  Click the button below to submit your Assignment 1. You'll be taken to a secure Google Form where you can upload your file and provide your details.
+                </p>
                 
-                <!-- File Upload -->
-                <div>
-                  <label for="assignment-file" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text);">📄 Upload Your Completed Assignment:</label>
-                  <div style="background: rgba(249,171,0,0.05); padding: 8px; border-radius: 6px; margin-bottom: 8px; font-size: 12px;">
-                    <strong>📱 Accepted formats:</strong> PDF, Screenshots (PNG/JPG), or Notebook files (.ipynb)
-                  </div>
-                  <div style="position: relative;">
-                    <input type="file" id="assignment-file" name="assignmentFile" accept=".pdf,.png,.jpg,.jpeg,.ipynb" required
-                           style="width: 100%; padding: 12px; border: 2px dashed rgba(32,201,151,0.4); border-radius: 8px; background: rgba(255,255,255,0.5); cursor: pointer;">
-                    <div id="file-info" style="margin-top: 8px; font-size: 12px; color: var(--muted);"></div>
-                  </div>
-                </div>
-                
-                <!-- Platform Used -->
-                <div>
-                  <label for="platform-used" style="display: block; font-weight: 600; margin-bottom: 4px; color: var(--text);">💻 Which platform did you use?</label>
-                  <select id="platform-used" name="platformUsed" required
-                          style="width: 100%; padding: 8px 12px; border: 1px solid rgba(32,201,151,0.4); border-radius: 6px; font-size: 14px;">
-                    <option value="">Select platform...</option>
-                    <option value="google-colab">🤖 Google Colab</option>
-                    <option value="binder">🌐 Binder</option>
-                    <option value="local-jupyter">💻 Local Jupyter</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                
-                <!-- Optional Comments -->
-                <div>
-                  <label for="comments" style="display: block; font-weight: 600; margin-bottom: 4px; color: var(--text);">💭 Comments or Questions (Optional):</label>
-                  <textarea id="comments" name="comments" rows="3" 
-                            placeholder="Any challenges, insights, or questions about the assignment..."
-                            style="width: 100%; padding: 8px 12px; border: 1px solid rgba(32,201,151,0.4); border-radius: 6px; font-size: 14px; resize: vertical;"></textarea>
-                </div>
-                
-                <!-- Submit Button -->
-                <button type="submit" id="submit-btn"
-                        style="background: linear-gradient(135deg, var(--accent-2), #17a085); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(32,201,151,0.3); transition: all 0.3s ease;">
-                  🚀 Submit Assignment
-                </button>
-                
-                <!-- Status Messages -->
-                <div id="submission-status" style="display: none; padding: 12px; border-radius: 6px; font-weight: 600; text-align: center;"></div>
-              </form>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdkZyzDGpeOv8PTrNUDTYWPArQUwqzoZbiAdmgntMpt59f2tg/viewform?usp=dialog" 
+                   target="_blank"
+                   style="display: inline-block; background: linear-gradient(135deg, var(--accent-2), #17a085); color: white; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 18px; box-shadow: 0 6px 20px rgba(32,201,151,0.4); transition: all 0.3s ease; border: none;">
+                  🚀 Submit Assignment 1
+                </a>
+              </div>
+              
+              <div style="background: rgba(32,201,151,0.08); padding: 16px; border-radius: 8px; margin: 16px 0;">
+                <h5 style="margin: 0 0 12px 0; color: var(--accent-2); font-size: 16px;">✨ What happens when you submit:</h5>
+                <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6;">
+                  <li>📝 Fill out the form with your name, student ID, and platform used</li>
+                  <li>📄 Upload your assignment file (PDF, image, or notebook)</li>
+                  <li>💾 Your file is automatically saved to the instructor's Google Drive</li>
+                  <li>📧 You'll receive a confirmation email</li>
+                  <li>🔒 Your submission is private - other students cannot see it</li>
+                </ul>
+              </div>
+              
+              <div style="background: rgba(249,171,0,0.1); padding: 12px; border-radius: 6px; margin: 16px 0; border: 1px solid rgba(249,171,0,0.3);">
+                <p style="margin: 0; font-size: 14px; color: var(--text);">
+                  <strong>📱 Mobile-friendly:</strong> The Google Form works perfectly on phones, tablets, and computers. 
+                  <strong>🔒 Secure:</strong> Only you and the instructor can see your submission.
+                </p>
+              </div>
             </div>
           </div>
           <div class="code-example">
@@ -706,190 +675,10 @@ raw = mne.io.<span style="color: #dcdcaa;">read_raw_fif</span>(sample_data + <sp
         window.location.reload(true);
       }
 
-      // Assignment Submission System
+      // Simple page initialization
       document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('assignment-submission-form');
-        const fileInput = document.getElementById('assignment-file');
-        const fileInfo = document.getElementById('file-info');
-        const submitBtn = document.getElementById('submit-btn');
-        const statusDiv = document.getElementById('submission-status');
-
-        // File input change handler
-        fileInput.addEventListener('change', function(e) {
-          const file = e.target.files[0];
-          if (file) {
-            const fileSize = (file.size / 1024 / 1024).toFixed(2); // MB
-            const maxSize = 25; // Increased to 25MB for images and notebooks
-            
-            // Define accepted file types
-            const acceptedTypes = [
-              'application/pdf',           // PDF files
-              'image/png',                 // PNG images
-              'image/jpeg',                // JPEG images
-              'image/jpg',                 // JPG images
-              'application/json',          // .ipynb files (sometimes detected as JSON)
-              'text/plain'                 // .ipynb files (sometimes detected as plain text)
-            ];
-            
-            // Check file extension for .ipynb files (since MIME type varies)
-            const isNotebook = file.name.toLowerCase().endsWith('.ipynb');
-            const isValidType = acceptedTypes.includes(file.type) || isNotebook;
-            
-            if (!isValidType) {
-              showStatus('❌ Please upload a PDF, PNG/JPG image, or .ipynb notebook file.', 'error');
-              fileInput.value = '';
-              fileInfo.textContent = '';
-              return;
-            }
-            
-            if (fileSize > maxSize) {
-              showStatus(`❌ File too large (${fileSize}MB). Maximum size is ${maxSize}MB.`, 'error');
-              fileInput.value = '';
-              fileInfo.textContent = '';
-              return;
-            }
-            
-            // Show appropriate icon based on file type
-            let fileIcon = '📄';
-            if (file.type.startsWith('image/')) {
-              fileIcon = '📷';
-            } else if (isNotebook) {
-              fileIcon = '📓';
-            }
-            
-            fileInfo.innerHTML = `✅ ${fileIcon} <strong>${file.name}</strong> (${fileSize}MB) - Ready to submit!`;
-            hideStatus();
-          }
-        });
-
-        // Form submission handler
-        form.addEventListener('submit', async function(e) {
-          e.preventDefault();
-          
-          const formData = new FormData(form);
-          const file = fileInput.files[0];
-          
-          if (!file) {
-            showStatus('❌ Please select a PDF file to upload.', 'error');
-            return;
-          }
-
-          // Show loading state
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = '⏳ Submitting...';
-          showStatus('📤 Sending your assignment...', 'loading');
-
-          try {
-            // Convert file to base64 for email
-            const base64File = await fileToBase64(file);
-            
-            // Determine file type for display
-            let fileType = 'PDF Document';
-            if (file.type.startsWith('image/')) {
-              fileType = 'Image/Screenshot';
-            } else if (file.name.toLowerCase().endsWith('.ipynb')) {
-              fileType = 'Jupyter Notebook';
-            }
-
-            // Prepare email data
-            const emailData = {
-              studentName: formData.get('studentName'),
-              studentId: formData.get('studentId'),
-              platformUsed: formData.get('platformUsed'),
-              comments: formData.get('comments') || 'No comments provided',
-              fileName: file.name,
-              fileType: fileType,
-              fileSize: (file.size / 1024 / 1024).toFixed(2) + 'MB',
-              fileData: base64File,
-              submissionTime: new Date().toLocaleString(),
-              assignmentTitle: 'Assignment 1: EEG Data Loading and Basic Filtering'
-            };
-
-            // Send email using EmailJS (you'll need to set this up)
-            await sendSubmissionEmail(emailData);
-            
-            showStatus('🎉 Assignment submitted successfully! You should receive a confirmation email shortly.', 'success');
-            form.reset();
-            fileInfo.textContent = '';
-            
-          } catch (error) {
-            console.error('Submission error:', error);
-            showStatus('❌ Submission failed. Please try again or email your assignment directly to kylemath@gmail.com', 'error');
-          } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '🚀 Submit Assignment';
-          }
-        });
-
-        // Helper functions
-        function showStatus(message, type) {
-          statusDiv.style.display = 'block';
-          statusDiv.textContent = message;
-          
-          statusDiv.className = '';
-          if (type === 'success') {
-            statusDiv.style.background = 'rgba(32,201,151,0.1)';
-            statusDiv.style.color = 'var(--accent-2)';
-            statusDiv.style.border = '1px solid rgba(32,201,151,0.4)';
-          } else if (type === 'error') {
-            statusDiv.style.background = 'rgba(214,51,132,0.1)';
-            statusDiv.style.color = 'var(--accent)';
-            statusDiv.style.border = '1px solid rgba(214,51,132,0.4)';
-          } else if (type === 'loading') {
-            statusDiv.style.background = 'rgba(249,171,0,0.1)';
-            statusDiv.style.color = '#F9AB00';
-            statusDiv.style.border = '1px solid rgba(249,171,0,0.4)';
-          }
-        }
-
-        function hideStatus() {
-          statusDiv.style.display = 'none';
-        }
-
-        function fileToBase64(file) {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = error => reject(error);
-          });
-        }
-
-        async function sendSubmissionEmail(data) {
-          // Use the same EmailJS service and template as attend.html
-          const subject = `PSYCH 403A1 - ${data.assignmentTitle} - ${data.studentName} (${data.studentId})`;
-          const message = `New Assignment Submission
-
-STUDENT INFORMATION:
-• Name: ${data.studentName}
-• Student ID: ${data.studentId}
-• Assignment: ${data.assignmentTitle}
-• Submission Time: ${data.submissionTime}
-
-TECHNICAL DETAILS:
-• Platform Used: ${data.platformUsed}
-• File Name: ${data.fileName}
-• File Type: ${data.fileType}
-• File Size: ${data.fileSize}
-
-STUDENT COMMENTS:
-${data.comments || 'No comments provided'}
-
----
-This submission was sent via the PSYCH 403A1 Assignment Submission System.
-
-Note: File attachment processing is handled separately due to email size limitations.
-The submitted file (${data.fileType}) contains the student's completed work.`;
-
-          // Send using the same EmailJS service as attend.html
-          return emailjs.send('service_gja051f', 'template_oynhafb', {
-            to_email: 'kylemath@gmail.com',
-            subject: subject,
-            message: message,
-            from_name: `${data.studentName} (PSYCH 403A1 Assignment System)`,
-            reply_to: 'noreply@ualberta.ca'
-          });
-        }
+        // Add any simple page enhancements here if needed
+        console.log('Assignment submission page loaded - using Google Forms');
       });
     </script>
   </body>
