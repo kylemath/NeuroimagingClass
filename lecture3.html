@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20250929-v1">
+    <title>Lecture 3: Advanced EEG Analysis & Brain-Computer Interfaces</title>
+    <meta name="description" content="Third lecture for PSYCH 403A1: Building on EEG filtering, exploring event-related potentials, machine learning applications, and real-time BCI development.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20250929" rel="stylesheet">
+    <style>
+      /* Cache-busted styles - v20250929 */
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 880px;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+
+      p { margin: 0.85em 0; }
+
+      .lecture-meta {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 16px 16px 18px;
+        color: var(--text);
+        margin: 18px 0 8px;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .time-block {
+        background: linear-gradient(90deg, rgba(214,51,132,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .demo-block {
+        background: linear-gradient(90deg, rgba(32,201,151,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent-2);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--accent-2);
+      }
+
+      .assignment-review {
+        background: linear-gradient(135deg, rgba(249,171,0,0.1), rgba(32,201,151,0.08));
+        border: 2px solid rgba(249,171,0,0.4);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 6px 20px rgba(249,171,0,0.15);
+      }
+
+      .research-highlight {
+        background: linear-gradient(135deg, rgba(214,51,132,0.08), rgba(32,201,151,0.06));
+        border: 2px solid rgba(214,51,132,0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 6px 20px rgba(214,51,132,0.1);
+      }
+
+      .project-intro {
+        background: linear-gradient(135deg, rgba(32,201,151,0.1), rgba(214,51,132,0.08));
+        border: 2px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 6px 20px rgba(32,201,151,0.15);
+      }
+
+      .code-demo {
+        background: #2d1b2d;
+        color: #f8f4f8;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 14px;
+        overflow-x: auto;
+      }
+
+      .materials {
+        background: rgba(32,201,151,0.05);
+        border: 1px solid rgba(32,201,151,0.3);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(214,51,132,0.25);
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+      .brain-wave {
+        display: inline-block;
+        width: 80px;
+        height: 25px;
+        background: linear-gradient(90deg, transparent, var(--accent-2), var(--accent), var(--accent-2), transparent);
+        border-radius: 12px;
+        animation: brain-pulse 2.5s ease-in-out infinite;
+        margin: 0 8px;
+        vertical-align: middle;
+        position: relative;
+      }
+      .brain-wave::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 20%;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: neural-spike 2.5s ease-in-out infinite;
+      }
+      @keyframes brain-pulse {
+        0%, 100% { opacity: 0.6; transform: scaleY(1); }
+        50% { opacity: 1; transform: scaleY(1.8); }
+      }
+      @keyframes neural-spike {
+        0%, 80%, 100% { opacity: 0; transform: translateX(0) scale(1); }
+        10%, 70% { opacity: 1; transform: translateX(40px) scale(1.5); }
+      }
+
+      .bci-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 20px;
+        animation: bci-glow 3s ease-in-out infinite;
+      }
+      @keyframes bci-glow {
+        0%, 100% { text-shadow: 0 0 5px var(--accent-2); }
+        50% { text-shadow: 0 0 15px var(--accent), 0 0 25px var(--accent-2); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">PSYCH 403A1 — Lecture 3</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./lecture2.html" class="tag" style="text-transform:none">← Lecture 2</a>
+          <a href="./assignments.html" class="tag" style="text-transform:none">Assignments</a>
+          <a href="./final-project.html" class="tag" style="text-transform:none">Final Project</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>Advanced EEG Analysis & Brain-Computer Interfaces <span class="brain-wave" aria-hidden="true"></span></h1>
+        
+        <div class="lecture-meta">
+          <p><strong>Date:</strong> September 29, 2025<br>
+          <strong>Duration:</strong> 3 hours (9:00-12:00 PM) - 180 minutes total<br>
+          <strong>Location:</strong> T B-05 - Henry Marshall Tory Building<br>
+          <strong>Focus:</strong> From filtered signals to intelligent brain-computer interfaces</p>
+        </div>
+
+        <p>Plan for this 180-minute session: 9:00–9:25 Assignment 1 review and concept reinforcement; 9:25–10:10 event-related potentials and time-locked analysis; 10:10–10:25 break; 10:25–11:10 machine learning and real-time BCI applications; 11:10–11:50 hands-on BCI development with eegedu.com; 11:50–12:00 final project introduction and literature review planning.</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="time-block">Assignment 1 Review: What You Actually Accomplished (25 minutes)</div>
+
+        <div class="assignment-review">
+          <h3>🎉 Celebrating Your EEG Analysis Success!</h3>
+          <p><strong>What you mastered in Assignment 1:</strong> You successfully loaded real brain data, applied digital filters to clean noisy signals, and created scientific visualizations comparing raw vs. processed EEG. More importantly, you experienced the complete pipeline from messy biological signals to interpretable data—the foundation of all neuroimaging analysis.</p>
+          
+          <p><strong>The "radio analogy" in action:</strong> Your filtering work demonstrated how digital signal processing separates neural activity from artifacts. The before/after plots you created show the same principle used in noise-canceling headphones, radio receivers, and modern audio processing—but applied to the brain's electrical symphony.</p>
+          
+          <p><strong>Power spectral analysis insights:</strong> Those colorful frequency plots revealed the brain's rhythmic activity. The peaks you observed correspond to well-known neural oscillations: alpha waves (8-12 Hz) during relaxed attention, beta activity (13-30 Hz) during active cognition, and gamma bursts (30+ Hz) during focused processing.</p>
+        </div>
+
+        <h3>Common Discoveries from Your Assignment</h3>
+        <p>Most students noticed several key patterns: <strong>1)</strong> Raw EEG contains substantial noise requiring careful filtering; <strong>2)</strong> Different frequency bands reveal distinct neural processes; <strong>3)</strong> Proper preprocessing dramatically improves signal quality; <strong>4)</strong> Multiple channels provide spatial information about brain activity. These observations form the foundation for advanced analysis techniques.</p>
+
+        <div class="time-block">Event-Related Potentials: Time-Locked Brain Responses (45 minutes)</div>
+
+        <h3>From Continuous Signals to Event-Locked Responses</h3>
+        <p>While Assignment 1 focused on continuous EEG, many neuroscience questions require examining brain responses to specific events. Event-related potentials (ERPs) reveal how neural networks respond to stimuli, decisions, or cognitive processes by averaging time-locked segments around trigger events.</p>
+
+        <p><strong>The averaging principle:</strong> Individual trials contain both signal and noise. By aligning responses to stimulus onset and averaging across many trials, random noise cancels out while consistent neural responses emerge. This technique increases signal-to-noise ratio proportional to the square root of trial count—a fundamental principle in experimental neuroscience.</p>
+
+        <h3>Classic ERP Components and Their Meaning</h3>
+        <p><strong>P300 (positive deflection ~300ms):</strong> Reflects attention and working memory updating when detecting rare or significant events. Larger P300s indicate greater cognitive resource allocation. <strong>N400 (~400ms negative):</strong> Language processing component sensitive to semantic violations—"I take coffee with cream and socks" produces a large N400. <strong>Error-related negativity (ERN):</strong> Occurs within 100ms of making mistakes, reflecting rapid error detection by anterior cingulate cortex.</p>
+
+        <div class="research-highlight">
+          <h3>🔬 Research Applications</h3>
+          <p><strong>Clinical diagnostics:</strong> ERP abnormalities can indicate neurological conditions before behavioral symptoms appear. Delayed P300s suggest attention deficits; reduced N400s may indicate language processing difficulties; absent mismatch negativity (MMN) responses can signal auditory processing disorders.</p>
+          <p><strong>Cognitive load assessment:</strong> P300 amplitude and latency provide real-time measures of mental workload, with applications in human factors engineering, pilot training, and adaptive user interfaces that adjust difficulty based on neural feedback.</p>
+        </div>
+
+        <div class="time-block">15-MINUTE BREAK</div>
+
+        <div class="time-block">Machine Learning & Real-Time BCI Applications (45 minutes)</div>
+
+        <h3>From Signal Processing to Intelligent Systems</h3>
+        <p>Modern BCIs combine the filtering techniques you learned with machine learning to decode intentions from neural patterns. The pipeline involves feature extraction (spectral power, ERP amplitudes, spatial patterns), classification algorithms (SVM, neural networks, Riemannian geometry), and real-time feedback systems.</p>
+
+        <h3>Feature Extraction Strategies</h3>
+        <p><strong>Common spatial patterns (CSP):</strong> Identifies electrode combinations that maximize differences between mental states (e.g., imagined left vs. right hand movement). <strong>Spectral features:</strong> Power in specific frequency bands often correlates with cognitive states—alpha suppression during visual attention, beta rebound after movement, gamma during high-level cognition. <strong>Connectivity measures:</strong> Phase synchronization between brain regions reflects functional networks underlying complex behaviors.</p>
+
+        <h3>Real-World BCI Applications</h3>
+        <p><strong>Medical rehabilitation:</strong> Stroke patients can control robotic limbs through motor imagery, rewiring damaged neural pathways. Locked-in syndrome patients communicate through P300-based spellers, selecting letters by attending to flashing characters. <strong>Artistic expression:</strong> Musicians create compositions through neural activity patterns; visual artists generate dynamic displays responding to emotional states decoded from EEG. <strong>Cognitive monitoring:</strong> Attention-based systems detect mind-wandering during learning, fatigue during driving, or cognitive overload during complex tasks.</p>
+
+        <div class="research-highlight">
+          <h3>🎨 Creative BCI Applications</h3>
+          <p><strong>Neural art installations:</strong> Real-time EEG drives interactive sculptures, music generation, and immersive environments. Artists like <a href="https://www.lisapark.net/">Lisa Park</a> create water sculptures controlled by brainwaves, while <a href="https://www.marcotemp.com/">Marco Temp</a> generates musical compositions from neural oscillations.</p>
+          <p><strong>Hospital monitoring:</strong> Continuous EEG in ICUs detects seizures, monitors consciousness levels, and predicts neurological outcomes. Automated systems alert clinicians to subtle changes invisible to standard monitoring, potentially saving lives through early intervention.</p>
+        </div>
+
+        <div class="time-block">Hands-On BCI Development with eegedu.com (40 minutes)</div>
+
+        <h3>Building Your First Brain-Computer Interface</h3>
+        <p>The <a href="https://eegedu.com/">eegedu.com framework</a> provides browser-based tools for rapid BCI prototyping. Built on Web Bluetooth and modern JavaScript, it enables real-time EEG streaming, signal processing, and interactive applications without complex installations.</p>
+
+        <div class="demo-block">
+          <strong>🔧 Live Demo Activity:</strong> We'll connect Muse headsets to create a simple attention-based interface. You'll see real-time alpha suppression during visual focus, implement a basic concentration meter, and explore how different mental states produce distinct neural signatures. <span class="bci-icon">🧠⚡</span><br><br>
+          <strong>🎨 Interactive Platform:</strong> <a href="./brainimation.html" style="color: var(--accent-2); text-decoration: underline;">Launch BrainImation</a> — Live P5.js coding environment with real-time EEG data from Muse headsets
+        </div>
+
+        <div class="code-demo">
+<span style="color: #6a9955;">// 🧠 Real-time BCI with eegedu.com framework</span>
+<span style="color: #6a9955;">// This creates a simple attention monitor using alpha waves</span>
+
+<span style="color: #c586c0;">import</span> { MuseClient } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'muse-js'</span>;
+<span style="color: #c586c0;">import</span> { bandpassFilter, epoch } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'@neurosity/pipes'</span>;
+
+<span style="color: #6a9955;">// Connect to Muse headset via Bluetooth</span>
+<span style="color: #c586c0;">const</span> client = <span style="color: #c586c0;">new</span> MuseClient();
+<span style="color: #c586c0;">await</span> client.<span style="color: #dcdcaa;">connect</span>();
+
+<span style="color: #6a9955;">// Real-time attention monitoring pipeline</span>
+client.eegReadings
+  .<span style="color: #dcdcaa;">pipe</span>(
+    <span style="color: #dcdcaa;">bandpassFilter</span>({ <span style="color: #9cdcfe;">cutoffFrequencies</span>: [<span style="color: #b5cea8;">8</span>, <span style="color: #b5cea8;">12</span>] }), <span style="color: #6a9955;">// Alpha band</span>
+    <span style="color: #dcdcaa;">epoch</span>({ <span style="color: #9cdcfe;">duration</span>: <span style="color: #b5cea8;">1000</span>, <span style="color: #9cdcfe;">interval</span>: <span style="color: #b5cea8;">250</span> }), <span style="color: #6a9955;">// 1-second windows</span>
+    <span style="color: #dcdcaa;">map</span>(<span style="color: #9cdcfe;">epoch</span> => <span style="color: #dcdcaa;">calculatePower</span>(epoch)) <span style="color: #6a9955;">// Compute alpha power</span>
+  )
+  .<span style="color: #dcdcaa;">subscribe</span>(<span style="color: #9cdcfe;">alphaPower</span> => {
+    <span style="color: #6a9955;">// Update attention meter in real-time</span>
+    <span style="color: #dcdcaa;">updateAttentionMeter</span>(alphaPower);
+    <span style="color: #dcdcaa;">triggerFeedback</span>(alphaPower > threshold);
+  });
+        </div>
+
+        <h3>Practical BCI Design Considerations</h3>
+        <p><strong>Latency requirements:</strong> Real-time applications need end-to-end delays under 100-200ms to maintain the illusion of direct neural control. This constrains buffer sizes, processing algorithms, and feedback modalities. <strong>User training vs. machine adaptation:</strong> Effective BCIs balance user learning (developing consistent mental strategies) with adaptive algorithms that accommodate individual neural patterns. <strong>Robustness challenges:</strong> Electrode impedance changes, movement artifacts, and attention fluctuations require robust preprocessing and classification approaches.</p>
+
+        <div class="time-block">Final Project Introduction & Literature Review Planning (10 minutes)</div>
+
+        <div class="project-intro">
+          <h3>🎯 Your Final Project Journey Begins</h3>
+          <p><strong>Three exciting pathways:</strong> <strong>1) Research project:</strong> Design and conduct an original EEG/BCI study addressing a specific question. <strong>2) Device development:</strong> Build novel neuroimaging hardware or improve existing systems. <strong>3) Software innovation:</strong> Create new analysis tools, BCI applications, or educational resources.</p>
+          
+          <p><strong>Literature review phase (next 2 weeks):</strong> Identify 8-12 key papers in your chosen area. Focus on recent work (2020+) that establishes current state-of-the-art, identifies open questions, and suggests methodological approaches. Use Google Scholar, PubMed, and IEEE Xplore for comprehensive coverage.</p>
+          
+          <p><strong>Methodology planning:</strong> Consider data collection requirements, analysis pipelines, validation approaches, and ethical considerations. For hardware projects, think about component sourcing, prototyping methods, and testing protocols. For software projects, plan user interfaces, algorithm implementation, and performance evaluation.</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="materials">
+          <h3>Resources & Next Steps</h3>
+          <p><strong>🎨 Course BCI Platform:</strong> <a href="./brainimation.html" style="color: var(--accent-2); font-weight: 600;">BrainImation</a> — Live P5.js coding with real-time Muse EEG data (built specifically for this course).</p>
+          <p><strong>BCI Development:</strong> <a href="https://eegedu.com/">eegedu.com</a>, <a href="https://github.com/urish/muse-js">muse-js</a>, <a href="https://brainflow.readthedocs.io/">BrainFlow</a>, <a href="https://www.bci2000.org/">BCI2000</a>. <strong>ERP Analysis:</strong> <a href="https://mne.tools/stable/auto_tutorials/evoked/plot_10_evoked_overview.html">MNE Evoked tutorial</a>, <a href="https://erpinfo.org/">ERPinfo.org</a>, <a href="https://sccn.ucsd.edu/eeglab/tutorials/">EEGLAB tutorials</a>. <strong>Machine Learning:</strong> <a href="https://scikit-learn.org/stable/modules/svm.html">scikit-learn SVM</a>, <a href="https://pyriemann.readthedocs.io/">pyRiemann</a>, <a href="https://braindecode.org/">Braindecode</a>. <strong>Literature Search:</strong> <a href="https://scholar.google.com/">Google Scholar</a>, <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>, <a href="https://ieeexplore.ieee.org/">IEEE Xplore</a>, <a href="https://www.biorxiv.org/">bioRxiv preprints</a>.</p>
+        </div>
+
+        <div class="demo-block">
+          <strong>📋 This Week's Assignment:</strong> <a href="./assignments.html" style="color: var(--accent-2);">Assignment 2: Advanced EEG Preprocessing</a> — Building on your filtering skills, you'll implement artifact detection, perform independent component analysis (ICA), and create event-related potential analyses. Due October 6.
+        </div>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">Advanced Analysis</span>
+          <span class="tag">Machine Learning</span>
+          <span class="tag">Real-time BCI</span>
+          <span class="tag">Final Project Launch</span>
+        </div>
+        <div>© <span id="year"></span> Kyle Mathewson</div>
+      </footer>
+    </div>
+
+    <script>
+      // Cache busting script - v20250929
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Force reload if page is cached
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
+    </script>
+  </body>
+</html>

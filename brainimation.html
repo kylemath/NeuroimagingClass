@@ -1,0 +1,1720 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20250929-v1">
+    <title>BrainImation: Live EEG + P5.js Creative Coding</title>
+    <meta name="description" content="Interactive brain-computer interface art platform using real-time EEG data from Muse headsets with live P5.js coding environment.">
+    
+    <!-- P5.js and required libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
+    
+    <!-- Muse-js for Bluetooth EEG -->
+    <script src="https://unpkg.com/muse-js@4.0.0/dist/muse.umd.js"></script>
+    
+    <!-- Monaco Editor for live coding -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    
+    <!-- RxJS for data streaming -->
+    <script src="https://unpkg.com/rxjs@7.8.1/dist/bundles/rxjs.umd.min.js"></script>
+    
+    <style>
+      :root {
+        --bg: #0a0a0a;
+        --bg-2: #1a1a1a;
+        --text: #e0e0e0;
+        --muted: #888;
+        --accent: #ff6b9d;
+        --accent-2: #4ecdc4;
+        --success: #4caf50;
+        --warning: #ff9800;
+        --error: #f44336;
+        --neural: rgba(78, 205, 196, 0.3);
+      }
+
+      * { box-sizing: border-box; }
+      
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        background: var(--bg);
+        color: var(--text);
+        overflow: hidden;
+        height: 100vh;
+      }
+
+      .main-container {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        grid-template-rows: 60px 1fr auto;
+        height: 100vh;
+        gap: 2px;
+        background: var(--bg-2);
+        overflow: hidden;
+      }
+
+      .header {
+        grid-column: 1 / -1;
+        background: var(--bg-2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        border-bottom: 2px solid var(--accent);
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        background: linear-gradient(45deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+      .btn-primary:hover { background: #e55a8a; }
+      .btn-primary:disabled { 
+        background: #666; 
+        cursor: not-allowed; 
+      }
+
+      .btn-success {
+        background: var(--success);
+        color: white;
+      }
+      .btn-success:hover { background: #45a049; }
+
+      .btn-secondary {
+        background: var(--bg);
+        color: var(--text);
+        border: 1px solid var(--muted);
+      }
+      .btn-secondary:hover { background: var(--bg-2); }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+      }
+
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--muted);
+        animation: pulse 2s infinite;
+      }
+      .status-indicator.connected { background: var(--success); }
+      .status-indicator.error { background: var(--error); }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      .canvas-container {
+        background: #000;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .code-panel {
+        background: var(--bg-2);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .panel-header {
+        background: var(--bg);
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent-2);
+        border-bottom: 1px solid var(--muted);
+      }
+
+      .code-editor {
+        flex: 1;
+        position: relative;
+      }
+
+      .eeg-data {
+        background: var(--bg);
+        border-top: 1px solid var(--muted);
+        max-height: 250px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .data-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        padding: 12px;
+      }
+
+      .data-item {
+        background: var(--bg-2);
+        padding: 8px;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 11px;
+      }
+
+      .data-label {
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      .data-value {
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--accent-2);
+      }
+
+      .wave-viz {
+        grid-column: 1 / -1;
+        height: 60px;
+        background: var(--bg-2);
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .examples-bar {
+        background: var(--bg);
+        padding: 8px 12px;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        font-size: 11px;
+      }
+
+      .example-btn {
+        padding: 4px 8px;
+        background: var(--bg-2);
+        border: 1px solid var(--muted);
+        border-radius: 4px;
+        cursor: pointer;
+        white-space: nowrap;
+        color: var(--text);
+        transition: all 0.2s;
+      }
+      .example-btn:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .fullscreen-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+        z-index: 1000;
+        display: none;
+      }
+
+      .error-console {
+        background: var(--bg);
+        color: var(--error);
+        padding: 8px 12px;
+        font-size: 11px;
+        border-top: 1px solid var(--error);
+        max-height: 100px;
+        overflow-y: auto;
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .main-container {
+          grid-template-columns: 1fr;
+          grid-template-rows: 60px 300px 1fr auto;
+          overflow-y: auto;
+        }
+        .code-panel {
+          grid-row: 3;
+          min-height: 200px;
+        }
+        .canvas-container {
+          grid-row: 2;
+        }
+        .eeg-data {
+          max-height: 200px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <!-- Header -->
+      <div class="header">
+        <div class="logo">🧠 BrainImation</div>
+        <div class="controls">
+          <div style="display:flex;align-items:center;gap:8px;margin-right:16px;font-size:12px;">
+            <a href="./index.html" style="color: var(--accent-2); text-decoration: none;">Course Home</a>
+            <span style="color: var(--muted);">|</span>
+            <a href="./lecture3.html" style="color: var(--accent-2); text-decoration: none;">← Lecture 3</a>
+          </div>
+          <div class="status">
+            <div class="status-indicator" id="muse-status"></div>
+            <span id="status-text">Disconnected</span>
+          </div>
+          <button class="btn btn-primary" id="connect-btn">Connect Muse</button>
+          <button class="btn btn-secondary" id="simulate-btn">Simulate Data</button>
+          <button class="btn btn-success" id="run-btn">Run Code</button>
+          <button class="btn btn-secondary" id="fullscreen-btn">Fullscreen</button>
+        </div>
+      </div>
+
+      <!-- Canvas -->
+      <div class="canvas-container" id="canvas-container"></div>
+
+      <!-- Code Editor Panel -->
+      <div class="code-panel">
+        <div class="panel-header">Live P5.js Code Editor</div>
+        <div class="examples-bar">
+          <div class="example-btn" data-example="basic">Basic Animation</div>
+          <div class="example-btn" data-example="alpha">Alpha Waves</div>
+          <div class="example-btn" data-example="attention">Attention Meter</div>
+          <div class="example-btn" data-example="particles">Brain Particles</div>
+          <div class="example-btn" data-example="mandala">Neural Mandala</div>
+          <div class="example-btn" data-example="waves">Wave Visualization</div>
+          <div class="example-btn" data-example="eegtrace">EEG Trace</div>
+          <div class="example-btn" data-example="multichannel">Multi-Channel</div>
+          <div class="example-btn" data-example="epochs">Epoch View</div>
+        </div>
+        <div class="code-editor" id="code-editor"></div>
+        <div class="error-console" id="error-console"></div>
+      </div>
+
+      <!-- EEG Data Display -->
+      <div class="eeg-data">
+        <div class="panel-header">Real-time Brain Data</div>
+        <div class="data-grid">
+          <div class="data-item">
+            <div class="data-label">Alpha</div>
+            <div class="data-value" id="alpha-value">0.0</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Beta</div>
+            <div class="data-value" id="beta-value">0.0</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Theta</div>
+            <div class="data-value" id="theta-value">0.0</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Delta</div>
+            <div class="data-value" id="delta-value">0.0</div>
+          </div>
+          <div class="wave-viz" id="wave-viz"></div>
+        </div>
+        
+        <!-- Simulation Controls -->
+        <div id="sim-controls" style="display: none; padding: 12px; border-top: 1px solid var(--muted); background: var(--bg-2);">
+          <div style="font-size: 11px; color: var(--accent-2); margin-bottom: 8px; font-weight: 600;">🎛️ SIMULATION CONTROLS</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+            <div>
+              <label style="color: var(--muted);">Attention:</label>
+              <input type="range" id="sim-attention" min="0" max="1" step="0.1" value="0.5" 
+                     style="width: 100%; margin-top: 2px;">
+              <span id="sim-attention-val" style="color: var(--accent-2);">0.5</span>
+            </div>
+            <div>
+              <label style="color: var(--muted);">Meditation:</label>
+              <input type="range" id="sim-meditation" min="0" max="1" step="0.1" value="0.3" 
+                     style="width: 100%; margin-top: 2px;">
+              <span id="sim-meditation-val" style="color: var(--accent-2);">0.3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fullscreen overlay -->
+    <div class="fullscreen-overlay" id="fullscreen-overlay"></div>
+
+    <script>
+      // Global variables for EEG data access in p5 sketches
+      let eegData = {
+        // Frequency bands (existing)
+        alpha: 0,
+        beta: 0,
+        theta: 0,
+        delta: 0,
+        gamma: 0,
+        
+        // Current samples (existing - keep for compatibility)
+        raw: [0, 0, 0, 0], // TP9, AF7, AF8, TP10 current values
+        
+        // Enhanced raw data access (NEW)
+        rawHistory: {
+          TP9: [],    // Array of recent samples
+          AF7: [],    // Array of recent samples  
+          AF8: [],    // Array of recent samples
+          TP10: []    // Array of recent samples
+        },
+        
+        // Configuration
+        historyLength: 1000,  // ~4 seconds at 256Hz
+        sampleRate: 256,      // Samples per second
+        
+        // Derived metrics (existing)
+        attention: 0,
+        meditation: 0,
+        connected: false,
+        
+        // Helper functions for accessing raw data in animations
+        getRawChannel: function(channel, numSamples = 100) {
+          const channelData = this.rawHistory[channel] || [];
+          return channelData.slice(-numSamples);
+        },
+        
+        getAllChannels: function(numSamples = 100) {
+          return {
+            TP9: this.getRawChannel('TP9', numSamples),
+            AF7: this.getRawChannel('AF7', numSamples),
+            AF8: this.getRawChannel('AF8', numSamples),
+            TP10: this.getRawChannel('TP10', numSamples)
+          };
+        },
+        
+        getChannelNames: function() {
+          return ['TP9', 'AF7', 'AF8', 'TP10'];
+        },
+        
+        // Get the most recent N samples across all channels
+        getRecentEpoch: function(numSamples = 100) {
+          const channels = this.getAllChannels(numSamples);
+          const epoch = [];
+          
+          // Transpose data so each time point has all 4 channels
+          for (let i = 0; i < numSamples; i++) {
+            epoch.push([
+              channels.TP9[i] || 0,
+              channels.AF7[i] || 0,
+              channels.AF8[i] || 0,
+              channels.TP10[i] || 0
+            ]);
+          }
+          return epoch;
+        }
+      };
+
+      // EEG Data Simulator for demonstration purposes
+      class EEGSimulator {
+        constructor() {
+          this.isRunning = false;
+          this.startTime = Date.now();
+          this.updateInterval = null;
+          this.baseAttention = 0.5;
+          this.baseMeditation = 0.3;
+          this.noiseLevel = 0.1;
+        }
+
+        start() {
+          this.isRunning = true;
+          this.startTime = Date.now();
+          
+          // Update data every 50ms (20 Hz)
+          this.updateInterval = setInterval(() => {
+            this.generateData();
+          }, 50);
+          
+          console.log('EEG Simulation started');
+        }
+
+        stop() {
+          this.isRunning = false;
+          if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+          }
+          console.log('EEG Simulation stopped');
+        }
+
+        setAttention(value) {
+          this.baseAttention = parseFloat(value);
+        }
+
+        setMeditation(value) {
+          this.baseMeditation = parseFloat(value);
+        }
+
+        generateData() {
+          const time = (Date.now() - this.startTime) / 1000; // seconds
+          
+          // Generate realistic brain wave patterns with some natural variation
+          const noise = () => (Math.random() - 0.5) * this.noiseLevel;
+          
+          // Alpha waves (8-12 Hz) - stronger during meditation/relaxed attention
+          const alphaBase = this.baseMeditation * 0.8 + 0.1;
+          eegData.alpha = Math.max(0, Math.min(1, 
+            alphaBase + Math.sin(time * 10) * 0.1 + noise()
+          ));
+          
+          // Beta waves (13-30 Hz) - stronger during active attention/concentration
+          const betaBase = this.baseAttention * 0.7 + 0.2;
+          eegData.beta = Math.max(0, Math.min(1, 
+            betaBase + Math.sin(time * 20) * 0.15 + noise()
+          ));
+          
+          // Theta waves (4-8 Hz) - stronger during deep meditation/creativity
+          const thetaBase = this.baseMeditation * 0.6 + 0.1;
+          eegData.theta = Math.max(0, Math.min(1, 
+            thetaBase + Math.sin(time * 6) * 0.12 + noise()
+          ));
+          
+          // Delta waves (0.5-4 Hz) - low during awake states
+          eegData.delta = Math.max(0, Math.min(1, 
+            0.1 + Math.sin(time * 2) * 0.05 + noise()
+          ));
+          
+          // Gamma waves (30+ Hz) - bursts during high-level cognition
+          eegData.gamma = Math.max(0, Math.min(1, 
+            0.2 + Math.sin(time * 40) * this.baseAttention * 0.3 + noise()
+          ));
+          
+          // Generate realistic raw EEG samples for each channel
+          const channels = ['TP9', 'AF7', 'AF8', 'TP10'];
+          for (let i = 0; i < 4; i++) {
+            const channel = channels[i];
+            
+            // Create realistic EEG signal combining multiple frequency components
+            let sample = 0;
+            
+            // Alpha component (8-12 Hz)
+            sample += Math.sin(time * 2 * Math.PI * (9 + i * 0.5)) * eegData.alpha * 30;
+            
+            // Beta component (15-25 Hz)  
+            sample += Math.sin(time * 2 * Math.PI * (18 + i * 1.5)) * eegData.beta * 20;
+            
+            // Theta component (4-8 Hz)
+            sample += Math.sin(time * 2 * Math.PI * (6 + i * 0.3)) * eegData.theta * 25;
+            
+            // Delta component (1-4 Hz)
+            sample += Math.sin(time * 2 * Math.PI * (2 + i * 0.2)) * eegData.delta * 40;
+            
+            // Gamma component (30-40 Hz)
+            sample += Math.sin(time * 2 * Math.PI * (35 + i * 2)) * eegData.gamma * 10;
+            
+            // Add some 1/f noise and artifacts
+            sample += noise() * 15; // High-frequency noise
+            sample += Math.sin(time * 2 * Math.PI * 0.1) * 5; // Slow drift
+            
+            // Occasional "blink" artifacts (more prominent in frontal channels)
+            if (i >= 1 && i <= 2 && Math.random() < 0.001) { // AF7, AF8
+              sample += (Math.random() - 0.5) * 200;
+            }
+            
+            // Store current sample for compatibility
+            eegData.raw[i] = sample;
+            
+            // Add to history buffer
+            if (!eegData.rawHistory[channel]) {
+              eegData.rawHistory[channel] = [];
+            }
+            eegData.rawHistory[channel].push(sample);
+            
+            // Maintain buffer size
+            if (eegData.rawHistory[channel].length > eegData.historyLength) {
+              eegData.rawHistory[channel] = eegData.rawHistory[channel].slice(-eegData.historyLength);
+            }
+          }
+          
+          // Calculate derived metrics
+          eegData.attention = Math.max(0, Math.min(1, 
+            this.baseAttention + Math.sin(time * 0.5) * 0.1 + noise() * 0.05
+          ));
+          
+          eegData.meditation = Math.max(0, Math.min(1, 
+            this.baseMeditation + Math.cos(time * 0.3) * 0.1 + noise() * 0.05
+          ));
+          
+          eegData.connected = true;
+          this.updateDataDisplay();
+        }
+
+        updateDataDisplay() {
+          document.getElementById('alpha-value').textContent = eegData.alpha.toFixed(2);
+          document.getElementById('beta-value').textContent = eegData.beta.toFixed(2);
+          document.getElementById('theta-value').textContent = eegData.theta.toFixed(2);
+          document.getElementById('delta-value').textContent = eegData.delta.toFixed(2);
+        }
+      }
+
+      // Muse connection and data processing
+      class MuseEEGManager {
+        constructor() {
+          this.muse = null;
+          this.isConnected = false;
+          this.dataBuffer = [];
+          this.samplingRate = 256;
+          this.bufferSize = 256; // 1 second of data
+        }
+
+        async connect() {
+          try {
+            this.muse = new window.Muse.MuseClient();
+            await this.muse.connect();
+            
+            this.isConnected = true;
+            this.updateStatus('Connected', 'connected');
+            
+            // Subscribe to EEG data
+            this.muse.eegReadings.subscribe(reading => {
+              this.processEEGReading(reading);
+            });
+
+            // Subscribe to accelerometer for movement detection
+            this.muse.accelerometerData.subscribe(accel => {
+              // Could add movement-based interactions here
+            });
+
+            console.log('Muse connected successfully');
+            
+          } catch (error) {
+            console.error('Failed to connect to Muse:', error);
+            this.updateStatus('Connection failed', 'error');
+            throw error;
+          }
+        }
+
+        processEEGReading(reading) {
+          // Add to buffer for frequency analysis
+          this.dataBuffer.push({
+            electrode: reading.electrode,
+            samples: reading.samples,
+            timestamp: Date.now()
+          });
+
+          // Keep buffer size manageable
+          if (this.dataBuffer.length > this.bufferSize * 4) { // 4 electrodes
+            this.dataBuffer = this.dataBuffer.slice(-this.bufferSize * 4);
+          }
+
+          // Update raw values for immediate access (compatibility)
+          const electrodeIndex = ['TP9', 'AF7', 'AF8', 'TP10'].indexOf(reading.electrode);
+          if (electrodeIndex !== -1 && reading.samples.length > 0) {
+            eegData.raw[electrodeIndex] = reading.samples[reading.samples.length - 1];
+          }
+
+          // NEW: Add ALL samples to raw history for time-series access
+          const electrode = reading.electrode;
+          if (!eegData.rawHistory[electrode]) {
+            eegData.rawHistory[electrode] = [];
+          }
+          
+          // Add all samples from this reading (usually 12 samples per packet)
+          eegData.rawHistory[electrode].push(...reading.samples);
+          
+          // Maintain buffer size (keep last N samples)
+          if (eegData.rawHistory[electrode].length > eegData.historyLength) {
+            eegData.rawHistory[electrode] = eegData.rawHistory[electrode].slice(-eegData.historyLength);
+          }
+
+          // Calculate frequency bands every few samples
+          if (this.dataBuffer.length % 32 === 0) {
+            this.calculateFrequencyBands();
+          }
+        }
+
+        calculateFrequencyBands() {
+          // Simple frequency band calculation
+          // In a real implementation, you'd use FFT
+          const recentData = this.dataBuffer.slice(-64); // Last 64 samples per electrode
+          
+          if (recentData.length < 64) return;
+
+          // Group by electrode
+          const electrodeData = { TP9: [], AF7: [], AF8: [], TP10: [] };
+          recentData.forEach(reading => {
+            if (electrodeData[reading.electrode]) {
+              electrodeData[reading.electrode].push(...reading.samples);
+            }
+          });
+
+          // Calculate power in different bands (simplified)
+          Object.keys(electrodeData).forEach(electrode => {
+            const samples = electrodeData[electrode].slice(-64);
+            if (samples.length >= 64) {
+              // Simplified band power calculation
+              const variance = this.calculateVariance(samples);
+              const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
+              
+              // Update frequency bands (this is a simplified approach)
+              eegData.alpha = Math.max(0, Math.min(1, variance * 0.1));
+              eegData.beta = Math.max(0, Math.min(1, Math.abs(mean) * 0.05));
+              eegData.theta = Math.max(0, Math.min(1, variance * 0.05));
+              eegData.delta = Math.max(0, Math.min(1, variance * 0.02));
+              
+              // Calculate attention and meditation (simplified)
+              eegData.attention = Math.max(0, Math.min(1, (eegData.beta + eegData.gamma) / 2));
+              eegData.meditation = Math.max(0, Math.min(1, (eegData.alpha + eegData.theta) / 2));
+            }
+          });
+
+          eegData.connected = this.isConnected;
+          this.updateDataDisplay();
+        }
+
+        calculateVariance(samples) {
+          const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
+          const variance = samples.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / samples.length;
+          return Math.sqrt(variance);
+        }
+
+        updateStatus(text, status) {
+          document.getElementById('status-text').textContent = text;
+          const indicator = document.getElementById('muse-status');
+          indicator.className = `status-indicator ${status}`;
+        }
+
+        updateDataDisplay() {
+          document.getElementById('alpha-value').textContent = eegData.alpha.toFixed(2);
+          document.getElementById('beta-value').textContent = eegData.beta.toFixed(2);
+          document.getElementById('theta-value').textContent = eegData.theta.toFixed(2);
+          document.getElementById('delta-value').textContent = eegData.delta.toFixed(2);
+        }
+
+        disconnect() {
+          if (this.muse) {
+            this.muse.disconnect();
+            this.isConnected = false;
+            eegData.connected = false;
+            this.updateStatus('Disconnected', '');
+          }
+        }
+      }
+
+      // Monaco Editor setup and management
+      class CodeEditor {
+        constructor() {
+          this.editor = null;
+          this.currentSketch = null;
+          this.autoRun = true;
+          this.setupEditor();
+        }
+
+        setupEditor() {
+          require.config({ 
+            paths: { 
+              'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' 
+            } 
+          });
+
+          require(['vs/editor/editor.main'], () => {
+            this.editor = monaco.editor.create(document.getElementById('code-editor'), {
+              value: this.getDefaultCode(),
+              language: 'javascript',
+              theme: 'vs-dark',
+              fontSize: 12,
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+              automaticLayout: true,
+              wordWrap: 'on'
+            });
+
+            // Auto-run on change with debounce
+            let timeout;
+            this.editor.onDidChangeModelContent(() => {
+              clearTimeout(timeout);
+              timeout = setTimeout(() => {
+                if (this.autoRun) {
+                  this.runCode();
+                }
+              }, 1000);
+            });
+
+            // Initial run
+            setTimeout(() => {
+              console.log('Auto-running initial code...');
+              this.runCode();
+            }, 500);
+          });
+        }
+
+        getDefaultCode() {
+          return `// 🧠 BrainImation: Live EEG + P5.js
+// Access real-time brain data through the 'eegData' object:
+// eegData.alpha, eegData.beta, eegData.theta, eegData.delta
+// eegData.attention, eegData.meditation, eegData.raw[]
+
+let particles = [];
+let time = 0;
+
+function setup() {
+  // Canvas is already created by the system
+  // Just set up the drawing mode and initialize
+  colorMode(HSB, 360, 100, 100, 1);
+  
+  // Initialize particles
+  for (let i = 0; i < 50; i++) {
+    particles.push({
+      x: random(width),
+      y: random(height),
+      vx: random(-1, 1),
+      vy: random(-1, 1),
+      hue: random(360)
+    });
+  }
+}
+
+function draw() {
+  // Background responds to meditation
+  let bgAlpha = map(eegData.meditation, 0, 1, 0.05, 0.2);
+  background(220, 30, 10, bgAlpha);
+  
+  time += 0.01;
+  
+  // Draw neural network
+  stroke(180, 80, 90, 0.3);
+  strokeWeight(1);
+  
+  for (let i = 0; i < particles.length; i++) {
+    let p = particles[i];
+    
+    // Movement influenced by alpha waves
+    let alphaForce = eegData.alpha * 2;
+    p.vx += random(-alphaForce, alphaForce) * 0.01;
+    p.vy += random(-alphaForce, alphaForce) * 0.01;
+    
+    // Damping
+    p.vx *= 0.99;
+    p.vy *= 0.99;
+    
+    // Update position
+    p.x += p.vx;
+    p.y += p.vy;
+    
+    // Wrap around edges
+    if (p.x < 0) p.x = width;
+    if (p.x > width) p.x = 0;
+    if (p.y < 0) p.y = height;
+    if (p.y > height) p.y = 0;
+    
+    // Color influenced by attention
+    let hue = (p.hue + eegData.attention * 50 + time * 10) % 360;
+    let brightness = map(eegData.beta, 0, 1, 30, 90);
+    
+    fill(hue, 70, brightness, 0.8);
+    noStroke();
+    
+    // Size influenced by theta waves
+    let size = 5 + eegData.theta * 15;
+    ellipse(p.x, p.y, size);
+    
+    // Connect nearby particles
+    for (let j = i + 1; j < particles.length; j++) {
+      let p2 = particles[j];
+      let d = dist(p.x, p.y, p2.x, p2.y);
+      
+      if (d < 80) {
+        let alpha = map(d, 0, 80, 0.5, 0) * eegData.alpha;
+        stroke(hue, 50, 70, alpha);
+        strokeWeight(1);
+        line(p.x, p.y, p2.x, p2.y);
+      }
+    }
+  }
+  
+  // Display connection status
+  if (!eegData.connected) {
+    fill(0, 0, 100, 0.8);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("Connect your Muse headset or use 'Simulate Data'", width/2, height/2 - 10);
+    textSize(16);
+    fill(0, 0, 70, 0.6);
+    text("to see brain-controlled animation", width/2, height/2 + 20);
+  }
+}`;
+        }
+
+        runCode() {
+          console.log('🚀 Running code...');
+          try {
+            // Clear any existing sketch
+            if (this.currentSketch) {
+              console.log('Removing existing sketch');
+              this.currentSketch.remove();
+            }
+
+            // Clear the canvas container
+            const container = document.getElementById('canvas-container');
+            container.innerHTML = '';
+            console.log('Canvas container cleared');
+
+            // Hide error console
+            document.getElementById('error-console').style.display = 'none';
+
+            // Get code from editor
+            const code = this.editor.getValue();
+            console.log('Code retrieved from editor:', code.length, 'characters');
+
+            // Get container dimensions
+            const containerRect = container.getBoundingClientRect();
+            const containerWidth = containerRect.width || 800;
+            const containerHeight = containerRect.height || 600;
+            console.log('Container dimensions:', containerWidth, 'x', containerHeight);
+
+            // Execute the sketch with proper p5.js instance mode
+            console.log('Creating p5 sketch...');
+            this.currentSketch = new p5((p) => {
+              // Store original p5 functions
+              let userSetup, userDraw, userWindowResized;
+              
+              // Override console.error to catch p5 errors
+              const originalError = console.error;
+              console.error = function(...args) {
+                originalError.apply(console, args);
+                showError(args.join(' '));
+              };
+
+              // Make p5 functions available globally within the sketch context
+              const bindP5Functions = () => {
+                // Core p5 functions
+                window.createCanvas = p.createCanvas.bind(p);
+                window.background = p.background.bind(p);
+                window.fill = p.fill.bind(p);
+                window.stroke = p.stroke.bind(p);
+                window.noStroke = p.noStroke.bind(p);
+                window.noFill = p.noFill.bind(p);
+                window.strokeWeight = p.strokeWeight.bind(p);
+                window.ellipse = p.ellipse.bind(p);
+                window.rect = p.rect.bind(p);
+                window.line = p.line.bind(p);
+                window.point = p.point.bind(p);
+                window.text = p.text.bind(p);
+                window.textAlign = p.textAlign.bind(p);
+                window.textSize = p.textSize.bind(p);
+                window.beginShape = p.beginShape.bind(p);
+                window.endShape = p.endShape.bind(p);
+                window.vertex = p.vertex.bind(p);
+                
+                // Math and utility
+                window.map = p.map.bind(p);
+                window.random = p.random.bind(p);
+                window.noise = p.noise.bind(p);
+                window.sin = p.sin.bind(p);
+                window.cos = p.cos.bind(p);
+                window.tan = p.tan.bind(p);
+                window.dist = p.dist.bind(p);
+                window.abs = p.abs.bind(p);
+                window.max = p.max.bind(p);
+                window.min = p.min.bind(p);
+                window.floor = p.floor.bind(p);
+                window.ceil = p.ceil.bind(p);
+                window.round = p.round.bind(p);
+                
+                // Color and drawing modes
+                window.colorMode = p.colorMode.bind(p);
+                window.HSB = p.HSB;
+                window.RGB = p.RGB;
+                window.translate = p.translate.bind(p);
+                window.rotate = p.rotate.bind(p);
+                window.scale = p.scale.bind(p);
+                window.push = p.push.bind(p);
+                window.pop = p.pop.bind(p);
+                
+                // Constants
+                window.TWO_PI = p.TWO_PI;
+                window.PI = p.PI;
+                window.HALF_PI = p.HALF_PI;
+                window.CENTER = p.CENTER;
+                window.LEFT = p.LEFT;
+                window.RIGHT = p.RIGHT;
+                window.TOP = p.TOP;
+                window.BOTTOM = p.BOTTOM;
+                
+                // Frame and time
+                window.frameCount = p.frameCount;
+                window.millis = p.millis.bind(p);
+                
+                // Dimensions (will be updated after canvas creation)
+                window.width = containerWidth;
+                window.height = containerHeight;
+                window.windowWidth = containerWidth;
+                window.windowHeight = containerHeight;
+              };
+
+              // Bind p5 functions
+              bindP5Functions();
+
+              // Execute user code to get their setup/draw functions
+              try {
+                console.log('Executing user code...');
+                console.log('Code to execute:', code.substring(0, 200) + '...');
+                
+                // Clear any existing user functions
+                window.setup = undefined;
+                window.draw = undefined;
+                window.windowResized = undefined;
+                
+                // Use eval with 'this' bound to window to ensure global scope
+                eval.call(window, code);
+                
+                console.log('User code executed successfully');
+                console.log('window.setup type:', typeof window.setup);
+                console.log('window.draw type:', typeof window.draw);
+                
+                // Capture user-defined functions
+                if (typeof window.setup === 'function') {
+                  userSetup = window.setup;
+                  console.log('✅ User setup function captured');
+                } else {
+                  console.log('❌ No setup function found in user code');
+                }
+                
+                if (typeof window.draw === 'function') {
+                  userDraw = window.draw;
+                  console.log('✅ User draw function captured');
+                } else {
+                  console.log('❌ No draw function found in user code');
+                }
+                
+                if (typeof window.windowResized === 'function') {
+                  userWindowResized = window.windowResized;
+                  console.log('✅ User windowResized function captured');
+                }
+              } catch (error) {
+                console.error('Error in user code:', error);
+                showError('Error in user code: ' + error.message);
+                return;
+              }
+
+              // p5.js setup function
+              p.setup = function() {
+                console.log('p5.js setup() called');
+                // Create canvas and attach to container
+                const canvas = p.createCanvas(containerWidth, containerHeight);
+                canvas.parent('canvas-container');
+                console.log('Canvas created:', containerWidth, 'x', containerHeight);
+                
+                // Update global dimensions
+                window.width = p.width;
+                window.height = p.height;
+                window.windowWidth = containerWidth;
+                window.windowHeight = containerHeight;
+                
+                // Call user setup if it exists
+                if (userSetup) {
+                  console.log('Calling user setup function');
+                  userSetup();
+                } else {
+                  console.log('No user setup function found');
+                }
+              };
+
+              // p5.js draw function
+              p.draw = function() {
+                // Update frame count and dimensions
+                window.frameCount = p.frameCount;
+                window.width = p.width;
+                window.height = p.height;
+                
+                // Call user draw if it exists
+                if (userDraw) {
+                  userDraw();
+                } else {
+                  // Show a test pattern if no user draw function
+                  p.background(50);
+                  p.fill(255);
+                  p.textAlign(p.CENTER, p.CENTER);
+                  p.textSize(20);
+                  p.text('Canvas is working! Add your draw() function.', p.width/2, p.height/2);
+                }
+              };
+
+              // Handle window resize
+              p.windowResized = function() {
+                const newRect = container.getBoundingClientRect();
+                const newWidth = newRect.width || 800;
+                const newHeight = newRect.height || 600;
+                
+                p.resizeCanvas(newWidth, newHeight);
+                window.width = p.width;
+                window.height = p.height;
+                window.windowWidth = newWidth;
+                window.windowHeight = newHeight;
+                
+                if (userWindowResized) {
+                  userWindowResized();
+                }
+              };
+
+            });
+
+          } catch (error) {
+            console.error('Error creating p5 sketch:', error);
+            this.showError('Error creating sketch: ' + error.message);
+          }
+        }
+
+        showError(message) {
+          const errorConsole = document.getElementById('error-console');
+          errorConsole.textContent = message;
+          errorConsole.style.display = 'block';
+        }
+
+        loadExample(exampleName) {
+          const examples = {
+            basic: `// Basic animated background
+function setup() {
+  console.log('User setup() function called!');
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  let hue = map(eegData.alpha, 0, 1, 180, 300);
+  background(hue, 50, 20);
+  
+  fill(hue + 60, 80, 90);
+  let size = 50 + eegData.attention * 100;
+  ellipse(width/2, height/2, size);
+}`,
+
+            alpha: `// Alpha wave visualization
+let waves = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(220, 30, 10, 0.1);
+  
+  // Add new wave based on alpha strength
+  if (frameCount % 10 === 0) {
+    waves.push({
+      x: width/2,
+      y: height/2,
+      r: 0,
+      alpha: eegData.alpha
+    });
+  }
+  
+  // Draw and update waves
+  for (let i = waves.length - 1; i >= 0; i--) {
+    let w = waves[i];
+    
+    noFill();
+    stroke(200, 70, 90, w.alpha);
+    strokeWeight(2);
+    ellipse(w.x, w.y, w.r * 2);
+    
+    w.r += w.alpha * 5 + 1;
+    w.alpha *= 0.98;
+    
+    if (w.alpha < 0.01) {
+      waves.splice(i, 1);
+    }
+  }
+}`,
+
+            attention: `// Attention meter
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  // Attention bar
+  let barWidth = width * 0.8;
+  let barHeight = 40;
+  let x = (width - barWidth) / 2;
+  let y = height / 2;
+  
+  // Background bar
+  fill(0, 0, 20);
+  rect(x, y, barWidth, barHeight);
+  
+  // Attention level
+  let attentionWidth = barWidth * eegData.attention;
+  let hue = map(eegData.attention, 0, 1, 0, 120);
+  fill(hue, 80, 90);
+  rect(x, y, attentionWidth, barHeight);
+  
+  // Text
+  fill(0, 0, 100);
+  textAlign(CENTER, CENTER);
+  textSize(20);
+  text("Attention: " + (eegData.attention * 100).toFixed(1) + "%", width/2, y - 60);
+}`,
+
+            particles: `// Brain particle system
+let particles = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  for (let i = 0; i < 100; i++) {
+    particles.push({
+      x: random(width),
+      y: random(height),
+      vx: random(-2, 2),
+      vy: random(-2, 2),
+      life: 1.0
+    });
+  }
+}
+
+function draw() {
+  background(0, 0, 5, 0.1);
+  
+  for (let p of particles) {
+    // Movement influenced by brain waves
+    p.vx += (random(-1, 1) * eegData.alpha * 0.1);
+    p.vy += (random(-1, 1) * eegData.beta * 0.1);
+    
+    p.x += p.vx;
+    p.y += p.vy;
+    
+    // Wrap around
+    if (p.x < 0) p.x = width;
+    if (p.x > width) p.x = 0;
+    if (p.y < 0) p.y = height;
+    if (p.y > height) p.y = 0;
+    
+    // Draw particle
+    let hue = map(eegData.theta, 0, 1, 180, 300);
+    fill(hue, 70, 90, p.life);
+    noStroke();
+    ellipse(p.x, p.y, 5 + eegData.gamma * 10);
+    
+    p.life *= 0.995;
+    if (p.life < 0.1) p.life = 1.0;
+  }
+}`,
+
+            mandala: `// Neural mandala
+let angle = 0;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 0, 0.05);
+  
+  translate(width/2, height/2);
+  
+  let layers = 5;
+  for (let layer = 0; layer < layers; layer++) {
+    let radius = 50 + layer * 40;
+    let points = 6 + layer * 2;
+    
+    for (let i = 0; i < points; i++) {
+      let a = angle + (TWO_PI / points) * i;
+      let x = cos(a) * radius;
+      let y = sin(a) * radius;
+      
+      let hue = (angle * 57.3 + layer * 60) % 360;
+      let brightness = 50 + eegData.attention * 40;
+      let size = 5 + eegData.alpha * layer * 2;
+      
+      fill(hue, 80, brightness, 0.7);
+      noStroke();
+      ellipse(x, y, size);
+    }
+  }
+  
+  angle += eegData.meditation * 0.02 + 0.005;
+}`,
+
+            waves: `// EEG wave visualization
+let waveHistory = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  // Add current values to history
+  waveHistory.push({
+    alpha: eegData.alpha,
+    beta: eegData.beta,
+    theta: eegData.theta,
+    delta: eegData.delta
+  });
+  
+  // Keep history manageable
+  if (waveHistory.length > width / 2) {
+    waveHistory.shift();
+  }
+  
+  // Draw waves
+  let waves = ['alpha', 'beta', 'theta', 'delta'];
+  let colors = [300, 180, 60, 0];
+  
+  for (let w = 0; w < waves.length; w++) {
+    let wave = waves[w];
+    let hue = colors[w];
+    
+    stroke(hue, 70, 90);
+    strokeWeight(2);
+    noFill();
+    
+    beginShape();
+    for (let i = 0; i < waveHistory.length; i++) {
+      let x = map(i, 0, waveHistory.length - 1, 0, width);
+      let y = height/2 + (w - 1.5) * 80 + waveHistory[i][wave] * -50;
+      vertex(x, y);
+    }
+    endShape();
+    
+    // Label
+    fill(hue, 70, 90);
+    noStroke();
+    textAlign(LEFT, CENTER);
+    text(wave.toUpperCase(), 10, height/2 + (w - 1.5) * 80);
+  }
+}`,
+
+            eegtrace: `// Raw EEG trace visualization
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  // Get raw EEG data from TP9 electrode (left temporal)
+  let tp9Data = eegData.getRawChannel('TP9', 300);
+  
+  if (tp9Data.length > 10) {
+    // Draw EEG trace
+    stroke(180, 80, 90);
+    strokeWeight(2);
+    noFill();
+    
+    beginShape();
+    for (let i = 0; i < tp9Data.length; i++) {
+      let x = map(i, 0, tp9Data.length - 1, 50, width - 50);
+      let y = map(tp9Data[i], -100, 100, height - 50, 50);
+      vertex(x, y);
+    }
+    endShape();
+    
+    // Add grid lines
+    stroke(0, 0, 30);
+    strokeWeight(1);
+    
+    // Horizontal lines (voltage levels)
+    for (let v = -100; v <= 100; v += 50) {
+      let y = map(v, -100, 100, height - 50, 50);
+      line(50, y, width - 50, y);
+    }
+    
+    // Vertical time markers
+    for (let t = 0; t < tp9Data.length; t += 50) {
+      let x = map(t, 0, tp9Data.length - 1, 50, width - 50);
+      line(x, 50, x, height - 50);
+    }
+    
+    // Labels
+    fill(0, 0, 100);
+    noStroke();
+    textAlign(LEFT, TOP);
+    textSize(16);
+    text("TP9 Raw EEG Trace", 50, 20);
+    
+    textAlign(RIGHT, CENTER);
+    textSize(12);
+    text("100μV", 45, map(100, -100, 100, height - 50, 50));
+    text("0μV", 45, map(0, -100, 100, height - 50, 50));
+    text("-100μV", 45, map(-100, -100, 100, height - 50, 50));
+  } else {
+    // No data message
+    fill(0, 0, 70);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("Waiting for EEG data...", width/2, height/2);
+  }
+}`,
+
+            multichannel: `// Multi-channel EEG visualization
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  let channels = eegData.getChannelNames();
+  let colors = [300, 180, 60, 120]; // Purple, Cyan, Yellow, Green
+  
+  // Draw each channel
+  for (let c = 0; c < channels.length; c++) {
+    let channelData = eegData.getRawChannel(channels[c], 200);
+    
+    if (channelData.length > 10) {
+      let yOffset = (c + 1) * height / (channels.length + 1);
+      
+      // Channel trace
+      stroke(colors[c], 80, 90);
+      strokeWeight(1.5);
+      noFill();
+      
+      beginShape();
+      for (let i = 0; i < channelData.length; i++) {
+        let x = map(i, 0, channelData.length - 1, 80, width - 20);
+        let y = yOffset + map(channelData[i], -100, 100, -40, 40);
+        vertex(x, y);
+      }
+      endShape();
+      
+      // Channel label
+      fill(colors[c], 80, 90);
+      noStroke();
+      textAlign(LEFT, CENTER);
+      textSize(14);
+      text(channels[c], 10, yOffset);
+      
+      // Zero line
+      stroke(0, 0, 20);
+      strokeWeight(1);
+      line(80, yOffset, width - 20, yOffset);
+    }
+  }
+  
+  // Title
+  fill(0, 0, 100);
+  noStroke();
+  textAlign(CENTER, TOP);
+  textSize(16);
+  text("Multi-Channel EEG (All 4 Electrodes)", width/2, 10);
+  
+  // Real-time indicator
+  if (eegData.connected) {
+    fill(120, 80, 90);
+    ellipse(width - 30, 30, 10);
+    textAlign(RIGHT, CENTER);
+    textSize(12);
+    text("LIVE", width - 40, 30);
+  }
+}`,
+
+            epochs: `// EEG epoch visualization (like ERP analysis)
+let epochData = [];
+let epochLength = 128; // ~0.5 seconds at 256Hz
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 8);
+  
+  // Collect epochs when attention changes significantly
+  if (frameCount % 60 === 0) { // Every second
+    let recentEpoch = eegData.getRecentEpoch(epochLength);
+    if (recentEpoch.length >= epochLength) {
+      epochData.push({
+        data: recentEpoch,
+        attention: eegData.attention,
+        timestamp: millis()
+      });
+      
+      // Keep last 20 epochs
+      if (epochData.length > 20) {
+        epochData.shift();
+      }
+    }
+  }
+  
+  if (epochData.length > 0) {
+    // Draw averaged epoch
+    let avgEpoch = [];
+    for (let i = 0; i < epochLength; i++) {
+      let sum = [0, 0, 0, 0]; // 4 channels
+      let count = 0;
+      
+      for (let e = 0; e < epochData.length; e++) {
+        if (epochData[e].data[i]) {
+          for (let ch = 0; ch < 4; ch++) {
+            sum[ch] += epochData[e].data[i][ch] || 0;
+          }
+          count++;
+        }
+      }
+      
+      if (count > 0) {
+        avgEpoch.push([
+          sum[0] / count,
+          sum[1] / count,
+          sum[2] / count,
+          sum[3] / count
+        ]);
+      }
+    }
+    
+    // Draw the averaged epoch for each channel
+    let channelNames = ['TP9', 'AF7', 'AF8', 'TP10'];
+    let colors = [300, 180, 60, 120];
+    
+    for (let ch = 0; ch < 4; ch++) {
+      stroke(colors[ch], 80, 90);
+      strokeWeight(2);
+      noFill();
+      
+      beginShape();
+      for (let i = 0; i < avgEpoch.length; i++) {
+        let x = map(i, 0, avgEpoch.length - 1, 60, width - 60);
+        let y = height/2 + (ch - 1.5) * 60 + map(avgEpoch[i][ch], -50, 50, 30, -30);
+        vertex(x, y);
+      }
+      endShape();
+      
+      // Channel label
+      fill(colors[ch], 80, 90);
+      noStroke();
+      textAlign(LEFT, CENTER);
+      textSize(12);
+      text(channelNames[ch], 10, height/2 + (ch - 1.5) * 60);
+    }
+    
+    // Zero line
+    stroke(0, 0, 30);
+    strokeWeight(1);
+    line(60, height/2, width - 60, height/2);
+    
+    // Time markers
+    textAlign(CENTER, BOTTOM);
+    textSize(10);
+    fill(0, 0, 60);
+    text("0ms", 60, height - 10);
+    text("250ms", width/2, height - 10);
+    text("500ms", width - 60, height - 10);
+    
+    // Title and info
+    fill(0, 0, 100);
+    textAlign(CENTER, TOP);
+    textSize(16);
+    text("Averaged Epochs (n=" + epochData.length + ")", width/2, 10);
+    
+    textSize(12);
+    text("Grand average across all channels", width/2, 30);
+  } else {
+    // Waiting message
+    fill(0, 0, 70);
+    textAlign(CENTER, CENTER);
+    textSize(18);
+    text("Collecting epochs...", width/2, height/2);
+    textSize(14);
+    text("Epochs will appear as data accumulates", width/2, height/2 + 30);
+  }
+}`
+          };
+
+          if (examples[exampleName]) {
+            this.editor.setValue(examples[exampleName]);
+            this.runCode();
+          }
+        }
+      }
+
+      // Application initialization
+      let museManager;
+      let eegSimulator;
+      let codeEditor;
+      let currentDataSource = null; // 'muse' or 'simulator'
+
+      function initApp() {
+        museManager = new MuseEEGManager();
+        eegSimulator = new EEGSimulator();
+        codeEditor = new CodeEditor();
+
+        // Event listeners
+        document.getElementById('connect-btn').addEventListener('click', async () => {
+          if (currentDataSource === 'simulator') {
+            stopSimulation();
+          }
+          
+          const btn = document.getElementById('connect-btn');
+          btn.disabled = true;
+          btn.textContent = 'Connecting...';
+          
+          try {
+            await museManager.connect();
+            currentDataSource = 'muse';
+            btn.textContent = 'Disconnect';
+            document.getElementById('simulate-btn').disabled = true;
+            museManager.updateStatus('Connected to Muse', 'connected');
+            
+            btn.onclick = () => {
+              museManager.disconnect();
+              currentDataSource = null;
+              btn.textContent = 'Connect Muse';
+              btn.disabled = false;
+              document.getElementById('simulate-btn').disabled = false;
+              btn.onclick = null;
+            };
+          } catch (error) {
+            btn.textContent = 'Connect Muse';
+            btn.disabled = false;
+            currentDataSource = null;
+          }
+        });
+
+        document.getElementById('simulate-btn').addEventListener('click', () => {
+          if (currentDataSource === 'muse') {
+            museManager.disconnect();
+          }
+          
+          if (currentDataSource === 'simulator') {
+            stopSimulation();
+          } else {
+            startSimulation();
+          }
+        });
+
+        document.getElementById('run-btn').addEventListener('click', () => {
+          codeEditor.runCode();
+        });
+
+        document.getElementById('fullscreen-btn').addEventListener('click', () => {
+          const overlay = document.getElementById('fullscreen-overlay');
+          const canvas = document.querySelector('#canvas-container canvas');
+          
+          if (overlay.style.display === 'none' || !overlay.style.display) {
+            overlay.style.display = 'block';
+            if (canvas) {
+              overlay.appendChild(canvas.cloneNode(true));
+            }
+          } else {
+            overlay.style.display = 'none';
+            overlay.innerHTML = '';
+          }
+        });
+
+        // Example buttons
+        document.querySelectorAll('.example-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            codeEditor.loadExample(btn.dataset.example);
+          });
+        });
+
+        // Simulation control sliders
+        const attentionSlider = document.getElementById('sim-attention');
+        const meditationSlider = document.getElementById('sim-meditation');
+        const attentionVal = document.getElementById('sim-attention-val');
+        const meditationVal = document.getElementById('sim-meditation-val');
+        
+        attentionSlider.addEventListener('input', (e) => {
+          const value = e.target.value;
+          attentionVal.textContent = value;
+          if (eegSimulator && eegSimulator.isRunning) {
+            eegSimulator.setAttention(value);
+          }
+        });
+        
+        meditationSlider.addEventListener('input', (e) => {
+          const value = e.target.value;
+          meditationVal.textContent = value;
+          if (eegSimulator && eegSimulator.isRunning) {
+            eegSimulator.setMeditation(value);
+          }
+        });
+
+        // Fullscreen escape
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            document.getElementById('fullscreen-overlay').style.display = 'none';
+          }
+        });
+
+        console.log('🧠 BrainImation initialized successfully!');
+      }
+
+      // Simulation control functions
+      function startSimulation() {
+        eegSimulator.start();
+        currentDataSource = 'simulator';
+        
+        document.getElementById('simulate-btn').textContent = 'Stop Simulation';
+        document.getElementById('connect-btn').disabled = true;
+        document.getElementById('sim-controls').style.display = 'block';
+        document.getElementById('status-text').textContent = 'Simulating EEG Data';
+        document.getElementById('muse-status').className = 'status-indicator connected';
+        
+        // Initialize with current slider values
+        eegSimulator.setAttention(document.getElementById('sim-attention').value);
+        eegSimulator.setMeditation(document.getElementById('sim-meditation').value);
+      }
+
+      function stopSimulation() {
+        eegSimulator.stop();
+        currentDataSource = null;
+        
+        document.getElementById('simulate-btn').textContent = 'Simulate Data';
+        document.getElementById('connect-btn').disabled = false;
+        document.getElementById('sim-controls').style.display = 'none';
+        document.getElementById('status-text').textContent = 'Disconnected';
+        document.getElementById('muse-status').className = 'status-indicator';
+        
+        // Reset eegData
+        Object.keys(eegData).forEach(key => {
+          if (typeof eegData[key] === 'number') {
+            eegData[key] = 0;
+          } else if (Array.isArray(eegData[key])) {
+            eegData[key] = [0, 0, 0, 0];
+          } else if (key === 'connected') {
+            eegData[key] = false;
+          } else if (key === 'rawHistory') {
+            eegData[key] = { TP9: [], AF7: [], AF8: [], TP10: [] };
+          }
+        });
+        
+        // Update display
+        document.getElementById('alpha-value').textContent = '0.0';
+        document.getElementById('beta-value').textContent = '0.0';
+        document.getElementById('theta-value').textContent = '0.0';
+        document.getElementById('delta-value').textContent = '0.0';
+      }
+
+      // Global error handler
+      window.showError = function(message) {
+        codeEditor?.showError(message);
+      };
+
+      // Start the application
+      window.addEventListener('load', initApp);
+    </script>
+  </body>
+</html>
