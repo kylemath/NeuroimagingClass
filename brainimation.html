@@ -14,8 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
     
-    <!-- Muse-js for Bluetooth EEG - using the exact method from p5.eegedu -->
-    <script src="https://unpkg.com/muse-js@latest"></script>
+    <!-- Muse-js for Bluetooth EEG - LOCAL BROWSER BUNDLE -->
+    <script src="./muse-browser.js"></script>
     
     <!-- Monaco Editor for live coding -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
@@ -48,12 +48,16 @@
 
       .main-container {
         display: grid;
-        grid-template-columns: 1fr 400px;
+        grid-template-columns: 1fr 1000px 500px;
         grid-template-rows: 60px 1fr auto;
         height: 100vh;
         gap: 2px;
         background: var(--bg-2);
         overflow: hidden;
+      }
+      
+      .main-container.hide-reference {
+        grid-template-columns: 1fr 200px;
       }
 
       .header {
@@ -141,6 +145,35 @@
         background: #000;
         position: relative;
         overflow: hidden;
+      }
+
+      /* Fullscreen mode styling */
+      .canvas-container:fullscreen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+      }
+
+      .canvas-container:-webkit-full-screen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+      }
+
+      .canvas-container:-moz-full-screen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+      }
+
+      .canvas-container:-ms-fullscreen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
       }
 
       .code-panel {
@@ -232,16 +265,6 @@
         border-color: var(--accent);
       }
 
-      .fullscreen-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: #000;
-        z-index: 1000;
-        display: none;
-      }
 
       .error-console {
         background: var(--bg);
@@ -252,6 +275,188 @@
         max-height: 100px;
         overflow-y: auto;
         display: none;
+      }
+
+      .reference-panel {
+        background: var(--bg-2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        grid-row: 2 / 4;
+      }
+      
+      .main-container.hide-reference .reference-panel {
+        display: none;
+      }
+      
+      .reference-tabs {
+        display: flex;
+        background: var(--bg);
+        border-bottom: 1px solid var(--muted);
+      }
+      
+      .reference-tab {
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 11px;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        flex: 1;
+        text-align: center;
+      }
+      
+      .reference-tab:hover {
+        background: var(--bg-2);
+      }
+      
+      .reference-tab.active {
+        border-bottom-color: var(--accent);
+        color: var(--accent);
+      }
+      
+      .reference-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+        font-size: 11px;
+      }
+      
+      .function-group {
+        margin-bottom: 16px;
+      }
+      
+      .function-group-title {
+        color: var(--accent-2);
+        font-weight: 600;
+        margin-bottom: 6px;
+        font-size: 12px;
+      }
+      
+      .function-item {
+        padding: 4px 8px;
+        margin: 2px 0;
+        background: var(--bg);
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        overflow: hidden;
+      }
+      
+      .function-item:hover {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+      
+      .function-name {
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        display: block;
+        padding: 2px 0;
+      }
+      
+      .function-tooltip {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .function-item:hover .function-tooltip {
+        max-height: 300px;
+        padding-top: 8px;
+        margin-top: 4px;
+        border-top: 1px solid rgba(255,255,255,0.3);
+      }
+      
+      .tooltip-signature {
+        font-family: 'Courier New', monospace;
+        color: var(--accent-2);
+        margin-bottom: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        word-wrap: break-word;
+      }
+      
+      .function-item:hover .tooltip-signature {
+        color: white;
+        opacity: 0.9;
+      }
+      
+      .tooltip-description {
+        color: var(--text);
+        line-height: 1.5;
+        font-size: 10px;
+        word-wrap: break-word;
+      }
+      
+      .function-item:hover .tooltip-description {
+        color: white;
+        opacity: 0.85;
+      }
+      
+      .ai-assistant {
+        background: var(--bg);
+        padding: 12px;
+        border-top: 2px solid var(--accent);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .ai-input {
+        background: var(--bg-2);
+        border: 1px solid var(--muted);
+        color: var(--text);
+        padding: 8px;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 11px;
+        resize: vertical;
+        min-height: 60px;
+      }
+      
+      .ai-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      
+      .ai-buttons {
+        display: flex;
+        gap: 6px;
+      }
+      
+      .ai-status {
+        font-size: 10px;
+        color: var(--muted);
+        font-style: italic;
+      }
+      
+      .toggle-reference {
+        background: var(--bg);
+        color: var(--accent-2);
+        border: 1px solid var(--accent-2);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s;
+      }
+      
+      .toggle-reference:hover {
+        background: var(--accent-2);
+        color: var(--bg);
+      }
+
+      @media (max-width: 1200px) {
+        .main-container {
+          grid-template-columns: 1fr 400px;
+        }
+        .reference-panel {
+          display: none;
+        }
       }
 
       @media (max-width: 768px) {
@@ -269,6 +474,9 @@
         }
         .eeg-data {
           max-height: 200px;
+        }
+        .reference-panel {
+          display: none;
         }
       }
     </style>
@@ -295,6 +503,7 @@
           <button class="btn btn-secondary" id="load-btn">📁 Load</button>
           <button class="btn btn-secondary" id="reload-btn" disabled>🔄 Reload</button>
           <button class="btn btn-secondary" id="fullscreen-btn">Fullscreen</button>
+          <button class="toggle-reference" id="toggle-reference-btn">📖 Reference</button>
           <input type="file" id="file-input" accept=".js" style="display: none;">
         </div>
       </div>
@@ -318,6 +527,30 @@
         </div>
         <div class="code-editor" id="code-editor"></div>
         <div class="error-console" id="error-console"></div>
+      </div>
+
+      <!-- Reference Panel -->
+      <div class="reference-panel" id="reference-panel">
+        <div class="reference-tabs">
+          <div class="reference-tab active" data-tab="p5js">P5.js</div>
+          <div class="reference-tab" data-tab="eeg">EEG Data</div>
+          <div class="reference-tab" data-tab="ai">AI Helper</div>
+        </div>
+        
+        <div class="reference-content" id="reference-content">
+          <!-- Content will be dynamically loaded -->
+        </div>
+        
+        <!-- AI Assistant at bottom -->
+        <div class="ai-assistant" id="ai-assistant" style="display: none;">
+          <div style="font-size: 12px; font-weight: 600; color: var(--accent);">🤖 AI Code Assistant</div>
+          <textarea class="ai-input" id="ai-prompt" placeholder="Describe what you want to change or add...&#10;e.g., 'Add a particle system that responds to alpha waves'&#10;'Change the colors to be more vibrant'&#10;'Make the animation slower'"></textarea>
+          <div class="ai-buttons">
+            <button class="btn btn-primary" id="ai-generate-btn" style="flex: 1;">Generate Code</button>
+            <button class="btn btn-secondary" id="ai-config-btn">⚙️</button>
+          </div>
+          <div class="ai-status" id="ai-status">Configure API key to use AI features</div>
+        </div>
       </div>
 
       <!-- EEG Data Display -->
@@ -364,10 +597,77 @@
       </div>
     </div>
 
-    <!-- Fullscreen overlay -->
-    <div class="fullscreen-overlay" id="fullscreen-overlay"></div>
-
     <script>
+      // ============================================
+      // BRAINIMATION - MAIN APPLICATION
+      // ============================================
+      console.log('🔍 BrainImation Loading...');
+      console.log('📍 muse-browser.js should be loaded by now');
+      console.log('window.muse:', window.muse);
+      console.log('window.muse.MuseClient:', window.muse?.MuseClient);
+      
+      // Function to check library loading
+      function checkMuseLibrary() {
+        console.log('\n🔍 === MUSE LIBRARY DEBUG CHECK ===');
+        console.log('1. window.muse:', window.muse);
+        console.log('2. typeof window.muse:', typeof window.muse);
+        
+        if (window.muse) {
+          console.log('3. window.muse.MuseClient:', window.muse.MuseClient);
+          console.log('4. typeof window.muse.MuseClient:', typeof window.muse.MuseClient);
+          console.log('5. All muse properties:', Object.keys(window.muse));
+          
+          if (window.muse.MuseClient) {
+            console.log('✅ muse-js library loaded successfully!');
+            try {
+              const testClient = new window.muse.MuseClient();
+              console.log('✅ Test client created:', testClient);
+              return true;
+            } catch (e) {
+              console.error('❌ Error creating test client:', e);
+              return false;
+            }
+          } else {
+            console.error('❌ window.muse exists but MuseClient is missing!');
+            return false;
+          }
+        } else {
+          console.error('❌ window.muse is undefined - library not loaded!');
+          console.log('💡 This could mean:');
+          console.log('   - CDN is blocked or unreachable');
+          console.log('   - Script tag failed to load');
+          console.log('   - Content Security Policy blocking');
+          console.log('   - CORS or network issue');
+          return false;
+        }
+      }
+      
+      // Check immediately
+      console.log('\n📊 Immediate check:');
+      checkMuseLibrary();
+      
+      // Check again after a delay (scripts might still be loading)
+      setTimeout(() => {
+        console.log('\n📊 Check after 500ms:');
+        const loaded = checkMuseLibrary();
+        
+        if (!loaded) {
+          console.error('\n⚠️ === MUSE LIBRARY STILL NOT LOADED ===');
+          console.log('🔧 TROUBLESHOOTING STEPS:');
+          console.log('1. Check browser console for network errors');
+          console.log('2. Try opening https://unpkg.com/muse-js@4.0.3/dist/muse.min.js in a new tab');
+          console.log('3. Check if you have internet connection');
+          console.log('4. Try opening developer tools > Network tab > refresh page');
+          console.log('5. Look for any Content Security Policy errors');
+        }
+      }, 500);
+      
+      // Check after page fully loaded
+      window.addEventListener('load', () => {
+        console.log('\n📊 Check after window.onload:');
+        checkMuseLibrary();
+      });
+      
       // Global variables for EEG data access in p5 sketches
       let eegData = {
         // Frequency bands (existing)
@@ -584,39 +884,109 @@
           this.dataBuffer = [];
           this.samplingRate = 256;
           this.bufferSize = 256; // 1 second of data
+          this.subscriptions = [];
         }
 
         async connect() {
           try {
-            // Use the exact approach from p5.eegedu
-            console.log('Attempting to connect to Muse...');
-            this.muse = new window.MuseClient();
+            console.log('\n🔌 === ATTEMPTING TO CONNECT TO MUSE ===');
+            
+            // First, verify the library is loaded
+            console.log('Step 1: Checking if muse-js library is loaded...');
+            if (!window.muse) {
+              throw new Error('muse-js library not loaded! window.muse is undefined. Check browser console for loading errors.');
+            }
+            
+            if (!window.muse.MuseClient) {
+              throw new Error('MuseClient not found in muse-js library! window.muse.MuseClient is undefined.');
+            }
+            
+            console.log('✅ muse-js library is loaded');
+            console.log('Step 2: Creating MuseClient instance...');
+            
+            // Create a new MuseClient instance
+            // When loaded from unpkg, muse-js exports as window.muse
+            this.muse = new window.muse.MuseClient();
+            console.log('✅ MuseClient created:', this.muse);
+            
+            // Enable PPG if available (for better compatibility)
+            this.muse.enablePpg = true;
+            
+            // Connect to the device (this will show the pairing dialog)
+            console.log('Requesting device connection...');
             await this.muse.connect();
+            console.log('Device connected, setting up subscriptions...');
+            
+            // Set up subscriptions BEFORE starting the stream
+            // This is crucial for proper data reception
+            const eegSubscription = this.muse.eegReadings.subscribe(reading => {
+              this.processEEGReading(reading);
+            });
+            this.subscriptions.push(eegSubscription);
+
+            // Subscribe to accelerometer for movement detection (optional)
+            const accelSubscription = this.muse.accelerometerData.subscribe(accel => {
+              // Could add movement-based interactions here
+            });
+            this.subscriptions.push(accelSubscription);
+
+            // Subscribe to telemetry (battery level, temperature, etc.)
+            const telemetrySubscription = this.muse.telemetryData.subscribe(telemetry => {
+              if (telemetry.batteryLevel !== undefined) {
+                console.log(`🔋 Battery: ${telemetry.batteryLevel.toFixed(1)}%`);
+              }
+            });
+            this.subscriptions.push(telemetrySubscription);
+
+            // Subscribe to connection status
+            const statusSubscription = this.muse.connectionStatus.subscribe(status => {
+              console.log('📡 Connection status:', status);
+              if (!status) {
+                console.warn('Connection lost!');
+                this.isConnected = false;
+                eegData.connected = false;
+                this.updateStatus('Connection lost', 'error');
+              }
+            });
+            this.subscriptions.push(statusSubscription);
+
+            // Now start the data stream
+            console.log('Starting data stream...');
             await this.muse.start();
             
             this.isConnected = true;
-            this.updateStatus('Connected', 'connected');
-            
-            // Subscribe to EEG data
-            this.muse.eegReadings.subscribe(reading => {
-              this.processEEGReading(reading);
-            });
+            eegData.connected = true;
+            this.updateStatus('Connected to Muse', 'connected');
 
-            // Subscribe to accelerometer for movement detection
-            this.muse.accelerometerData.subscribe(accel => {
-              // Could add movement-based interactions here
-            });
-
-            console.log('Muse connected successfully');
+            console.log('Muse connected successfully and streaming data');
             
           } catch (error) {
             console.error('Failed to connect to Muse:', error);
-            this.updateStatus('Connection failed', 'error');
+            this.isConnected = false;
+            eegData.connected = false;
+            
+            // Provide more detailed error messages
+            let errorMsg = 'Connection failed';
+            if (error.message && error.message.includes('cancelled')) {
+              errorMsg = 'Connection cancelled by user';
+            } else if (error.message && error.message.includes('GATT')) {
+              errorMsg = 'Bluetooth connection failed';
+            } else if (error.message) {
+              errorMsg = `Connection failed: ${error.message}`;
+            }
+            
+            this.updateStatus(errorMsg, 'error');
             throw error;
           }
         }
 
         processEEGReading(reading) {
+          // Log first few readings to confirm data flow
+          if (this.dataBuffer.length < 5) {
+            console.log(`📊 EEG data received from ${reading.electrode}:`, 
+                       reading.samples.length, 'samples');
+          }
+          
           // Add to buffer for frequency analysis
           this.dataBuffer.push({
             electrode: reading.electrode,
@@ -652,6 +1022,12 @@
           // Calculate frequency bands every few samples
           if (this.dataBuffer.length % 32 === 0) {
             this.calculateFrequencyBands();
+          }
+          
+          // Update status to show data is flowing (every 100 packets)
+          if (this.dataBuffer.length % 100 === 0) {
+            const dataRate = (this.dataBuffer.length / 4).toFixed(0); // packets per electrode
+            this.updateStatus(`Connected (${dataRate} packets/ch)`, 'connected');
           }
         }
 
@@ -714,14 +1090,269 @@
         }
 
         disconnect() {
-          if (this.muse) {
-            this.muse.disconnect();
-            this.isConnected = false;
-            eegData.connected = false;
-            this.updateStatus('Disconnected', '');
+          console.log('Disconnecting from Muse...');
+          
+          // Unsubscribe from all subscriptions
+          if (this.subscriptions && this.subscriptions.length > 0) {
+            console.log(`Unsubscribing from ${this.subscriptions.length} subscriptions`);
+            this.subscriptions.forEach(sub => {
+              try {
+                sub.unsubscribe();
+              } catch (e) {
+                console.warn('Error unsubscribing:', e);
+              }
+            });
+            this.subscriptions = [];
           }
+          
+          // Disconnect the device
+          if (this.muse) {
+            try {
+              this.muse.disconnect();
+              console.log('Muse disconnected');
+            } catch (e) {
+              console.warn('Error during disconnect:', e);
+            }
+            this.muse = null;
+          }
+          
+          this.isConnected = false;
+          eegData.connected = false;
+          this.updateStatus('Disconnected', '');
         }
       }
+
+      // P5.js Function Reference Database
+      const p5Reference = {
+        'Drawing': {
+          'ellipse': {
+            signature: 'ellipse(x, y, width, [height])',
+            description: 'Draws an ellipse (oval) to the screen. By default, the first two parameters set the location, and the third and fourth parameters set the shape\'s width and height.'
+          },
+          'circle': {
+            signature: 'circle(x, y, diameter)',
+            description: 'Draws a circle to the screen. A circle is a simple closed shape, by default drawn from the center point.'
+          },
+          'rect': {
+            signature: 'rect(x, y, width, height, [tl], [tr], [br], [bl])',
+            description: 'Draws a rectangle to the screen. Optional parameters for rounded corners.'
+          },
+          'square': {
+            signature: 'square(x, y, size, [tl], [tr], [br], [bl])',
+            description: 'Draws a square to the screen. A square is a four-sided shape with equal sides.'
+          },
+          'triangle': {
+            signature: 'triangle(x1, y1, x2, y2, x3, y3)',
+            description: 'Draws a triangle to the screen. A triangle is a plane created by connecting three points.'
+          },
+          'quad': {
+            signature: 'quad(x1, y1, x2, y2, x3, y3, x4, y4)',
+            description: 'Draws a quadrilateral (four-sided polygon) to the screen.'
+          },
+          'line': {
+            signature: 'line(x1, y1, x2, y2)',
+            description: 'Draws a line (a direct path between two points) to the screen.'
+          },
+          'point': {
+            signature: 'point(x, y)',
+            description: 'Draws a point, a coordinate in space at the dimension of one pixel.'
+          },
+          'arc': {
+            signature: 'arc(x, y, w, h, start, stop, [mode])',
+            description: 'Draws an arc to the screen. Arcs are drawn along the outer edge of an ellipse.'
+          }
+        },
+        'Color': {
+          'background': {
+            signature: 'background(color) or background(r, g, b, [a])',
+            description: 'Sets the color used for the background. Default is light gray.'
+          },
+          'fill': {
+            signature: 'fill(color) or fill(r, g, b, [a])',
+            description: 'Sets the color used to fill shapes.'
+          },
+          'stroke': {
+            signature: 'stroke(color) or stroke(r, g, b, [a])',
+            description: 'Sets the color used to draw lines and borders around shapes.'
+          },
+          'noFill': {
+            signature: 'noFill()',
+            description: 'Disables filling geometry. If both noStroke() and noFill() are called, nothing will be drawn.'
+          },
+          'noStroke': {
+            signature: 'noStroke()',
+            description: 'Disables drawing the stroke (outline).'
+          },
+          'color': {
+            signature: 'color(gray, [alpha]) or color(r, g, b, [a])',
+            description: 'Creates a color object. Can be used with fill(), stroke(), and background().'
+          },
+          'lerpColor': {
+            signature: 'lerpColor(c1, c2, amt)',
+            description: 'Blends two colors to find a third color between them. The amt parameter is between 0.0 and 1.0.'
+          },
+          'colorMode': {
+            signature: 'colorMode(mode, [max1], [max2], [max3], [maxA])',
+            description: 'Changes the way p5.js interprets color data. Modes: RGB or HSB.'
+          }
+        },
+        'Transform': {
+          'translate': {
+            signature: 'translate(x, y)',
+            description: 'Specifies an amount to displace objects within the display window.'
+          },
+          'rotate': {
+            signature: 'rotate(angle)',
+            description: 'Rotates shapes around the origin (0,0). Angle should be in radians unless angleMode(DEGREES) is used.'
+          },
+          'scale': {
+            signature: 'scale(s) or scale(x, y)',
+            description: 'Increases or decreases the size of shapes by expanding and contracting vertices.'
+          },
+          'push': {
+            signature: 'push()',
+            description: 'Saves the current drawing style settings and transformations.'
+          },
+          'pop': {
+            signature: 'pop()',
+            description: 'Restores the previous drawing style settings and transformations.'
+          }
+        },
+        'Math': {
+          'map': {
+            signature: 'map(value, start1, stop1, start2, stop2)',
+            description: 'Re-maps a number from one range to another.'
+          },
+          'random': {
+            signature: 'random([min], [max]) or random(choices)',
+            description: 'Returns a random floating-point number or element from an array.'
+          },
+          'noise': {
+            signature: 'noise(x, [y], [z])',
+            description: 'Returns the Perlin noise value at specified coordinates. Creates smooth random values.'
+          },
+          'noiseSeed': {
+            signature: 'noiseSeed(seed)',
+            description: 'Sets the seed value for noise(). Use same seed for consistent noise patterns.'
+          },
+          'randomSeed': {
+            signature: 'randomSeed(seed)',
+            description: 'Sets the seed value for random(). Use same seed for consistent random values.'
+          },
+          'constrain': {
+            signature: 'constrain(n, low, high)',
+            description: 'Constrains a value between a minimum and maximum value.'
+          },
+          'lerp': {
+            signature: 'lerp(start, stop, amt)',
+            description: 'Calculates a number between two numbers at a specific increment.'
+          },
+          'dist': {
+            signature: 'dist(x1, y1, x2, y2)',
+            description: 'Calculates the distance between two points.'
+          }
+        },
+        'Control': {
+          'loop': {
+            signature: 'loop()',
+            description: 'Causes draw() to execute continuously. By default, draw() loops.'
+          },
+          'noLoop': {
+            signature: 'noLoop()',
+            description: 'Stops draw() from continuously executing. Can restart with loop() or redraw().'
+          },
+          'redraw': {
+            signature: 'redraw([n])',
+            description: 'Executes draw() one time. Can specify number of times to redraw.'
+          },
+          'frameRate': {
+            signature: 'frameRate([fps])',
+            description: 'Sets the number of frames per second or gets the current framerate.'
+          }
+        },
+        'Text': {
+          'text': {
+            signature: 'text(str, x, y, [width], [height])',
+            description: 'Draws text to the screen at the specified position.'
+          },
+          'textAlign': {
+            signature: 'textAlign(horizAlign, [vertAlign])',
+            description: 'Sets the current alignment for drawing text. Values: LEFT, CENTER, RIGHT, TOP, BOTTOM.'
+          },
+          'textSize': {
+            signature: 'textSize(size)',
+            description: 'Sets the size of the text in pixels.'
+          },
+          'textWidth': {
+            signature: 'textWidth(str)',
+            description: 'Calculates and returns the width of any character or text string.'
+          }
+        }
+      };
+
+      // EEG Data Reference
+      const eegReference = {
+        'Frequency Bands': {
+          'eegData.alpha': {
+            signature: 'eegData.alpha (0.0 - 1.0)',
+            description: 'Alpha waves (8-12 Hz). Higher during relaxation, meditation, and eyes closed.'
+          },
+          'eegData.beta': {
+            signature: 'eegData.beta (0.0 - 1.0)',
+            description: 'Beta waves (13-30 Hz). Higher during active thinking, focus, and concentration.'
+          },
+          'eegData.theta': {
+            signature: 'eegData.theta (0.0 - 1.0)',
+            description: 'Theta waves (4-8 Hz). Higher during deep meditation, creativity, and drowsiness.'
+          },
+          'eegData.delta': {
+            signature: 'eegData.delta (0.0 - 1.0)',
+            description: 'Delta waves (0.5-4 Hz). Higher during deep sleep (low when awake).'
+          },
+          'eegData.gamma': {
+            signature: 'eegData.gamma (0.0 - 1.0)',
+            description: 'Gamma waves (30+ Hz). Associated with high-level cognition and information processing.'
+          }
+        },
+        'Derived Metrics': {
+          'eegData.attention': {
+            signature: 'eegData.attention (0.0 - 1.0)',
+            description: 'Attention level derived from beta and gamma activity.'
+          },
+          'eegData.meditation': {
+            signature: 'eegData.meditation (0.0 - 1.0)',
+            description: 'Meditation/relaxation level derived from alpha and theta activity.'
+          }
+        },
+        'Raw Data Access': {
+          'eegData.getRawChannel': {
+            signature: 'eegData.getRawChannel(channel, numSamples)',
+            description: 'Get recent raw EEG samples from a channel. Channels: "TP9", "AF7", "AF8", "TP10".'
+          },
+          'eegData.getAllChannels': {
+            signature: 'eegData.getAllChannels(numSamples)',
+            description: 'Get recent samples from all 4 channels as an object.'
+          },
+          'eegData.getRecentEpoch': {
+            signature: 'eegData.getRecentEpoch(numSamples)',
+            description: 'Get a time-aligned epoch with all channels. Returns array where each element has 4 channel values.'
+          },
+          'eegData.getChannelNames': {
+            signature: 'eegData.getChannelNames()',
+            description: 'Returns array of channel names: ["TP9", "AF7", "AF8", "TP10"].'
+          }
+        },
+        'Connection Status': {
+          'eegData.connected': {
+            signature: 'eegData.connected (boolean)',
+            description: 'True if Muse is connected or simulation is running, false otherwise.'
+          },
+          'eegData.sampleRate': {
+            signature: 'eegData.sampleRate (256)',
+            description: 'Sample rate in Hz (samples per second).'
+          }
+        }
+      };
 
       // Monaco Editor setup and management
       class CodeEditor {
@@ -732,6 +1363,75 @@
           this.lastLoadedCode = null; // Track last loaded/selected code
           this.lastLoadedFilename = null; // Track filename
           this.setupEditor();
+        }
+
+        setupAutocomplete() {
+          // Create completion items for p5.js functions
+          const p5CompletionItems = [];
+          
+          Object.keys(p5Reference).forEach(category => {
+            Object.keys(p5Reference[category]).forEach(funcName => {
+              const func = p5Reference[category][funcName];
+              p5CompletionItems.push({
+                label: funcName,
+                kind: monaco.languages.CompletionItemKind.Function,
+                documentation: `${func.signature}\n\n${func.description}`,
+                insertText: funcName,
+                detail: category
+              });
+            });
+          });
+          
+          // Create completion items for eegData
+          const eegCompletionItems = [];
+          Object.keys(eegReference).forEach(category => {
+            Object.keys(eegReference[category]).forEach(propName => {
+              const prop = eegReference[category][propName];
+              eegCompletionItems.push({
+                label: propName,
+                kind: monaco.languages.CompletionItemKind.Property,
+                documentation: `${prop.signature}\n\n${prop.description}`,
+                insertText: propName,
+                detail: category
+              });
+            });
+          });
+          
+          // Register completion provider
+          monaco.languages.registerCompletionItemProvider('javascript', {
+            provideCompletionItems: (model, position) => {
+              const word = model.getWordUntilPosition(position);
+              const range = {
+                startLineNumber: position.lineNumber,
+                endLineNumber: position.lineNumber,
+                startColumn: word.startColumn,
+                endColumn: word.endColumn
+              };
+              
+              // Check if we're typing after "eegData."
+              const lineContent = model.getLineContent(position.lineNumber);
+              const textBeforeCursor = lineContent.substring(0, position.column - 1);
+              
+              if (textBeforeCursor.includes('eegData.')) {
+                return {
+                  suggestions: eegCompletionItems.map(item => ({
+                    ...item,
+                    range: range
+                  }))
+                };
+              }
+              
+              // Otherwise show p5.js functions
+              return {
+                suggestions: [...p5CompletionItems, ...eegCompletionItems].map(item => ({
+                  ...item,
+                  range: range
+                }))
+              };
+            }
+          });
+          
+          console.log('✅ Autocomplete registered for p5.js and eegData');
         }
 
         setupEditor() {
@@ -750,8 +1450,13 @@
               minimap: { enabled: false },
               scrollBeyondLastLine: false,
               automaticLayout: true,
-              wordWrap: 'on'
+              wordWrap: 'on',
+              suggestOnTriggerCharacters: true,
+              quickSuggestions: true
             });
+
+            // Register p5.js autocomplete
+            this.setupAutocomplete();
 
             // Auto-run on change with debounce
             let timeout;
@@ -923,20 +1628,39 @@ function draw() {
                 window.rect = p.rect.bind(p);
                 window.line = p.line.bind(p);
                 window.point = p.point.bind(p);
+                window.triangle = p.triangle.bind(p);
+                window.quad = p.quad.bind(p);
+                window.arc = p.arc.bind(p);
                 window.text = p.text.bind(p);
                 window.textAlign = p.textAlign.bind(p);
                 window.textSize = p.textSize.bind(p);
+                window.textFont = p.textFont ? p.textFont.bind(p) : undefined;
+                window.textWidth = p.textWidth.bind(p);
                 window.beginShape = p.beginShape.bind(p);
                 window.endShape = p.endShape.bind(p);
                 window.vertex = p.vertex.bind(p);
+                window.curveVertex = p.curveVertex ? p.curveVertex.bind(p) : undefined;
+                window.bezierVertex = p.bezierVertex ? p.bezierVertex.bind(p) : undefined;
+                
+                // Loop control
+                window.loop = p.loop.bind(p);
+                window.noLoop = p.noLoop.bind(p);
+                window.redraw = p.redraw.bind(p);
                 
                 // Math and utility
                 window.map = p.map.bind(p);
                 window.random = p.random.bind(p);
+                window.randomSeed = p.randomSeed.bind(p);
                 window.noise = p.noise.bind(p);
+                window.noiseSeed = p.noiseSeed.bind(p);
+                window.noiseDetail = p.noiseDetail ? p.noiseDetail.bind(p) : undefined;
                 window.sin = p.sin.bind(p);
                 window.cos = p.cos.bind(p);
                 window.tan = p.tan.bind(p);
+                window.asin = p.asin ? p.asin.bind(p) : undefined;
+                window.acos = p.acos ? p.acos.bind(p) : undefined;
+                window.atan = p.atan ? p.atan.bind(p) : undefined;
+                window.atan2 = p.atan2 ? p.atan2.bind(p) : undefined;
                 window.dist = p.dist.bind(p);
                 window.abs = p.abs.bind(p);
                 window.max = p.max.bind(p);
@@ -944,30 +1668,70 @@ function draw() {
                 window.floor = p.floor.bind(p);
                 window.ceil = p.ceil.bind(p);
                 window.round = p.round.bind(p);
+                window.sqrt = p.sqrt ? p.sqrt.bind(p) : undefined;
+                window.pow = p.pow ? p.pow.bind(p) : undefined;
+                window.constrain = p.constrain ? p.constrain.bind(p) : undefined;
+                window.lerp = p.lerp ? p.lerp.bind(p) : undefined;
+                window.norm = p.norm ? p.norm.bind(p) : undefined;
                 
-                // Color and drawing modes
+                // Color functions
                 window.colorMode = p.colorMode.bind(p);
+                window.color = p.color.bind(p);
+                window.lerpColor = p.lerpColor.bind(p);
+                window.red = p.red ? p.red.bind(p) : undefined;
+                window.green = p.green ? p.green.bind(p) : undefined;
+                window.blue = p.blue ? p.blue.bind(p) : undefined;
+                window.alpha = p.alpha ? p.alpha.bind(p) : undefined;
+                window.hue = p.hue ? p.hue.bind(p) : undefined;
+                window.saturation = p.saturation ? p.saturation.bind(p) : undefined;
+                window.brightness = p.brightness ? p.brightness.bind(p) : undefined;
+                
+                // Color mode constants
                 window.HSB = p.HSB;
                 window.RGB = p.RGB;
+                window.HSL = p.HSL;
+                
+                // Transformation functions
                 window.translate = p.translate.bind(p);
                 window.rotate = p.rotate.bind(p);
+                window.rotateX = p.rotateX ? p.rotateX.bind(p) : undefined;
+                window.rotateY = p.rotateY ? p.rotateY.bind(p) : undefined;
+                window.rotateZ = p.rotateZ ? p.rotateZ.bind(p) : undefined;
                 window.scale = p.scale.bind(p);
+                window.shearX = p.shearX ? p.shearX.bind(p) : undefined;
+                window.shearY = p.shearY ? p.shearY.bind(p) : undefined;
                 window.push = p.push.bind(p);
                 window.pop = p.pop.bind(p);
+                window.resetMatrix = p.resetMatrix ? p.resetMatrix.bind(p) : undefined;
+                
+                // Shape detail
+                window.rectMode = p.rectMode ? p.rectMode.bind(p) : undefined;
+                window.ellipseMode = p.ellipseMode ? p.ellipseMode.bind(p) : undefined;
+                window.strokeCap = p.strokeCap ? p.strokeCap.bind(p) : undefined;
+                window.strokeJoin = p.strokeJoin ? p.strokeJoin.bind(p) : undefined;
+                window.smooth = p.smooth ? p.smooth.bind(p) : undefined;
+                window.noSmooth = p.noSmooth ? p.noSmooth.bind(p) : undefined;
                 
                 // Constants
                 window.TWO_PI = p.TWO_PI;
                 window.PI = p.PI;
                 window.HALF_PI = p.HALF_PI;
+                window.QUARTER_PI = p.QUARTER_PI;
                 window.CENTER = p.CENTER;
                 window.LEFT = p.LEFT;
                 window.RIGHT = p.RIGHT;
                 window.TOP = p.TOP;
                 window.BOTTOM = p.BOTTOM;
+                window.CORNER = p.CORNER;
+                window.CORNERS = p.CORNERS;
+                window.RADIUS = p.RADIUS;
+                window.CLOSE = p.CLOSE;
+                window.OPEN = p.OPEN;
                 
                 // Frame and time
                 window.frameCount = p.frameCount;
                 window.millis = p.millis.bind(p);
+                window.frameRate = p.frameRate.bind(p);
                 
                 // Dimensions (will be updated after canvas creation)
                 window.width = containerWidth;
@@ -1623,46 +2387,399 @@ function draw() {
         }
       }
 
+      // Reference Panel Manager
+      class ReferencePanel {
+        constructor() {
+          this.currentTab = 'p5js';
+          this.setupTabs();
+          this.loadContent('p5js');
+        }
+
+        setupTabs() {
+          document.querySelectorAll('.reference-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+              // Update active tab
+              document.querySelectorAll('.reference-tab').forEach(t => t.classList.remove('active'));
+              tab.classList.add('active');
+              
+              // Load content
+              const tabName = tab.dataset.tab;
+              this.loadContent(tabName);
+            });
+          });
+        }
+
+        loadContent(tabName) {
+          this.currentTab = tabName;
+          const contentDiv = document.getElementById('reference-content');
+          const aiAssistant = document.getElementById('ai-assistant');
+          
+          if (tabName === 'ai') {
+            contentDiv.style.display = 'none';
+            aiAssistant.style.display = 'flex';
+          } else {
+            contentDiv.style.display = 'block';
+            aiAssistant.style.display = 'none';
+            
+            if (tabName === 'p5js') {
+              contentDiv.innerHTML = this.renderReference(p5Reference);
+            } else if (tabName === 'eeg') {
+              contentDiv.innerHTML = this.renderReference(eegReference);
+            }
+            
+            // Add click handlers for inserting code
+            this.setupFunctionClicks();
+          }
+        }
+
+        renderReference(reference) {
+          let html = '';
+          
+          Object.keys(reference).forEach(groupName => {
+            html += `<div class="function-group">`;
+            html += `<div class="function-group-title">${groupName}</div>`;
+            
+            Object.keys(reference[groupName]).forEach(funcName => {
+              const func = reference[groupName][funcName];
+              html += `
+                <div class="function-item" data-function="${funcName}">
+                  <span class="function-name">${funcName}</span>
+                  <div class="function-tooltip">
+                    <div class="tooltip-signature">${func.signature}</div>
+                    <div class="tooltip-description">${func.description}</div>
+                  </div>
+                </div>
+              `;
+            });
+            
+            html += `</div>`;
+          });
+          
+          return html;
+        }
+
+        setupFunctionClicks() {
+          document.querySelectorAll('.function-item').forEach(item => {
+            item.addEventListener('click', () => {
+              const funcName = item.dataset.function;
+              if (codeEditor && codeEditor.editor) {
+                // Get the function signature to extract parameters
+                let signature = '';
+                let reference = this.currentTab === 'p5js' ? p5Reference : eegReference;
+                
+                // Find the function in the reference
+                for (let group in reference) {
+                  if (reference[group][funcName]) {
+                    signature = reference[group][funcName].signature;
+                    break;
+                  }
+                }
+                
+                // Parse parameters from signature
+                let snippetText = this.createSnippet(funcName, signature);
+                
+                // Insert as Monaco snippet with placeholders
+                const position = codeEditor.editor.getPosition();
+                
+                // Use Monaco's snippet controller for proper tab-through behavior
+                const snippetController = codeEditor.editor.getContribution('snippetController2');
+                if (snippetController && snippetText.includes('${')) {
+                  // Insert with snippet support (allows tab through placeholders)
+                  snippetController.insert(snippetText);
+                } else {
+                  // Fallback to simple text insertion
+                  codeEditor.editor.executeEdits('', [{
+                    range: new monaco.Range(
+                      position.lineNumber,
+                      position.column,
+                      position.lineNumber,
+                      position.column
+                    ),
+                    text: snippetText,
+                    forceMoveMarkers: true
+                  }]);
+                }
+                
+                codeEditor.editor.focus();
+              }
+            });
+          });
+        }
+        
+        createSnippet(funcName, signature) {
+          // Extract parameters from signature
+          // e.g., "ellipse(x, y, width, [height])" -> ["x", "y", "width", "[height]"]
+          
+          if (!signature) {
+            return funcName + '()';
+          }
+          
+          // Find the parameters part (between parentheses)
+          const paramsMatch = signature.match(/\(([^)]*)\)/);
+          if (!paramsMatch || !paramsMatch[1].trim()) {
+            return funcName + '()';
+          }
+          
+          const paramsStr = paramsMatch[1];
+          
+          // Split by comma, handling nested brackets
+          const params = paramsStr.split(',').map(p => p.trim()).filter(p => p);
+          
+          if (params.length === 0) {
+            return funcName + '()';
+          }
+          
+          // Create snippet with numbered placeholders
+          let snippetParams = params.map((param, index) => {
+            // Remove brackets for optional parameters but keep the name
+            let cleanParam = param.replace(/[\[\]]/g, '');
+            
+            // Handle "or" alternatives (e.g., "color or r, g, b")
+            if (cleanParam.includes(' or ')) {
+              cleanParam = cleanParam.split(' or ')[0].trim();
+            }
+            
+            return `\${${index + 1}:${cleanParam}}`;
+          }).join(', ');
+          
+          return `${funcName}(${snippetParams})`;
+        }
+      }
+
+      // AI Assistant Manager
+      class AIAssistant {
+        constructor() {
+          this.apiKey = localStorage.getItem('brainimation_api_key') || '';
+          this.apiProvider = localStorage.getItem('brainimation_api_provider') || 'openai';
+          this.setupEventListeners();
+          this.updateStatus();
+        }
+
+        setupEventListeners() {
+          document.getElementById('ai-generate-btn').addEventListener('click', () => {
+            this.generateCode();
+          });
+
+          document.getElementById('ai-config-btn').addEventListener('click', () => {
+            this.showConfig();
+          });
+        }
+
+        updateStatus() {
+          const statusEl = document.getElementById('ai-status');
+          if (this.apiKey) {
+            statusEl.textContent = `Ready to assist (${this.apiProvider})`;
+            statusEl.style.color = 'var(--success)';
+          } else {
+            statusEl.textContent = 'Configure API key to use AI features';
+            statusEl.style.color = 'var(--muted)';
+          }
+        }
+
+        showConfig() {
+          const provider = prompt(
+            'Select API Provider:\n\n1. OpenAI (ChatGPT)\n2. Anthropic (Claude)\n\nEnter 1 or 2:',
+            this.apiProvider === 'anthropic' ? '2' : '1'
+          );
+          
+          if (provider === '1' || provider === '2') {
+            this.apiProvider = provider === '2' ? 'anthropic' : 'openai';
+            localStorage.setItem('brainimation_api_provider', this.apiProvider);
+            
+            const key = prompt(
+              `Enter your ${this.apiProvider === 'openai' ? 'OpenAI' : 'Anthropic'} API key:\n\n` +
+              `(stored locally in browser only)`,
+              this.apiKey
+            );
+            
+            if (key !== null) {
+              this.apiKey = key.trim();
+              localStorage.setItem('brainimation_api_key', this.apiKey);
+              this.updateStatus();
+              alert('API key saved successfully!');
+            }
+          }
+        }
+
+        async generateCode() {
+          if (!this.apiKey) {
+            alert('Please configure your API key first (click ⚙️ button)');
+            return;
+          }
+
+          const prompt = document.getElementById('ai-prompt').value.trim();
+          if (!prompt) {
+            alert('Please describe what you want to create or modify');
+            return;
+          }
+
+          const statusEl = document.getElementById('ai-status');
+          const generateBtn = document.getElementById('ai-generate-btn');
+          
+          try {
+            generateBtn.disabled = true;
+            statusEl.textContent = 'Generating code...';
+            statusEl.style.color = 'var(--accent)';
+
+            const currentCode = codeEditor.editor.getValue();
+            
+            const systemPrompt = `You are a helpful p5.js coding assistant for BrainImation, an EEG-powered creative coding platform. 
+Help users create animations that respond to brain data available through the eegData object:
+- eegData.alpha, beta, theta, delta, gamma (0.0-1.0)
+- eegData.attention, meditation (0.0-1.0)
+- eegData.getRawChannel(channel, numSamples) for raw EEG
+- eegData.connected (boolean)
+
+Respond ONLY with JavaScript code, no explanations or markdown. Include setup() and draw() functions.`;
+
+            const userMessage = prompt + (currentCode ? `\n\nCurrent code:\n${currentCode}` : '');
+
+            let generatedCode = '';
+
+            if (this.apiProvider === 'openai') {
+              const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${this.apiKey}`
+                },
+                body: JSON.stringify({
+                  model: 'gpt-4',
+                  messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userMessage }
+                  ],
+                  temperature: 0.7,
+                  max_tokens: 2000
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error(`API error: ${response.statusText}`);
+              }
+
+              const data = await response.json();
+              generatedCode = data.choices[0].message.content;
+            } else if (this.apiProvider === 'anthropic') {
+              const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'x-api-key': this.apiKey,
+                  'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                  model: 'claude-3-5-sonnet-20241022',
+                  max_tokens: 2000,
+                  system: systemPrompt,
+                  messages: [
+                    { role: 'user', content: userMessage }
+                  ]
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error(`API error: ${response.statusText}`);
+              }
+
+              const data = await response.json();
+              generatedCode = data.content[0].text;
+            }
+
+            // Clean up code (remove markdown fences if present)
+            generatedCode = generatedCode.replace(/```javascript\n?/g, '').replace(/```\n?/g, '').trim();
+
+            // Insert into editor
+            codeEditor.editor.setValue(generatedCode);
+            
+            statusEl.textContent = 'Code generated! Running...';
+            statusEl.style.color = 'var(--success)';
+            
+            // Auto-run the generated code
+            setTimeout(() => {
+              codeEditor.runCode();
+              statusEl.textContent = `Ready to assist (${this.apiProvider})`;
+            }, 500);
+
+          } catch (error) {
+            console.error('AI generation error:', error);
+            statusEl.textContent = `Error: ${error.message}`;
+            statusEl.style.color = 'var(--error)';
+            alert(`Failed to generate code:\n${error.message}\n\nPlease check your API key and try again.`);
+          } finally {
+            generateBtn.disabled = false;
+          }
+        }
+      }
+
       // Application initialization
       let museManager;
       let eegSimulator;
       let codeEditor;
+      let referencePanel;
+      let aiAssistant;
       let currentDataSource = null; // 'muse' or 'simulator'
 
       function initApp() {
         museManager = new MuseEEGManager();
         eegSimulator = new EEGSimulator();
         codeEditor = new CodeEditor();
+        referencePanel = new ReferencePanel();
+        aiAssistant = new AIAssistant();
+
+        // Toggle reference panel
+        document.getElementById('toggle-reference-btn').addEventListener('click', () => {
+          const mainContainer = document.querySelector('.main-container');
+          const referencePanel = document.getElementById('reference-panel');
+          const btn = document.getElementById('toggle-reference-btn');
+          
+          if (mainContainer.classList.contains('hide-reference')) {
+            mainContainer.classList.remove('hide-reference');
+            btn.textContent = '📖 Reference';
+          } else {
+            mainContainer.classList.add('hide-reference');
+            btn.textContent = '📖 Show Reference';
+          }
+        });
 
         // Event listeners
-        document.getElementById('connect-btn').addEventListener('click', async () => {
+        const connectBtn = document.getElementById('connect-btn');
+        
+        connectBtn.addEventListener('click', async () => {
+          // If already connected, disconnect
+          if (currentDataSource === 'muse' && museManager.isConnected) {
+            console.log('User requested disconnect');
+            museManager.disconnect();
+            currentDataSource = null;
+            connectBtn.textContent = 'Connect Muse';
+            connectBtn.disabled = false;
+            document.getElementById('simulate-btn').disabled = false;
+            return;
+          }
+          
+          // Stop simulation if running
           if (currentDataSource === 'simulator') {
+            console.log('Stopping simulation before Muse connection');
             stopSimulation();
           }
           
-          const btn = document.getElementById('connect-btn');
-          btn.disabled = true;
-          btn.textContent = 'Connecting...';
+          // Attempt to connect
+          connectBtn.disabled = true;
+          connectBtn.textContent = 'Connecting...';
           
           try {
             await museManager.connect();
             currentDataSource = 'muse';
-            btn.textContent = 'Disconnect';
+            connectBtn.textContent = 'Disconnect Muse';
+            connectBtn.disabled = false;
             document.getElementById('simulate-btn').disabled = true;
-            museManager.updateStatus('Connected to Muse', 'connected');
-            
-            btn.onclick = () => {
-              museManager.disconnect();
-              currentDataSource = null;
-              btn.textContent = 'Connect Muse';
-              btn.disabled = false;
-              document.getElementById('simulate-btn').disabled = false;
-              btn.onclick = null;
-            };
+            console.log('Connection successful, button updated');
           } catch (error) {
-            btn.textContent = 'Connect Muse';
-            btn.disabled = false;
+            console.error('Connection failed:', error);
+            connectBtn.textContent = 'Connect Muse';
+            connectBtn.disabled = false;
             currentDataSource = null;
+            document.getElementById('simulate-btn').disabled = false;
           }
         });
 
@@ -1707,18 +2824,22 @@ function draw() {
           codeEditor.reloadCode();
         });
 
-        document.getElementById('fullscreen-btn').addEventListener('click', () => {
-          const overlay = document.getElementById('fullscreen-overlay');
-          const canvas = document.querySelector('#canvas-container canvas');
+        document.getElementById('fullscreen-btn').addEventListener('click', async () => {
+          const container = document.getElementById('canvas-container');
           
-          if (overlay.style.display === 'none' || !overlay.style.display) {
-            overlay.style.display = 'block';
-            if (canvas) {
-              overlay.appendChild(canvas.cloneNode(true));
+          try {
+            if (!document.fullscreenElement) {
+              // Enter fullscreen mode
+              await container.requestFullscreen();
+              document.getElementById('fullscreen-btn').textContent = 'Exit Fullscreen';
+            } else {
+              // Exit fullscreen mode
+              await document.exitFullscreen();
+              document.getElementById('fullscreen-btn').textContent = 'Fullscreen';
             }
-          } else {
-            overlay.style.display = 'none';
-            overlay.innerHTML = '';
+          } catch (error) {
+            console.error('Fullscreen error:', error);
+            alert('Fullscreen mode is not supported or was blocked. Please try pressing F11 or allow fullscreen permissions.');
           }
         });
 
@@ -1751,15 +2872,41 @@ function draw() {
           }
         });
 
-        // Fullscreen escape
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') {
-            document.getElementById('fullscreen-overlay').style.display = 'none';
+        // Listen for fullscreen changes (e.g., when user presses ESC)
+        document.addEventListener('fullscreenchange', () => {
+          const btn = document.getElementById('fullscreen-btn');
+          if (document.fullscreenElement) {
+            btn.textContent = 'Exit Fullscreen';
+          } else {
+            btn.textContent = 'Fullscreen';
           }
         });
 
-        // Check if MuseClient is available
-        console.log('MuseClient available:', !!window.MuseClient);
+        // Check for Web Bluetooth support first
+        if (!navigator.bluetooth) {
+          console.warn('⚠️ Web Bluetooth is not supported in this browser');
+          console.warn('Please use Chrome, Edge, or Opera to connect to Muse devices');
+          document.getElementById('connect-btn').disabled = true;
+          document.getElementById('connect-btn').title = 'Web Bluetooth not supported in this browser';
+          museManager.updateStatus('Bluetooth not supported', 'error');
+        } else {
+          console.log('✅ Web Bluetooth is supported');
+        }
+        
+        // Check if muse-js library loaded successfully
+        console.log('\n🔍 Checking muse-js library...');
+        console.log('muse-js library loaded:', !!window.muse);
+        console.log('MuseClient available:', !!(window.muse && window.muse.MuseClient));
+        
+        if (window.muse && window.muse.MuseClient) {
+          console.log('✅ muse-js library is ready!');
+          document.getElementById('connect-btn').disabled = false;
+          museManager.updateStatus('Ready to connect', '');
+        } else {
+          console.error('❌ muse-js library failed to load!');
+          document.getElementById('connect-btn').disabled = true;
+          museManager.updateStatus('muse-js library error', 'error');
+        }
         
         console.log('🧠 BrainImation initialized successfully!');
       }

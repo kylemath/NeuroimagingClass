@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20251006-v1">
+    <title>Lecture 4: BrainImation Deep Dive & Course Realignment</title>
+    <meta name="description" content="Fourth lecture for PSYCH 403A1: Master BrainImation as your BCI Turing Machine - create brain art, neurofeedback, and research tools with live EEG data.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20251006" rel="stylesheet">
+    <style>
+      /* Cache-busted styles - v20251006 */
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 880px;
+        --warning: #f59e0b;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+
+      p { margin: 0.85em 0; }
+
+      .lecture-meta {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 16px 16px 18px;
+        color: var(--text);
+        margin: 18px 0 8px;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .reality-check {
+        background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(249,115,22,0.08));
+        border: 2px solid var(--warning);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 6px 20px rgba(245,158,11,0.2);
+      }
+
+      .schedule-revision {
+        background: linear-gradient(135deg, rgba(214,51,132,0.08), rgba(32,201,151,0.06));
+        border: 2px solid rgba(214,51,132,0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 6px 20px rgba(214,51,132,0.1);
+      }
+
+      .project-timeline-revised {
+        background: linear-gradient(135deg, rgba(32,201,151,0.1), rgba(214,51,132,0.08));
+        border: 2px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        box-shadow: 0 6px 20px rgba(32,201,151,0.15);
+      }
+
+      .time-block {
+        background: linear-gradient(90deg, rgba(214,51,132,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .demo-block {
+        background: linear-gradient(90deg, rgba(32,201,151,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent-2);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--accent-2);
+      }
+
+      .warning-block {
+        background: linear-gradient(90deg, rgba(245,158,11,0.12), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--warning);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--warning);
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin: 20px 0;
+      }
+      
+      th {
+        background: rgba(214,51,132,0.15);
+        padding: 10px;
+        border: 1px solid rgba(214,51,132,0.4);
+        text-align: left;
+        color: var(--text);
+        font-weight: 600;
+      }
+      
+      td {
+        padding: 8px;
+        border: 1px solid rgba(32,201,151,0.3);
+        background: rgba(32,201,151,0.05);
+      }
+
+      .old-schedule {
+        opacity: 0.5;
+        text-decoration: line-through;
+      }
+
+      .new-schedule {
+        font-weight: 600;
+        color: var(--accent-2);
+      }
+
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(214,51,132,0.25);
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+      .simplified-option {
+        background: rgba(32,201,151,0.08);
+        border: 1px solid rgba(32,201,151,0.3);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 12px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">PSYCH 403A1 — Lecture 4</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./lecture3.html" class="tag" style="text-transform:none">← Lecture 3</a>
+          <a href="./assignments.html" class="tag" style="text-transform:none">Assignments</a>
+          <a href="./final-project.html" class="tag" style="text-transform:none">Final Project</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>BrainImation: Your BCI Turing Machine</h1>
+        
+        <div class="lecture-meta">
+          <p><strong>Date:</strong> October 6, 2025<br>
+          <strong>Duration:</strong> 3 hours (9:00-12:00 PM) - 180 minutes total<br>
+          <strong>Location:</strong> T B-05 - Henry Marshall Tory Building<br>
+          <strong>Focus:</strong> Master live EEG analysis, brain art, neurofeedback, and BCI development</p>
+        </div>
+
+        <div class="warning-block">⚠️ IMPORTANT: Schedule Adjustment Session — Midterm in 2 weeks (Oct 20)</div>
+
+        <p>Today's session addresses where we are, introduces BrainImation as your comprehensive tool for everything EEG/BCI, and sets up Assignment 2. Think of BrainImation as a "Turing Machine for BCIs"—a universal platform that can replicate any brain-computer interface, neurofeedback system, or neuroart installation through simple code.</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="time-block">Reality Check & Course Status (20 minutes)</div>
+
+        <div class="reality-check">
+          <h3>📊 Where We Actually Are</h3>
+          <p><strong>Completed:</strong></p>
+          <ul>
+            <li>✅ Lecture 1: Course Introduction & History (Sep 8)</li>
+            <li>✅ Lecture 2: EEG Fundamentals (Sep 15)</li>
+            <li>✅ Assignment 1: Basic EEG Filtering (due Sep 22)</li>
+            <li>✅ Most of Lecture 3: Advanced EEG & BCI concepts (Sep 29)</li>
+          </ul>
+          
+          <p><strong>Behind Schedule:</strong></p>
+          <ul>
+            <li>⏱️ Lecture 3 BCI hands-on activities not fully completed</li>
+            <li>⏱️ Final project not started (originally should have proposals today)</li>
+            <li>⏱️ Only 1 assignment completed (Assignment 2 not yet released)</li>
+          </ul>
+
+          <p><strong>Critical Timeline:</strong></p>
+          <ul>
+            <li>🔥 <strong>Oct 13:</strong> Thanksgiving (No class — 1 week from now)</li>
+            <li>🔥 <strong>Oct 20:</strong> MIDTERM EXAM 1 (2 weeks from today!)</li>
+            <li>🔥 Exam will cover: EEG fundamentals, filtering, signal processing, BCI basics, and BrainImation platform</li>
+          </ul>
+        </div>
+
+        <h3>Why This Matters</h3>
+        <p>Being behind is not a crisis—it's normal. Most courses need schedule adjustments. The key is acknowledging reality and making a concrete plan. Today we'll do exactly that, then ensure everyone understands the essential concepts before the midterm.</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="time-block">Revised Schedule & Priorities (25 minutes)</div>
+
+        <div class="schedule-revision">
+          <h3>🎯 New Realistic Timeline</h3>
+          
+          <h4>Today (Oct 6) — BrainImation Deep Dive</h4>
+          <ul>
+            <li>BrainImation platform tutorial (hands-on coding)</li>
+            <li>Real-world applications: neurofeedback, brain art, research</li>
+            <li>Assignment 2 announcement: Create your own BrainImation project</li>
+            <li>Simplified project timeline introduction</li>
+          </ul>
+
+          <h4>Before Thanksgiving (Oct 6-13) — Self-Directed Work</h4>
+          <ul>
+            <li><strong>Assignment 2 Released TODAY:</strong> Due Oct 20 (morning of midterm)</li>
+            <li>Review all lecture materials (Lectures 1-4)</li>
+            <li>Optional: Start thinking about project ideas (low pressure)</li>
+            <li><strong>Study Guide:</strong> Will be released by Oct 10</li>
+          </ul>
+
+          <h4>Oct 13 — Thanksgiving Break (Use Wisely!)</h4>
+          <ul>
+            <li>No class, but good time to review if you're behind</li>
+            <li>Practice with BrainImation platform</li>
+            <li>Review filtering concepts from Assignment 1</li>
+          </ul>
+
+          <h4>Oct 20 — Midterm Exam Structure (REVISED)</h4>
+          <p><strong>First Half (9:00-10:15):</strong> Review session & Q&A</p>
+          <ul>
+            <li>Open questions on any topics</li>
+            <li>Practice problems with immediate feedback</li>
+            <li>Clarification of exam format</li>
+          </ul>
+          <p><strong>Second Half (10:30-12:00):</strong> Midterm Exam</p>
+          <ul>
+            <li>Practical: Basic EEG data analysis task (similar to Assignment 1)</li>
+            <li>Theory: Short answer questions on key concepts</li>
+            <li>Applied: Interpret a real EEG result or design a simple protocol</li>
+          </ul>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="time-block">15-MINUTE BREAK</div>
+
+        <div class="time-block">BrainImation: The BCI Turing Machine (60 minutes)</div>
+
+        <h3>What is a "BCI Turing Machine"?</h3>
+        <p>A Turing Machine is a theoretical device that can compute anything computable—it's universal. BrainImation is like that for brain-computer interfaces: <strong>any BCI, neurofeedback system, or neuroart installation can be replicated in BrainImation through code.</strong> It combines real-time EEG data, creative coding (P5.js), and a live editor into one integrated platform.</p>
+
+        <p><strong>What makes it universal:</strong></p>
+        <ul>
+          <li>✅ <strong>Real EEG data:</strong> Direct Bluetooth connection to Muse headsets OR realistic simulation</li>
+          <li>✅ <strong>Live coding environment:</strong> Write code and see results instantly—no compilation, no setup</li>
+          <li>✅ <strong>Full EEG access:</strong> Raw signals (256 Hz), frequency bands (alpha, beta, theta, delta, gamma), derived metrics</li>
+          <li>✅ <strong>Creative freedom:</strong> P5.js graphics, sound, interaction—anything you can imagine</li>
+          <li>✅ <strong>Research-grade:</strong> Can collect data, implement actual BCI protocols, run experiments</li>
+        </ul>
+
+        <h3>Real-World Applications You Can Replicate</h3>
+
+        <div class="simplified-option">
+          <h4 style="margin-top: 0; color: var(--accent);">🎨 Neuroart & Brain Visualization</h4>
+          <p><strong>What professionals use:</strong> Artists like Lisa Park ($50k installations), research visualizations for papers, museum exhibits</p>
+          <p><strong>What you can do in BrainImation:</strong></p>
+          <ul>
+            <li>Create particle systems driven by alpha waves</li>
+            <li>Generate mandalas that respond to meditation states</li>
+            <li>Design sonifications where brain rhythms create music</li>
+            <li>Build interactive installations for exhibitions</li>
+          </ul>
+          <p><strong>Example code:</strong> See the "Neural Mandala" and "Brain Particles" templates in BrainImation</p>
+        </div>
+
+        <div class="simplified-option">
+          <h4 style="margin-top: 0; color: var(--accent);">🧘 Neurofeedback Training</h4>
+          <p><strong>What professionals use:</strong> Clinical neurofeedback systems ($10k-50k), meditation apps, ADHD treatment, peak performance training</p>
+          <p><strong>What you can do in BrainImation:</strong></p>
+          <ul>
+            <li>Build attention training games (increase beta = score points)</li>
+            <li>Create meditation guides (high alpha = calming visuals/sounds)</li>
+            <li>Design flow-state monitors for athletes/musicians</li>
+            <li>Implement closed-loop training protocols</li>
+          </ul>
+          <p><strong>Example code:</strong> See the "Attention Meter" and "Alpha Waves" templates</p>
+        </div>
+
+        <div class="simplified-option">
+          <h4 style="margin-top: 0; color: var(--accent);">🔬 Research & Data Collection</h4>
+          <p><strong>What professionals use:</strong> Lab-grade EEG systems (LabChart, BrainVision), MATLAB/Python analysis pipelines, specialized BCI software</p>
+          <p><strong>What you can do in BrainImation:</strong></p>
+          <ul>
+            <li>Collect real-time EEG data from multiple channels</li>
+            <li>Visualize ERPs (event-related potentials) live</li>
+            <li>Implement epoch-based analysis (like Assignment 1, but in real-time!)</li>
+            <li>Export data for offline analysis</li>
+            <li>Run actual BCI classification experiments</li>
+          </ul>
+          <p><strong>Example code:</strong> See "EEG Trace", "Multi-Channel", and "Epochs" templates</p>
+        </div>
+
+        <div class="simplified-option">
+          <h4 style="margin-top: 0; color: var(--accent);">🎮 Interactive BCIs</h4>
+          <p><strong>What professionals use:</strong> Commercial BCI games, assistive technology for paralysis, military/aerospace attention monitors</p>
+          <p><strong>What you can do in BrainImation:</strong></p>
+          <ul>
+            <li>Control games with your mind (move objects, select items)</li>
+            <li>Build communication devices (P300 spellers)</li>
+            <li>Create attention-based interfaces</li>
+            <li>Design SSVEP-based control systems</li>
+          </ul>
+          <p><strong>Example code:</strong> Combine templates with interaction logic</p>
+        </div>
+
+        <h3>The Platform: A Quick Tour</h3>
+        <p><strong>🖥️ Left Panel:</strong> Live P5.js canvas—your visualization/application runs here in real-time</p>
+        <p><strong>💻 Center Panel:</strong> Monaco code editor with autocomplete for both P5.js functions AND eegData properties. Write code → it auto-runs after you pause typing.</p>
+        <p><strong>📖 Right Panel (toggleable):</strong> Function reference, EEG data documentation, and AI assistant for code generation</p>
+        <p><strong>📊 Bottom Panel:</strong> Live EEG metrics (alpha, beta, theta, delta) with simulation controls</p>
+
+        <h3>Key EEG Data Access Patterns</h3>
+        
+        <div class="code-demo" style="background: #2d1b2d; color: #f8f4f8; border-radius: 8px; padding: 16px; margin: 16px 0; font-family: monospace; font-size: 13px; overflow-x: auto;">
+<span style="color: #6a9955;">// Pattern 1: Use frequency band power (most common)</span><br>
+<span style="color: #c586c0;">let</span> size = <span style="color: #dcdcaa;">map</span>(eegData.alpha, <span style="color: #b5cea8;">0</span>, <span style="color: #b5cea8;">1</span>, <span style="color: #b5cea8;">10</span>, <span style="color: #b5cea8;">100</span>);<br>
+<span style="color: #dcdcaa;">ellipse</span>(width/<span style="color: #b5cea8;">2</span>, height/<span style="color: #b5cea8;">2</span>, size);<br>
+<br>
+<span style="color: #6a9955;">// Pattern 2: Use derived metrics</span><br>
+<span style="color: #c586c0;">let</span> brightness = eegData.attention * <span style="color: #b5cea8;">100</span>;<br>
+<span style="color: #dcdcaa;">background</span>(<span style="color: #b5cea8;">0</span>, <span style="color: #b5cea8;">0</span>, brightness);<br>
+<br>
+<span style="color: #6a9955;">// Pattern 3: Access raw EEG for research</span><br>
+<span style="color: #c586c0;">let</span> tp9Samples = eegData.<span style="color: #dcdcaa;">getRawChannel</span>(<span style="color: #ce9178;">'TP9'</span>, <span style="color: #b5cea8;">100</span>);<br>
+<span style="color: #c586c0;">for</span> (<span style="color: #c586c0;">let</span> i = <span style="color: #b5cea8;">0</span>; i &lt; tp9Samples.length; i++) {<br>
+&nbsp;&nbsp;<span style="color: #c586c0;">let</span> y = <span style="color: #dcdcaa;">map</span>(tp9Samples[i], <span style="color: #b5cea8;">-100</span>, <span style="color: #b5cea8;">100</span>, height, <span style="color: #b5cea8;">0</span>);<br>
+&nbsp;&nbsp;<span style="color: #dcdcaa;">point</span>(i, y);<br>
+}<br>
+<br>
+<span style="color: #6a9955;">// Pattern 4: Multi-channel epoch analysis</span><br>
+<span style="color: #c586c0;">let</span> epoch = eegData.<span style="color: #dcdcaa;">getRecentEpoch</span>(<span style="color: #b5cea8;">128</span>); <span style="color: #6a9955;">// 0.5 seconds</span><br>
+<span style="color: #6a9955;">// epoch[timepoint][channel] → 4 channels × 128 samples</span>
+        </div>
+
+        <h3>Built-in Examples to Learn From</h3>
+        <p>BrainImation includes 9 example templates demonstrating different applications:</p>
+        <ul>
+          <li><strong>Basic Animation:</strong> Simple starter—color and size respond to brain data</li>
+          <li><strong>Alpha Waves:</strong> Ripple effects visualize relaxation states</li>
+          <li><strong>Attention Meter:</strong> Neurofeedback bar showing focus level</li>
+          <li><strong>Brain Particles:</strong> Particle system for neuroart installations</li>
+          <li><strong>Neural Mandala:</strong> Sacred geometry driven by meditation</li>
+          <li><strong>Wave Visualization:</strong> Classic EEG display showing all frequency bands</li>
+          <li><strong>EEG Trace:</strong> Real-time raw signal display (research tool)</li>
+          <li><strong>Multi-Channel:</strong> All 4 electrodes simultaneously</li>
+          <li><strong>Epochs:</strong> Event-related potential analysis (research-grade)</li>
+        </ul>
+
+        <div class="demo-block">
+          <strong>🎯 HANDS-ON SESSION (30 minutes):</strong> <a href="./brainimation.html" style="color: var(--accent-2); text-decoration: underline;">Launch BrainImation</a><br><br>
+          <strong>Activity 1 (10 min):</strong> Load each example, run it, modify one parameter (color, size, speed)<br>
+          <strong>Activity 2 (10 min):</strong> Choose one example and customize it significantly<br>
+          <strong>Activity 3 (10 min):</strong> Brainstorm your Assignment 2 project idea
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="time-block">Revised Final Project Timeline (30 minutes)</div>
+
+        <div class="project-timeline-revised">
+          <h3>🎯 Simplified Final Project Plan</h3>
+          
+          <p><strong>New Reality:</strong> We're starting the project process 3-4 weeks behind the original schedule. Rather than rushing through a suboptimal project, we're going to adjust expectations and focus on <strong>quality over complexity</strong>.</p>
+
+          <h4>TODAY: Three Simplified Project Options</h4>
+          
+          <div class="simplified-option">
+            <h4 style="margin-top: 0; color: var(--accent);">Option 1: Mini Data Analysis</h4>
+            <p><strong>What you'll do:</strong> Analyze an existing neuroimaging dataset to answer a focused research question.</p>
+            <ul>
+              <li>Use publicly available data (no data collection needed)</li>
+              <li>Focus on 1-2 specific analyses</li>
+              <li>Create 2-3 key visualizations</li>
+              <li>Write brief report (4-6 pages)</li>
+            </ul>
+            <p><strong>Examples:</strong> Compare alpha power during eyes open vs. closed in public EEG dataset; analyze P300 responses in existing ERP dataset; explore motor cortex connectivity during hand movements.</p>
+          </div>
+
+          <div class="simplified-option">
+            <h4 style="margin-top: 0; color: var(--accent);">Option 2: BrainImation Project</h4>
+            <p><strong>What you'll do:</strong> Create an original BrainImation application—brain art, neurofeedback tool, or research visualization.</p>
+            <ul>
+              <li>Build on Assignment 2 work or create something new</li>
+              <li>Must go beyond templates: add novel features/interactions</li>
+              <li>Test with real Muse data (or justify simulation use)</li>
+              <li>Document design, code, and results (4-6 pages)</li>
+              <li>Include video demonstration</li>
+            </ul>
+            <p><strong>Examples:</strong> Neuroart installation for exhibition; meditation training game; ADHD attention monitor; BCI music controller; multi-user brain sync visualization.</p>
+          </div>
+
+          <div class="simplified-option">
+            <h4 style="margin-top: 0; color: var(--accent);">Option 3: Device/Protocol Design</h4>
+            <p><strong>What you'll do:</strong> Design (not necessarily build) a neurostimulation protocol or device modification.</p>
+            <ul>
+              <li>Focus on conceptual design and justification</li>
+              <li>Include detailed specifications and safety analysis</li>
+              <li>Create diagrams/schematics</li>
+              <li>Write design document (4-6 pages)</li>
+            </ul>
+            <p><strong>Examples:</strong> tDCS protocol for specific cognitive task; improved electrode design for mobile EEG; combined EEG-tDCS setup; neurofeedback training protocol.</p>
+          </div>
+
+          <h4>Revised Project Milestones</h4>
+          <table style="font-size: 13px;">
+            <tr>
+              <th>Date</th>
+              <th>Milestone</th>
+              <th>What You Need to Do</th>
+            </tr>
+            <tr>
+              <td><strong>Oct 27</strong></td>
+              <td>Project Selection</td>
+              <td>Choose option + team (if working in pairs). Submit 1-paragraph description.</td>
+            </tr>
+            <tr>
+              <td><strong>Nov 3</strong></td>
+              <td>Brief Proposal</td>
+              <td>2-page proposal: question/goal, approach, expected outcomes</td>
+            </tr>
+            <tr>
+              <td><strong>Nov 17</strong></td>
+              <td>Progress Check</td>
+              <td>Show preliminary results/progress to instructor (informal)</td>
+            </tr>
+            <tr>
+              <td><strong>Nov 24</strong></td>
+              <td>Draft Results</td>
+              <td>Have main analysis/implementation completed</td>
+            </tr>
+            <tr>
+              <td><strong>Dec 1</strong></td>
+              <td>Presentation Prep</td>
+              <td>Create slides, practice presentation</td>
+            </tr>
+            <tr>
+              <td><strong>Dec 7</strong></td>
+              <td>Final Presentations</td>
+              <td>10-minute presentation + 3-page written report</td>
+            </tr>
+          </table>
+
+          <p class="note"><strong>Reduced Requirements:</strong> Final reports now 3-4 pages (not 8-12), presentations 10 minutes (not 15), and projects can be individual or pairs (teams of 3 optional but not required).</p>
+
+          <p class="note"><strong>Pre-Approved Datasets:</strong> We'll provide a list of ready-to-use datasets with tutorials by Oct 27, so you can start analyzing immediately without waiting for data collection approvals.</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="time-block">What You Need to Do This Week (15 minutes)</div>
+
+        <h3>Action Items Before Oct 13</h3>
+        <ul>
+          <li><strong>🎨 Complete Assignment 2:</strong> Released today, due Oct 20 (morning of midterm). Create your own BrainImation project!</li>
+          <li><strong>📚 Review Lectures 1-4:</strong> Go through slides, understand EEG fundamentals and BCI concepts</li>
+          <li><strong>🧠 Practice BrainImation:</strong> Try all 9 examples, modify code, understand eegData access patterns</li>
+          <li><strong>⚡ Practice EEG concepts:</strong> Filtering, frequency bands, artifacts, real-time processing</li>
+          <li><strong>📖 Study Guide:</strong> Will be released Oct 10—complete all practice problems before Oct 20</li>
+        </ul>
+
+        <h3>Assignment 2 Details (Due Oct 20, 9:00 AM)</h3>
+        <div class="simplified-option">
+          <h4 style="margin-top: 0; color: var(--accent);">🎯 Your Mission: Create Original BrainImation Project</h4>
+          <p><strong>Choose ONE application type:</strong></p>
+          <ul>
+            <li><strong>Brain Art:</strong> Creative visualization driven by EEG (submit video + code)</li>
+            <li><strong>Neurofeedback:</strong> Training tool for attention/meditation/flow state</li>
+            <li><strong>Research Tool:</strong> Data visualization or analysis application</li>
+            <li><strong>Interactive BCI:</strong> Mind-controlled game or interface</li>
+          </ul>
+          <p><strong>Requirements:</strong></p>
+          <ul>
+            <li>Must use real-time EEG data (simulation OK, but explain why)</li>
+            <li>Must be substantially different from templates (not just color changes)</li>
+            <li>Include brief writeup (1-2 pages): concept, implementation, challenges</li>
+            <li>Submit: code file (.js), writeup, screenshot/video of it running</li>
+          </ul>
+          <p><strong>Grading:</strong> Creativity (30%), Technical implementation (40%), Documentation (20%), Presentation (10%)</p>
+        </div>
+
+        <h3>What to Expect on the Midterm (Oct 20)</h3>
+        <p><strong>Format:</strong> Practical (50%) + Theory (30%) + Applied (20%)</p>
+        <ul>
+          <li><strong>Practical:</strong> Load EEG data, apply filter, create plot—very similar to Assignment 1</li>
+          <li><strong>Theory:</strong> Short answers on frequency bands, artifacts, BCI concepts, real-time processing</li>
+          <li><strong>Applied:</strong> Interpret EEG visualization, explain BrainImation code snippet, or design simple neurofeedback protocol</li>
+        </ul>
+
+        <p><strong>What you CAN use:</strong> Your notes, lecture slides, previous assignments, BrainImation reference<br>
+        <strong>What you CANNOT use:</strong> Internet search, communication with others, AI assistance</p>
+
+        <p class="note"><strong>Midterm Tip:</strong> The best preparation is completing Assignment 2 and understanding how BrainImation accesses EEG data. If you can explain your Assignment 2 code, you'll do great on the exam!</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Resources & Support</h2>
+
+        <h3>BrainImation Platform Resources</h3>
+        <ul>
+          <li><strong>🌐 Platform:</strong> <a href="./brainimation.html">Launch BrainImation</a> (bookmark this!)</li>
+          <li><strong>📖 Built-in Reference:</strong> Click "Reference" button in BrainImation for P5.js and EEG data documentation</li>
+          <li><strong>🤖 AI Assistant:</strong> Configure API key in BrainImation for code generation help (optional)</li>
+          <li><strong>💾 Save/Load:</strong> Use the Save/Load buttons to preserve your work</li>
+          <li><strong>📱 Mobile-friendly:</strong> Works on tablets (landscape mode recommended)</li>
+        </ul>
+
+        <h3>For Assignment 2 (Released Today)</h3>
+        <ul>
+          <li><strong>What:</strong> Create original BrainImation project (brain art, neurofeedback, research, or BCI)</li>
+          <li><strong>Skills:</strong> P5.js graphics, real-time EEG access, creative coding</li>
+          <li><strong>Format:</strong> Code file + writeup + video/screenshot</li>
+          <li><strong>Due:</strong> Oct 20, 9:00 AM (submit before class)</li>
+          <li><strong>Tips:</strong> Start with a template, modify extensively, test with simulation first</li>
+        </ul>
+
+        <h3>Midterm Preparation</h3>
+        <ul>
+          <li><strong>Study Guide:</strong> Will include sample questions, key concepts checklist, BrainImation code examples</li>
+          <li><strong>Office Hours:</strong> Oct 11 & 18, 1:00-3:00 PM (in-person or Zoom—link on Discord)</li>
+          <li><strong>Discord Q&A:</strong> #assignment-help and #brainimation channels for questions</li>
+          <li><strong>Review Materials:</strong> All lecture slides, Assignment 1, BrainImation examples</li>
+        </ul>
+
+        <h3>Learning Resources</h3>
+        <ul>
+          <li><strong>P5.js Tutorials:</strong> <a href="https://p5js.org/learn/">Official P5.js Learning</a> for graphics basics</li>
+          <li><strong>Muse-js Documentation:</strong> <a href="https://github.com/urish/muse-js">GitHub repo</a> for advanced EEG access</li>
+          <li><strong>BCI Research:</strong> <a href="https://scholar.google.com/scholar?q=EEG+brain+computer+interface">Google Scholar</a> for inspiration</li>
+          <li><strong>Neuroart Examples:</strong> Search "Lisa Park EEG art" or "brain visualization" for professional examples</li>
+        </ul>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Looking Ahead: After the Midterm</h2>
+        <p>Once we're past Oct 20, we'll shift into the second half of the course:</p>
+        <ul>
+          <li><strong>Oct 27:</strong> Neurostimulation (tDCS/TMS) + project selection due</li>
+          <li><strong>Nov 3:</strong> fMRI fundamentals + MRI facility tour + project proposal due</li>
+          <li><strong>Nov 17:</strong> fMRI data analysis + progress check-ins (after reading break)</li>
+          <li><strong>Nov 24:</strong> fNIRS & optical imaging + Midterm 2</li>
+          <li><strong>Dec 1:</strong> Project work session + cutting-edge topics</li>
+          <li><strong>Dec 7:</strong> Final presentations (10 min each)</li>
+        </ul>
+
+        <p class="note"><strong>Bottom Line:</strong> BrainImation gives you the power to create professional-grade BCI applications, research tools, and neuroart—all with the EEG knowledge you've built in Assignments 1-2. This is the foundation for everything we'll do moving forward, including your final project.</p>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">BrainImation Platform</span>
+          <span class="tag">Live EEG Coding</span>
+          <span class="tag">Brain Art & BCIs</span>
+          <span class="tag">Assignment 2</span>
+        </div>
+        <div>© <span id="year"></span> Kyle Mathewson</div>
+      </footer>
+    </div>
+
+    <script>
+      // Cache busting script - v20251006
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Force reload if page is cached
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
+    </script>
+  </body>
+</html>
+
