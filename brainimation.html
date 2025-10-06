@@ -245,24 +245,37 @@
         background: var(--bg);
         padding: 8px 12px;
         display: flex;
+        align-items: center;
         gap: 8px;
-        overflow-x: auto;
         font-size: 11px;
       }
 
-      .example-btn {
-        padding: 4px 8px;
+      .example-selector {
+        flex: 1;
+        padding: 6px 10px;
         background: var(--bg-2);
         border: 1px solid var(--muted);
         border-radius: 4px;
-        cursor: pointer;
-        white-space: nowrap;
         color: var(--text);
+        font-family: inherit;
+        font-size: 11px;
+        cursor: pointer;
         transition: all 0.2s;
       }
-      .example-btn:hover {
-        background: var(--accent);
+      
+      .example-selector:hover {
         border-color: var(--accent);
+      }
+      
+      .example-selector:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: var(--bg);
+      }
+      
+      .examples-label {
+        color: var(--muted);
+        white-space: nowrap;
       }
 
 
@@ -515,15 +528,47 @@
       <div class="code-panel">
         <div class="panel-header">Live P5.js Code Editor</div>
         <div class="examples-bar">
-          <div class="example-btn" data-example="basic">Basic Animation</div>
-          <div class="example-btn" data-example="alpha">Alpha Waves</div>
-          <div class="example-btn" data-example="attention">Attention Meter</div>
-          <div class="example-btn" data-example="particles">Brain Particles</div>
-          <div class="example-btn" data-example="mandala">Neural Mandala</div>
-          <div class="example-btn" data-example="waves">Wave Visualization</div>
-          <div class="example-btn" data-example="eegtrace">EEG Trace</div>
-          <div class="example-btn" data-example="multichannel">Multi-Channel</div>
-          <div class="example-btn" data-example="epochs">Epoch View</div>
+          <label for="example-selector" class="examples-label">Example Animations:</label>
+          <select id="example-selector" class="example-selector">
+            <option value="">-- Select an Example --</option>
+            <optgroup label="Getting Started">
+              <option value="basic">Basic Animation</option>
+              <option value="basicShapes">Basic Shapes</option>
+              <option value="functionExample">Function Example</option>
+            </optgroup>
+            <optgroup label="Brain Wave Visualizations">
+              <option value="alpha">Alpha Waves</option>
+              <option value="waves">Wave Visualization</option>
+              <option value="BasicFrequencyBands">Basic Frequency Bands</option>
+              <option value="bandOrbitz">Band Orbitz</option>
+              <option value="piWedges">Pi Wedges</option>
+              <option value="spectra">Spectra</option>
+            </optgroup>
+            <optgroup label="Attention & Meditation">
+              <option value="attention">Attention Meter</option>
+              <option value="mandala">Neural Mandala</option>
+            </optgroup>
+            <optgroup label="Particle Systems">
+              <option value="particles">Brain Particles</option>
+              <option value="ColourBalls">Colour Balls</option>
+              <option value="MultipleBalls">Multiple Balls</option>
+            </optgroup>
+            <optgroup label="3D & Advanced">
+              <option value="3dTorus">3D Torus</option>
+              <option value="AlphaSnake">Alpha Snake</option>
+              <option value="SplineBounce">Spline Bounce</option>
+            </optgroup>
+            <optgroup label="Drawing & Interaction">
+              <option value="BrainDraw">Brain Draw</option>
+              <option value="bouncingLine">Bouncing Line</option>
+              <option value="ghostLines">Ghost Lines</option>
+            </optgroup>
+            <optgroup label="Raw EEG Data">
+              <option value="eegtrace">EEG Trace</option>
+              <option value="multichannel">Multi-Channel EEG</option>
+              <option value="epochs">Epoch View</option>
+            </optgroup>
+          </select>
         </div>
         <div class="code-editor" id="code-editor"></div>
         <div class="error-console" id="error-console"></div>
@@ -2370,6 +2415,633 @@ function draw() {
     textSize(14);
     text("Epochs will appear as data accumulates", width/2, height/2 + 30);
   }
+}`,
+
+            // New examples from p5.eegedu.art repository
+            basicShapes: `// Basic shapes with brain control
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  // Circle size controlled by alpha
+  let circleSize = 50 + eegData.alpha * 150;
+  fill(180, 70, 90);
+  ellipse(width/4, height/2, circleSize);
+  
+  // Rectangle size controlled by beta
+  let rectSize = 30 + eegData.beta * 100;
+  fill(270, 70, 90);
+  rect(width/2 - rectSize/2, height/2 - rectSize/2, rectSize, rectSize);
+  
+  // Triangle controlled by theta
+  let triSize = 40 + eegData.theta * 120;
+  fill(60, 70, 90);
+  triangle(
+    3*width/4, height/2 + triSize/2,
+    3*width/4 - triSize/2, height/2 - triSize/2,
+    3*width/4 + triSize/2, height/2 - triSize/2
+  );
+}`,
+
+            functionExample: `// Function example with EEG
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  frameRate(30);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  // Draw grid of brain-controlled shapes
+  for (let x = 0; x < 5; x++) {
+    for (let y = 0; y < 5; y++) {
+      drawBrainShape(
+        x * width/5 + width/10,
+        y * height/5 + height/10,
+        x, y
+      );
+    }
+  }
+}
+
+function drawBrainShape(x, y, gridX, gridY) {
+  push();
+  translate(x, y);
+  
+  let size = 20 + eegData.attention * 40;
+  let hue = (gridX * 60 + gridY * 30 + frameCount) % 360;
+  let brightness = 50 + eegData.meditation * 40;
+  
+  fill(hue, 70, brightness);
+  noStroke();
+  ellipse(0, 0, size);
+  pop();
+}`,
+
+            BasicFrequencyBands: `// Basic frequency bands visualization
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  // Draw bars for each frequency band
+  let bands = [
+    {name: 'Delta', value: eegData.delta, hue: 0},
+    {name: 'Theta', value: eegData.theta, hue: 60},
+    {name: 'Alpha', value: eegData.alpha, hue: 180},
+    {name: 'Beta', value: eegData.beta, hue: 270},
+    {name: 'Gamma', value: eegData.gamma, hue: 300}
+  ];
+  
+  let barWidth = width / bands.length;
+  
+  for (let i = 0; i < bands.length; i++) {
+    let band = bands[i];
+    let x = i * barWidth;
+    let barHeight = band.value * height * 0.8;
+    
+    // Draw bar
+    fill(band.hue, 70, 90);
+    rect(x, height - barHeight, barWidth - 10, barHeight);
+    
+    // Draw label
+    fill(0, 0, 100);
+    textAlign(CENTER, BOTTOM);
+    textSize(12);
+    text(band.name, x + barWidth/2, height - 5);
+    
+    // Draw value
+    textAlign(CENTER, TOP);
+    textSize(10);
+    text(band.value.toFixed(2), x + barWidth/2, height - barHeight - 5);
+  }
+}`,
+
+            bandOrbitz: `// Band orbitz - frequency bands as orbiting circles
+let angle = 0;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5, 0.1);
+  translate(width/2, height/2);
+  
+  let bands = [
+    {name: 'Delta', value: eegData.delta, hue: 0, radius: 50},
+    {name: 'Theta', value: eegData.theta, hue: 60, radius: 100},
+    {name: 'Alpha', value: eegData.alpha, hue: 180, radius: 150},
+    {name: 'Beta', value: eegData.beta, hue: 270, radius: 200},
+    {name: 'Gamma', value: eegData.gamma, hue: 300, radius: 250}
+  ];
+  
+  for (let i = 0; i < bands.length; i++) {
+    let band = bands[i];
+    let a = angle + (i * TWO_PI / bands.length);
+    let r = band.radius;
+    let size = 10 + band.value * 40;
+    
+    let x = cos(a) * r;
+    let y = sin(a) * r;
+    
+    fill(band.hue, 70, 90, 0.8);
+    noStroke();
+    ellipse(x, y, size);
+    
+    // Draw orbit path
+    noFill();
+    stroke(band.hue, 30, 50, 0.3);
+    ellipse(0, 0, r * 2);
+  }
+  
+  angle += 0.02 * eegData.attention;
+}`,
+
+            piWedges: `// Pi wedges - frequency bands as pie chart
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 10);
+  translate(width/2, height/2);
+  
+  let bands = [
+    {name: 'Delta', value: eegData.delta, hue: 0},
+    {name: 'Theta', value: eegData.theta, hue: 60},
+    {name: 'Alpha', value: eegData.alpha, hue: 180},
+    {name: 'Beta', value: eegData.beta, hue: 270},
+    {name: 'Gamma', value: eegData.gamma, hue: 300}
+  ];
+  
+  let total = bands.reduce((sum, b) => sum + b.value, 0);
+  let startAngle = 0;
+  let radius = min(width, height) * 0.35;
+  
+  for (let i = 0; i < bands.length; i++) {
+    let band = bands[i];
+    let angle = (band.value / total) * TWO_PI;
+    
+    // Draw wedge
+    fill(band.hue, 70, 90);
+    arc(0, 0, radius * 2, radius * 2, startAngle, startAngle + angle, PIE);
+    
+    // Draw label
+    let midAngle = startAngle + angle / 2;
+    let labelX = cos(midAngle) * radius * 0.6;
+    let labelY = sin(midAngle) * radius * 0.6;
+    
+    fill(0, 0, 100);
+    textAlign(CENTER, CENTER);
+    textSize(12);
+    text(band.name, labelX, labelY);
+    
+    startAngle += angle;
+  }
+}`,
+
+            spectra: `// Spectra - frequency spectrum visualization
+let spectrumHistory = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  // Add current spectrum to history
+  spectrumHistory.push({
+    delta: eegData.delta,
+    theta: eegData.theta,
+    alpha: eegData.alpha,
+    beta: eegData.beta,
+    gamma: eegData.gamma
+  });
+  
+  if (spectrumHistory.length > 100) {
+    spectrumHistory.shift();
+  }
+  
+  // Draw spectrum over time
+  let bands = ['delta', 'theta', 'alpha', 'beta', 'gamma'];
+  let hues = [0, 60, 180, 270, 300];
+  
+  for (let b = 0; b < bands.length; b++) {
+    stroke(hues[b], 70, 90);
+    strokeWeight(2);
+    noFill();
+    
+    beginShape();
+    for (let i = 0; i < spectrumHistory.length; i++) {
+      let x = map(i, 0, spectrumHistory.length - 1, 50, width - 50);
+      let y = height/2 + (b - 2) * 60 - spectrumHistory[i][bands[b]] * 40;
+      vertex(x, y);
+    }
+    endShape();
+    
+    // Label
+    fill(hues[b], 70, 90);
+    noStroke();
+    textAlign(LEFT, CENTER);
+    textSize(10);
+    text(bands[b].toUpperCase(), 10, height/2 + (b - 2) * 60);
+  }
+}`,
+
+            ColourBalls: `// Colour balls - attention-controlled bouncing balls
+let balls = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  for (let i = 0; i < 20; i++) {
+    balls.push({
+      x: random(width),
+      y: random(height),
+      vx: random(-3, 3),
+      vy: random(-3, 3),
+      size: random(10, 40),
+      hue: random(360)
+    });
+  }
+}
+
+function draw() {
+  background(0, 0, 5, 0.2);
+  
+  for (let ball of balls) {
+    // Update position
+    ball.x += ball.vx * (1 + eegData.attention);
+    ball.y += ball.vy * (1 + eegData.attention);
+    
+    // Bounce off edges
+    if (ball.x < 0 || ball.x > width) ball.vx *= -1;
+    if (ball.y < 0 || ball.y > height) ball.vy *= -1;
+    
+    // Keep in bounds
+    ball.x = constrain(ball.x, 0, width);
+    ball.y = constrain(ball.y, 0, height);
+    
+    // Rotate hue based on meditation
+    ball.hue = (ball.hue + eegData.meditation * 2) % 360;
+    
+    // Draw ball
+    fill(ball.hue, 70, 90, 0.8);
+    noStroke();
+    ellipse(ball.x, ball.y, ball.size);
+  }
+}`,
+
+            MultipleBalls: `// Multiple balls with different behaviors
+let balls = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      balls.push({
+        x: (i + 1) * width / 4,
+        y: (j + 1) * height / 4,
+        vx: random(-2, 2),
+        vy: random(-2, 2),
+        type: (i * 3 + j) % 5,
+        phase: random(TWO_PI)
+      });
+    }
+  }
+}
+
+function draw() {
+  background(0, 0, 10, 0.1);
+  
+  let bands = [eegData.delta, eegData.theta, eegData.alpha, eegData.beta, eegData.gamma];
+  let hues = [0, 60, 180, 270, 300];
+  
+  for (let ball of balls) {
+    let bandValue = bands[ball.type];
+    let hue = hues[ball.type];
+    
+    // Update with different behavior per type
+    ball.x += ball.vx * (1 + bandValue);
+    ball.y += ball.vy * (1 + bandValue);
+    
+    // Bounce
+    if (ball.x < 0 || ball.x > width) ball.vx *= -1;
+    if (ball.y < 0 || ball.y > height) ball.vy *= -1;
+    
+    ball.x = constrain(ball.x, 0, width);
+    ball.y = constrain(ball.y, 0, height);
+    
+    // Draw
+    let size = 15 + bandValue * 30;
+    fill(hue, 70, 90, 0.7);
+    noStroke();
+    ellipse(ball.x, ball.y, size);
+  }
+}`,
+
+            '3dTorus': `// 3D Torus controlled by brain waves
+let rotX = 0;
+let rotY = 0;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  // Setup 3D
+  push();
+  translate(width/2, height/2);
+  
+  // Rotate based on brain waves
+  rotX += eegData.alpha * 0.02;
+  rotY += eegData.beta * 0.02;
+  
+  rotateX(rotX);
+  rotateY(rotY);
+  
+  // Draw torus with changing parameters
+  let radius = 50 + eegData.meditation * 50;
+  let tubeRadius = 10 + eegData.attention * 20;
+  
+  // Color based on theta
+  let hue = eegData.theta * 360;
+  fill(hue, 70, 90);
+  noStroke();
+  
+  torus(radius, tubeRadius);
+  pop();
+  
+  // Info text
+  fill(0, 0, 100);
+  textAlign(LEFT, TOP);
+  textSize(10);
+  text("Alpha: rotation X", 10, 10);
+  text("Beta: rotation Y", 10, 25);
+  text("Meditation: radius", 10, 40);
+  text("Attention: tube", 10, 55);
+}`,
+
+            AlphaSnake: `// Alpha snake - snake controlled by alpha waves
+let snake = [];
+let angle = 0;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  // Initialize snake
+  for (let i = 0; i < 50; i++) {
+    snake.push({x: width/2, y: height/2});
+  }
+}
+
+function draw() {
+  background(0, 0, 5, 0.1);
+  
+  // Move snake head based on alpha
+  angle += map(eegData.alpha, 0, 1, -0.1, 0.1);
+  let speed = 2 + eegData.beta * 3;
+  
+  let headX = snake[0].x + cos(angle) * speed;
+  let headY = snake[0].y + sin(angle) * speed;
+  
+  // Wrap around
+  headX = (headX + width) % width;
+  headY = (headY + height) % height;
+  
+  // Add new head
+  snake.unshift({x: headX, y: headY});
+  snake.pop();
+  
+  // Draw snake
+  for (let i = 0; i < snake.length; i++) {
+    let hue = (i * 5 + frameCount) % 360;
+    let size = map(i, 0, snake.length - 1, 20, 5);
+    let brightness = 50 + eegData.attention * 40;
+    
+    fill(hue, 70, brightness);
+    noStroke();
+    ellipse(snake[i].x, snake[i].y, size);
+  }
+}`,
+
+            SplineBounce: `// Spline bounce - smooth curves with EEG
+let points = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  // Initialize points
+  for (let i = 0; i < 8; i++) {
+    points.push({
+      x: random(width),
+      y: random(height),
+      vx: random(-2, 2),
+      vy: random(-2, 2)
+    });
+  }
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  // Update points
+  for (let p of points) {
+    p.x += p.vx * (1 + eegData.attention * 0.5);
+    p.y += p.vy * (1 + eegData.attention * 0.5);
+    
+    if (p.x < 0 || p.x > width) p.vx *= -1;
+    if (p.y < 0 || p.y > height) p.vy *= -1;
+    
+    p.x = constrain(p.x, 0, width);
+    p.y = constrain(p.y, 0, height);
+  }
+  
+  // Draw smooth curve through points
+  stroke(180 + eegData.alpha * 180, 70, 90);
+  strokeWeight(2 + eegData.meditation * 5);
+  noFill();
+  
+  beginShape();
+  for (let i = 0; i < points.length; i++) {
+    curveVertex(points[i].x, points[i].y);
+  }
+  // Repeat first points to close curve
+  curveVertex(points[0].x, points[0].y);
+  curveVertex(points[1].x, points[1].y);
+  endShape();
+  
+  // Draw control points
+  for (let p of points) {
+    fill(60, 70, 90);
+    noStroke();
+    ellipse(p.x, p.y, 8);
+  }
+}`,
+
+            BrainDraw: `// Brain draw - draw with your mind
+let drawing = [];
+let x, y;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  x = width/2;
+  y = height/2;
+}
+
+function draw() {
+  // Fade background slowly
+  background(0, 0, 5, 0.02);
+  
+  // Move based on brain waves
+  let dx = map(eegData.alpha - 0.5, -0.5, 0.5, -3, 3);
+  let dy = map(eegData.beta - 0.5, -0.5, 0.5, -3, 3);
+  
+  x += dx;
+  y += dy;
+  
+  // Keep in bounds
+  x = constrain(x, 0, width);
+  y = constrain(y, 0, height);
+  
+  // Draw if attention is high
+  if (eegData.attention > 0.3) {
+    let hue = eegData.theta * 360;
+    let size = 5 + eegData.meditation * 20;
+    
+    fill(hue, 70, 90, 0.6);
+    noStroke();
+    ellipse(x, y, size);
+    
+    drawing.push({x: x, y: y, hue: hue, size: size});
+    
+    // Limit history
+    if (drawing.length > 500) {
+      drawing.shift();
+    }
+  }
+  
+  // Draw cursor
+  stroke(0, 0, 100);
+  strokeWeight(2);
+  noFill();
+  ellipse(x, y, 20);
+  
+  // Instructions
+  fill(0, 0, 100);
+  textAlign(LEFT, TOP);
+  textSize(10);
+  text("Alpha: move X | Beta: move Y", 10, 10);
+  text("Attention: draw | Theta: color | Meditation: size", 10, 25);
+}`,
+
+            bouncingLine: `// Bouncing line with brain control
+let x1, y1, x2, y2;
+let vx1, vy1, vx2, vy2;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  x1 = width/4;
+  y1 = height/2;
+  x2 = 3*width/4;
+  y2 = height/2;
+  
+  vx1 = random(-3, 3);
+  vy1 = random(-3, 3);
+  vx2 = random(-3, 3);
+  vy2 = random(-3, 3);
+}
+
+function draw() {
+  background(0, 0, 5, 0.1);
+  
+  // Update endpoints
+  let speed = 1 + eegData.attention;
+  x1 += vx1 * speed;
+  y1 += vy1 * speed;
+  x2 += vx2 * speed;
+  y2 += vy2 * speed;
+  
+  // Bounce
+  if (x1 < 0 || x1 > width) vx1 *= -1;
+  if (y1 < 0 || y1 > height) vy1 *= -1;
+  if (x2 < 0 || x2 > width) vx2 *= -1;
+  if (y2 < 0 || y2 > height) vy2 *= -1;
+  
+  x1 = constrain(x1, 0, width);
+  y1 = constrain(y1, 0, height);
+  x2 = constrain(x2, 0, width);
+  y2 = constrain(y2, 0, height);
+  
+  // Draw line with varying thickness
+  let weight = 1 + eegData.alpha * 20;
+  let hue = eegData.theta * 360;
+  
+  stroke(hue, 70, 90);
+  strokeWeight(weight);
+  line(x1, y1, x2, y2);
+  
+  // Draw endpoints
+  noStroke();
+  fill(hue, 90, 90);
+  ellipse(x1, y1, 15);
+  ellipse(x2, y2, 15);
+}`,
+
+            ghostLines: `// Ghost lines - trailing line patterns
+let lines = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5, 0.05);
+  
+  // Add new line
+  if (frameCount % 3 === 0) {
+    lines.push({
+      x1: width/2 + cos(frameCount * 0.05) * 100,
+      y1: height/2 + sin(frameCount * 0.05) * 100,
+      x2: width/2 + cos(frameCount * 0.05 + PI) * 100,
+      y2: height/2 + sin(frameCount * 0.05 + PI) * 100,
+      life: 1.0,
+      hue: (frameCount + eegData.alpha * 360) % 360
+    });
+  }
+  
+  // Draw and update lines
+  for (let i = lines.length - 1; i >= 0; i--) {
+    let line = lines[i];
+    
+    // Expand line
+    let expansion = (1 - line.life) * eegData.attention * 50;
+    let x1 = line.x1 + cos(atan2(line.y1 - height/2, line.x1 - width/2)) * expansion;
+    let y1 = line.y1 + sin(atan2(line.y1 - height/2, line.x1 - width/2)) * expansion;
+    let x2 = line.x2 + cos(atan2(line.y2 - height/2, line.x2 - width/2)) * expansion;
+    let y2 = line.y2 + sin(atan2(line.y2 - height/2, line.x2 - width/2)) * expansion;
+    
+    stroke(line.hue, 70, 90, line.life);
+    strokeWeight(2 + eegData.meditation * 5);
+    stroke(line.hue, 70, 90, line.life);
+    line(x1, y1, x2, y2);
+    
+    line.life -= 0.01;
+    if (line.life <= 0) {
+      lines.splice(i, 1);
+    }
+  }
 }`
           };
 
@@ -2843,11 +3515,12 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
           }
         });
 
-        // Example buttons
-        document.querySelectorAll('.example-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            codeEditor.loadExample(btn.dataset.example);
-          });
+        // Example selector dropdown
+        document.getElementById('example-selector').addEventListener('change', (e) => {
+          const exampleName = e.target.value;
+          if (exampleName) {
+            codeEditor.loadExample(exampleName);
+          }
         });
 
         // Simulation control sliders
