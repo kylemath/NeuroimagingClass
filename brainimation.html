@@ -568,6 +568,20 @@
               <option value="multichannel">Multi-Channel EEG</option>
               <option value="epochs">Epoch View</option>
             </optgroup>
+            <optgroup label="Noise & Generative">
+              <option value="perlinNoise">Perlin Noise</option>
+              <option value="organicHeatmap">Organic Heatmap</option>
+              <option value="noiseDetail">Noise With Detail</option>
+              <option value="discreteColors">Discrete Colors</option>
+              <option value="smoothColors">Smooth Colors</option>
+              <option value="animatingNoise">Animating Noise</option>
+            </optgroup>
+            <optgroup label="Animation & Motion">
+              <option value="bouncingCircles">Bouncing Circles</option>
+              <option value="waveAnimation">Wave Animation</option>
+              <option value="colorfulGrid">Animated Grid</option>
+              <option value="webcamInput">Webcam Input</option>
+            </optgroup>
           </select>
         </div>
         <div class="code-editor" id="code-editor"></div>
@@ -3041,6 +3055,431 @@ function draw() {
     if (line.life <= 0) {
       lines.splice(i, 1);
     }
+  }
+}`,
+
+            // Examples inspired by PerThirtySix creative coding
+            perlinNoise: `// Perlin noise visualization with EEG control
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  noLoop();
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  let scale = 0.01 + eegData.alpha * 0.02;
+  let detail = floor(1 + eegData.attention * 7);
+  
+  noiseDetail(detail, 0.5);
+  
+  // Draw noise field
+  for (let x = 0; x < width; x += 5) {
+    for (let y = 0; y < height; y += 5) {
+      let noiseVal = noise(x * scale, y * scale, frameCount * 0.01);
+      
+      let hue = map(noiseVal, 0, 1, 180, 300);
+      let brightness = map(noiseVal, 0, 1, 30, 90);
+      
+      fill(hue, 70, brightness);
+      noStroke();
+      rect(x, y, 5, 5);
+    }
+  }
+  
+  // Info
+  fill(0, 0, 100);
+  textAlign(LEFT, TOP);
+  textSize(10);
+  text("Alpha: scale | Attention: detail", 10, 10);
+}
+
+function mousePressed() {
+  redraw();
+}`,
+
+            organicHeatmap: `// Organic heatmap using Perlin noise
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  frameRate(30);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  let scale = 0.005 + eegData.meditation * 0.01;
+  let timeOffset = frameCount * 0.02 * (1 + eegData.beta);
+  
+  // Create organic heatmap
+  for (let x = 0; x < width; x += 8) {
+    for (let y = 0; y < height; y += 8) {
+      let noiseVal = noise(x * scale, y * scale, timeOffset);
+      
+      // Map noise to heat colors
+      let hue = map(noiseVal, 0, 1, 0, 60); // Red to yellow
+      let saturation = 80 + eegData.attention * 20;
+      let brightness = map(noiseVal, 0, 1, 20, 90);
+      
+      fill(hue, saturation, brightness, 0.8);
+      noStroke();
+      ellipse(x, y, 10, 10);
+    }
+  }
+}`,
+
+            noiseDetail: `// Noise with varying detail levels
+let noiseScale = 0.01;
+let detailLevel = 4;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  // EEG controls noise detail
+  detailLevel = 1 + floor(eegData.attention * 7);
+  noiseScale = 0.005 + eegData.alpha * 0.015;
+  
+  noiseDetail(detailLevel, 0.5);
+  
+  // Draw noise patterns
+  loadPixels();
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      let noiseVal = noise(
+        x * noiseScale,
+        y * noiseScale,
+        frameCount * 0.01
+      );
+      
+      let brightness = map(noiseVal, 0, 1, 0, 100);
+      let hue = 200 + eegData.theta * 160;
+      
+      let index = (x + y * width) * 4;
+      let c = color(hue, 70, brightness);
+      
+      pixels[index] = red(c);
+      pixels[index + 1] = green(c);
+      pixels[index + 2] = blue(c);
+      pixels[index + 3] = 255;
+    }
+  }
+  updatePixels();
+  
+  // Info overlay
+  fill(0, 0, 100);
+  textAlign(LEFT, TOP);
+  textSize(12);
+  text(\`Detail: \${detailLevel} octaves\`, 10, 10);
+  text(\`Scale: \${noiseScale.toFixed(3)}\`, 10, 25);
+}`,
+
+            discreteColors: `// Discrete colors from noise
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  let scale = 0.01 + eegData.alpha * 0.02;
+  let colorSteps = 3 + floor(eegData.attention * 7);
+  
+  // Draw with discrete color steps
+  for (let x = 0; x < width; x += 10) {
+    for (let y = 0; y < height; y += 10) {
+      let noiseVal = noise(x * scale, y * scale, frameCount * 0.01);
+      
+      // Discretize the noise value
+      let step = floor(noiseVal * colorSteps) / colorSteps;
+      
+      let hue = step * 360;
+      let brightness = 50 + eegData.meditation * 40;
+      
+      fill(hue, 70, brightness);
+      noStroke();
+      rect(x, y, 10, 10);
+    }
+  }
+  
+  // Show color steps
+  fill(0, 0, 100);
+  textAlign(LEFT, TOP);
+  textSize(12);
+  text(\`Color steps: \${colorSteps}\`, 10, 10);
+}`,
+
+            smoothColors: `// Smooth color transitions from noise
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  let scale = 0.005 + eegData.meditation * 0.01;
+  let speed = 0.01 + eegData.beta * 0.05;
+  
+  // Smooth color field
+  for (let x = 0; x < width; x += 5) {
+    for (let y = 0; y < height; y += 5) {
+      let noiseVal = noise(
+        x * scale,
+        y * scale,
+        frameCount * speed
+      );
+      
+      // Smooth color mapping
+      let hue = noiseVal * 360;
+      let saturation = 60 + eegData.alpha * 30;
+      let brightness = 40 + noiseVal * 50;
+      
+      fill(hue, saturation, brightness);
+      noStroke();
+      rect(x, y, 6, 6);
+    }
+  }
+}`,
+
+            animatingNoise: `// Animating noise field
+let time = 0;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 5, 0.1);
+  
+  let scale = 0.008;
+  let speed = 0.02 + eegData.attention * 0.08;
+  
+  time += speed;
+  
+  // Draw animated noise
+  for (let i = 0; i < 30; i++) {
+    for (let j = 0; j < 30; j++) {
+      let x = i * width / 30;
+      let y = j * height / 30;
+      
+      let noiseVal = noise(
+        i * scale,
+        j * scale,
+        time
+      );
+      
+      let size = noiseVal * 40 * (1 + eegData.alpha);
+      let hue = (noiseVal * 120 + time * 50) % 360;
+      let brightness = 50 + eegData.meditation * 40;
+      
+      fill(hue, 70, brightness, 0.7);
+      noStroke();
+      ellipse(x + width/60, y + height/60, size, size);
+    }
+  }
+}`,
+
+            bouncingCircles: `// Bouncing circles with brain control
+let circles = [];
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  // Create bouncing circles
+  for (let i = 0; i < 10; i++) {
+    circles.push({
+      x: random(width),
+      y: random(height),
+      vx: random(-3, 3),
+      vy: random(-3, 3),
+      size: random(20, 60),
+      hue: random(360)
+    });
+  }
+}
+
+function draw() {
+  background(0, 0, 5, 0.1);
+  
+  for (let circle of circles) {
+    // Update position with attention multiplier
+    let speedMult = 0.5 + eegData.attention * 1.5;
+    circle.x += circle.vx * speedMult;
+    circle.y += circle.vy * speedMult;
+    
+    // Bounce off edges with energy from brain
+    if (circle.x < 0 || circle.x > width) {
+      circle.vx *= -1;
+      circle.hue = (circle.hue + eegData.alpha * 60) % 360;
+    }
+    if (circle.y < 0 || circle.y > height) {
+      circle.vy *= -1;
+      circle.hue = (circle.hue + eegData.beta * 60) % 360;
+    }
+    
+    circle.x = constrain(circle.x, 0, width);
+    circle.y = constrain(circle.y, 0, height);
+    
+    // Draw with alpha affecting size
+    let displaySize = circle.size * (0.7 + eegData.meditation * 0.6);
+    fill(circle.hue, 70, 90, 0.7);
+    noStroke();
+    ellipse(circle.x, circle.y, displaySize);
+  }
+}`,
+
+            waveAnimation: `// Wave animation controlled by brain
+let waveOffset = 0;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  let speed = 0.02 + eegData.beta * 0.08;
+  waveOffset += speed;
+  
+  // Draw multiple wave layers
+  for (let layer = 0; layer < 5; layer++) {
+    let waveAmplitude = 30 + eegData.alpha * 70;
+    let waveFrequency = 0.01 + layer * 0.005;
+    let yBase = (layer + 1) * height / 6;
+    
+    let hue = (layer * 60 + eegData.theta * 120) % 360;
+    
+    fill(hue, 70, 90, 0.5);
+    noStroke();
+    
+    beginShape();
+    vertex(0, height);
+    for (let x = 0; x <= width; x += 5) {
+      let y = yBase + sin((x * waveFrequency) + waveOffset + layer) * waveAmplitude;
+      vertex(x, y);
+    }
+    vertex(width, height);
+    endShape(CLOSE);
+  }
+  
+  // Draw wave on top showing meditation
+  stroke(0, 0, 100);
+  strokeWeight(2);
+  noFill();
+  
+  beginShape();
+  for (let x = 0; x <= width; x += 5) {
+    let y = height/2 + sin((x * 0.02) + waveOffset) * 
+            (50 + eegData.meditation * 100);
+    vertex(x, y);
+  }
+  endShape();
+}`,
+
+            colorfulGrid: `// Animated colorful grid
+let gridSize = 20;
+let time = 0;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  let speed = 0.05 + eegData.attention * 0.15;
+  time += speed;
+  
+  let cols = floor(width / gridSize);
+  let rows = floor(height / gridSize);
+  
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      let x = i * gridSize;
+      let y = j * gridSize;
+      
+      // Animated properties
+      let distance = dist(i, j, cols/2, rows/2);
+      let offset = distance * 0.1 - time;
+      
+      let hue = (i * 10 + j * 10 + time * 50 + eegData.theta * 180) % 360;
+      let brightness = 50 + sin(offset) * 25 + eegData.alpha * 25;
+      let size = gridSize * (0.5 + (sin(offset) * 0.3 + 0.5) * 
+                 (0.5 + eegData.meditation * 0.5));
+      
+      fill(hue, 70, brightness);
+      noStroke();
+      
+      push();
+      translate(x + gridSize/2, y + gridSize/2);
+      rotate(offset);
+      rectMode(CENTER);
+      rect(0, 0, size, size);
+      pop();
+    }
+  }
+}`,
+
+            webcamInput: `// Webcam input with brain-controlled effects
+let capture;
+let pixelDensity = 10;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  // Create video capture
+  capture = createCapture(VIDEO);
+  capture.size(width/pixelDensity, height/pixelDensity);
+  capture.hide();
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  capture.loadPixels();
+  
+  // Process webcam pixels
+  for (let y = 0; y < capture.height; y++) {
+    for (let x = 0; x < capture.width; x++) {
+      let index = (x + y * capture.width) * 4;
+      
+      let r = capture.pixels[index];
+      let g = capture.pixels[index + 1];
+      let b = capture.pixels[index + 2];
+      
+      let bright = (r + g + b) / 3;
+      
+      // Apply brain-controlled effects
+      let hueShift = eegData.alpha * 180;
+      let size = map(bright, 0, 255, 0, pixelDensity * (1 + eegData.attention));
+      
+      let pixelHue = (bright + hueShift) % 360;
+      let saturation = 60 + eegData.theta * 40;
+      let pixelBrightness = map(bright, 0, 255, 20, 90);
+      
+      fill(pixelHue, saturation, pixelBrightness);
+      noStroke();
+      
+      ellipse(
+        x * pixelDensity + pixelDensity/2,
+        y * pixelDensity + pixelDensity/2,
+        size, size
+      );
+    }
+  }
+  
+  // Info
+  fill(0, 0, 100);
+  textAlign(LEFT, BOTTOM);
+  textSize(10);
+  text("Alpha: hue shift | Attention: size | Theta: saturation", 10, height - 10);
+  
+  if (!capture.loadedmetadata) {
+    textAlign(CENTER, CENTER);
+    textSize(14);
+    text("Waiting for webcam...", width/2, height/2);
   }
 }`
           };
