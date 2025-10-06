@@ -500,12 +500,213 @@ raw = mne.io.<span style="color: #dcdcaa;">read_raw_fif</span>(sample_data + <sp
           </script>
         </div>
 
-        <div class="assignment-card" style="opacity: 0.6; border: 1px dashed rgba(214,51,132,0.3);">
+        <div class="assignment-card">
           <div class="assignment-header">
-            <h3 class="assignment-title">Assignment 2: Advanced EEG Preprocessing</h3>
-            <span class="due-date" style="background: rgba(150,150,150,0.3); color: var(--muted);">Available after Assignment 1</span>
+            <h3 class="assignment-title">Assignment 2: BrainImation — Create Your Brain-Controlled Animation</h3>
+            <span class="due-date">Due: Oct 20</span>
           </div>
-          <p style="color: var(--muted); font-style: italic;">This assignment will be revealed after you complete Assignment 1. It will focus on advanced preprocessing techniques including artifact detection and removal.</p>
+          <p>🎨 <strong>What you'll do:</strong> Create an original animation, visualization, or interactive application that responds to real-time brain waves! Using BrainImation (our "BCI Turing Machine"), you'll build something that professional neuroartists, researchers, or clinical neurofeedback systems use—but you'll code it yourself.</p>
+          
+          <div class="skills-focus">
+            <strong>Skills You'll Learn:</strong> Live EEG data access, creative coding with P5.js, real-time visualization, brain-computer interface design
+          </div>
+          
+          <div style="background: rgba(230,101,129,0.1); padding: 12px; border-radius: 8px; margin: 12px 0; border: 1px solid rgba(230,101,129,0.3);">
+            <h4 style="margin: 0 0 8px 0; color: var(--accent);">🧠 The BCI Turing Machine</h4>
+            <p style="margin: 0; font-size: 14px;">BrainImation is a universal platform for brain-computer interfaces—anything you can imagine (neuroart, neurofeedback, research tools, interactive BCIs) can be built with it. Real-time EEG + creative coding + live editor = unlimited possibilities!</p>
+          </div>
+          
+          <div class="deliverables">
+            <h4 style="margin: 0 0 12px 0; color: var(--accent-2);">🎯 Your Mission: Choose Your Path!</h4>
+            
+            <div style="background: rgba(32,201,151,0.1); padding: 12px; border-radius: 6px; margin: 12px 0;">
+              <strong>🚀 Launch Platform:</strong> <a href="./brainimation.html" style="color: var(--accent); text-decoration: underline; font-weight: 600;">BrainImation Platform</a>
+              <br><strong>💡 Explore First:</strong> Try all 9 built-in examples to see what's possible!
+            </div>
+            
+            <h4 style="color: var(--accent); margin-top: 16px;">Choose ONE Application Type:</h4>
+            
+            <div style="display: grid; gap: 12px; margin: 12px 0;">
+              <!-- Brain Art Option -->
+              <div style="background: rgba(214,51,132,0.08); border: 1px solid rgba(214,51,132,0.3); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <span style="font-size: 24px;">🎨</span>
+                  <strong style="color: var(--accent);">Option 1: Brain Art / Visualization</strong>
+                </div>
+                <p style="margin: 4px 0; font-size: 14px;">Create a visual artwork that responds to your brain states. Think particle systems, mandalas, abstract animations, generative art—anything visually compelling!</p>
+                <p style="margin: 4px 0; font-size: 13px; color: var(--muted);"><strong>Examples:</strong> Neural mandala that grows with meditation • Particle explosion driven by attention • Color-shifting aurora based on alpha waves • Fractal generator controlled by theta</p>
+                <p style="margin: 4px 0; font-size: 13px;"><strong>Templates to start from:</strong> "Brain Particles", "Neural Mandala", "Alpha Waves"</p>
+              </div>
+              
+              <!-- Neurofeedback Option -->
+              <div style="background: rgba(32,201,151,0.08); border: 1px solid rgba(32,201,151,0.3); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <span style="font-size: 24px;">🧘</span>
+                  <strong style="color: var(--accent-2);">Option 2: Neurofeedback Training Tool</strong>
+                </div>
+                <p style="margin: 4px 0; font-size: 14px;">Build a tool that helps people train their brain states—meditation aids, attention monitors, flow state trackers, relaxation guides.</p>
+                <p style="margin: 4px 0; font-size: 13px; color: var(--muted);"><strong>Examples:</strong> Meditation garden that blooms with high alpha • Focus game where attention moves objects • Stress meter with calming feedback • Flow state indicator for athletes</p>
+                <p style="margin: 4px 0; font-size: 13px;"><strong>Templates to start from:</strong> "Attention Meter", "Alpha Waves", "Wave Visualization"</p>
+              </div>
+              
+              <!-- Research Tool Option -->
+              <div style="background: rgba(100,100,200,0.08); border: 1px solid rgba(100,100,200,0.3); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <span style="font-size: 24px;">🔬</span>
+                  <strong style="color: #6464c8;">Option 3: Research / Analysis Tool</strong>
+                </div>
+                <p style="margin: 4px 0; font-size: 14px;">Create a scientific visualization or data collection tool for EEG research. Real-time signal quality, epoch averaging, multi-channel displays.</p>
+                <p style="margin: 4px 0; font-size: 13px; color: var(--muted);"><strong>Examples:</strong> Live ERP (event-related potential) viewer • Signal quality monitor • Frequency spectrum analyzer • Multi-electrode topographic map</p>
+                <p style="margin: 4px 0; font-size: 13px;"><strong>Templates to start from:</strong> "EEG Trace", "Multi-Channel", "Epochs", "Wave Visualization"</p>
+              </div>
+              
+              <!-- Interactive BCI Option -->
+              <div style="background: rgba(249,171,0,0.08); border: 1px solid rgba(249,171,0,0.3); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <span style="font-size: 24px;">🎮</span>
+                  <strong style="color: #f59e0b;">Option 4: Interactive BCI / Game</strong>
+                </div>
+                <p style="margin: 4px 0; font-size: 14px;">Build something interactive that you control with your mind! Games, interfaces, communication tools—anything that uses brain signals as input.</p>
+                <p style="margin: 4px 0; font-size: 13px; color: var(--muted);"><strong>Examples:</strong> Mind-controlled maze navigator • Attention-based ball bounce game • Brain "keyboard" for communication • Meditation timer that pauses when you lose focus</p>
+                <p style="margin: 4px 0; font-size: 13px;"><strong>Templates to start from:</strong> Any template + add interaction logic</p>
+              </div>
+            </div>
+            
+            <h4 style="color: var(--accent); margin-top: 20px;">📋 Requirements (All Options):</h4>
+            <ul style="font-size: 14px; line-height: 1.6;">
+              <li><strong>Must use real-time EEG data:</strong> Access eegData.alpha, .beta, .theta, .delta, or raw channels</li>
+              <li><strong>Substantial modification:</strong> Can't just change colors of a template—must add significant new features</li>
+              <li><strong>Working code:</strong> Must run in BrainImation (can use simulation mode)</li>
+              <li><strong>Visual polish:</strong> Should look intentional and professional</li>
+              <li><strong>Code comments:</strong> Explain what your code does and why</li>
+            </ul>
+            
+            <h4 style="color: var(--accent); margin-top: 20px;">📤 What to Submit:</h4>
+            <div style="display: grid; gap: 8px; margin-top: 8px; font-size: 14px;">
+              <div style="background: rgba(32,201,151,0.08); padding: 8px; border-radius: 4px;">
+                <strong>1. Code File (.js):</strong> Your P5.js sketch from BrainImation (click Save button to download)
+              </div>
+              <div style="background: rgba(32,201,151,0.08); padding: 8px; border-radius: 4px;">
+                <strong>2. Video or Screenshot:</strong> Show it running (30-60 seconds video preferred, or 2-3 screenshots)
+              </div>
+              <div style="background: rgba(32,201,151,0.08); padding: 8px; border-radius: 4px;">
+                <strong>3. Writeup (1-2 pages):</strong> Concept explanation, technical implementation, challenges faced, what you learned
+              </div>
+            </div>
+            
+            <div style="background: rgba(214,51,132,0.1); padding: 12px; border-radius: 6px; margin-top: 12px; border: 1px solid rgba(214,51,132,0.3);">
+              <h5 style="margin: 0 0 8px 0; color: var(--accent);">📊 Grading Breakdown:</h5>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; font-size: 13px;">
+                <div><strong>Creativity:</strong> 30%</div>
+                <div><strong>Technical:</strong> 40%</div>
+                <div><strong>Documentation:</strong> 20%</div>
+                <div><strong>Presentation:</strong> 10%</div>
+              </div>
+              <p style="margin: 8px 0 0 0; font-size: 13px; color: var(--muted);">We're looking for originality, working implementation, clear explanation, and professional polish!</p>
+            </div>
+            
+            <!-- Submission Button -->
+            <div style="background: linear-gradient(135deg, rgba(32,201,151,0.1), rgba(214,51,132,0.05)); border: 2px solid rgba(32,201,151,0.4); border-radius: 12px; padding: 20px; margin: 20px 0; box-shadow: 0 4px 16px rgba(32,201,151,0.15);">
+              <h4 style="margin: 0 0 16px 0; color: var(--accent-2); text-align: center;">📤 Submit Your BrainImation Project</h4>
+              
+              <div style="text-align: center; margin-bottom: 20px;">
+                <p style="margin: 0 0 16px 0; color: var(--text); font-size: 16px;">
+                  Submit your code, video/screenshots, and writeup via Google Form
+                </p>
+                
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdkZyzDGpeOv8PTrNUDTYWPArQUwqzoZbiAdmgntMpt59f2tg/viewform?usp=dialog" 
+                   target="_blank"
+                   style="display: inline-block; background: linear-gradient(135deg, var(--accent-2), #17a085); color: white; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 18px; box-shadow: 0 6px 20px rgba(32,201,151,0.4); transition: all 0.3s ease; border: none;">
+                  🎨 Submit Assignment 2
+                </a>
+              </div>
+              
+              <div style="background: rgba(249,171,0,0.1); padding: 12px; border-radius: 6px; margin: 16px 0; border: 1px solid rgba(249,171,0,0.3);">
+                <p style="margin: 0; font-size: 14px; color: var(--text);">
+                  <strong>💡 Pro Tip:</strong> You can combine multiple files into a ZIP, or paste your code directly into the writeup. Include a link to your video if you host it on YouTube/Vimeo.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="code-example">
+<span style="color: #6a9955;">// 🧠 BrainImation Starter Template</span>
+<span style="color: #6a9955;">// Access real-time brain data and create live visualizations!</span>
+
+<span style="color: #c586c0;">function</span> <span style="color: #dcdcaa;">setup</span>() {
+  <span style="color: #6a9955;">// Canvas already created - just set your preferences</span>
+  <span style="color: #dcdcaa;">colorMode</span>(HSB, <span style="color: #b5cea8;">360</span>, <span style="color: #b5cea8;">100</span>, <span style="color: #b5cea8;">100</span>); <span style="color: #6a9955;">// HSB color mode is great for brain art!</span>
+}
+
+<span style="color: #c586c0;">function</span> <span style="color: #dcdcaa;">draw</span>() {
+  <span style="color: #6a9955;">// Access brain data - these values update in real-time!</span>
+  <span style="color: #c586c0;">let</span> alpha = eegData.alpha;      <span style="color: #6a9955;">// 0.0-1.0: high when relaxed/meditating</span>
+  <span style="color: #c586c0;">let</span> beta = eegData.beta;        <span style="color: #6a9955;">// 0.0-1.0: high when focused/attentive</span>
+  <span style="color: #c586c0;">let</span> theta = eegData.theta;      <span style="color: #6a9955;">// 0.0-1.0: high during deep meditation</span>
+  <span style="color: #c586c0;">let</span> attention = eegData.attention; <span style="color: #6a9955;">// Derived metric</span>
+  
+  <span style="color: #6a9955;">// Example: Background that responds to meditation state</span>
+  <span style="color: #c586c0;">let</span> bgAlpha = <span style="color: #dcdcaa;">map</span>(eegData.meditation, <span style="color: #b5cea8;">0</span>, <span style="color: #b5cea8;">1</span>, <span style="color: #b5cea8;">0.05</span>, <span style="color: #b5cea8;">0.2</span>);
+  <span style="color: #dcdcaa;">background</span>(<span style="color: #b5cea8;">220</span>, <span style="color: #b5cea8;">30</span>, <span style="color: #b5cea8;">10</span>, bgAlpha);
+  
+  <span style="color: #6a9955;">// Example: Size controlled by attention</span>
+  <span style="color: #c586c0;">let</span> size = <span style="color: #b5cea8;">50</span> + attention * <span style="color: #b5cea8;">150</span>;
+  <span style="color: #dcdcaa;">fill</span>(<span style="color: #b5cea8;">180</span>, <span style="color: #b5cea8;">70</span>, <span style="color: #b5cea8;">90</span>);
+  <span style="color: #dcdcaa;">ellipse</span>(width/<span style="color: #b5cea8;">2</span>, height/<span style="color: #b5cea8;">2</span>, size);
+  
+  <span style="color: #6a9955;">// 🎯 BUILD YOUR OWN FROM HERE!</span>
+  <span style="color: #6a9955;">// Check the 9 examples in BrainImation for inspiration</span>
+}
+          </div>
+          
+          <div style="margin: 16px 0; padding: 16px; background: linear-gradient(135deg, rgba(32,201,151,0.1), rgba(214,51,132,0.05)); border-radius: 12px; border: 1px solid rgba(32,201,151,0.3);">
+            <h4 style="margin: 0 0 12px 0; color: var(--accent-2);">🚀 Getting Started Guide</h4>
+            
+            <div style="display: grid; gap: 12px; margin-top: 12px;">
+              <div style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 6px; border-left: 3px solid var(--accent);">
+                <strong style="color: var(--accent);">Step 1: Explore</strong>
+                <p style="margin: 4px 0 0 0; font-size: 14px;">Open BrainImation, click "Simulate Data", try all 9 examples to see what's possible</p>
+              </div>
+              
+              <div style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 6px; border-left: 3px solid var(--accent);">
+                <strong style="color: var(--accent);">Step 2: Choose Your Path</strong>
+                <p style="margin: 4px 0 0 0; font-size: 14px;">Pick one of the 4 application types that excites you most</p>
+              </div>
+              
+              <div style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 6px; border-left: 3px solid var(--accent);">
+                <strong style="color: var(--accent);">Step 3: Start from Template</strong>
+                <p style="margin: 4px 0 0 0; font-size: 14px;">Load the most relevant example, understand how it works, then modify significantly</p>
+              </div>
+              
+              <div style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 6px; border-left: 3px solid var(--accent);">
+                <strong style="color: var(--accent);">Step 4: Make It Yours</strong>
+                <p style="margin: 4px 0 0 0; font-size: 14px;">Add new features, change behavior, combine multiple ideas—go beyond the template!</p>
+              </div>
+              
+              <div style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 6px; border-left: 3px solid var(--accent);">
+                <strong style="color: var(--accent);">Step 5: Document & Submit</strong>
+                <p style="margin: 4px 0 0 0; font-size: 14px;">Save code, record video, write brief explanation of what you built and why</p>
+              </div>
+            </div>
+            
+            <div style="background: rgba(249,171,0,0.1); padding: 12px; border-radius: 6px; margin-top: 12px; border: 1px solid rgba(249,171,0,0.3);">
+              <p style="margin: 0; font-size: 13px;">
+                <strong>⏱️ Time Estimate:</strong> Most students spend 2-4 hours total (1 hour exploring, 2-3 hours building). Start early so you have time to experiment and polish!
+              </p>
+            </div>
+          </div>
+          
+          <div style="background: rgba(32,201,151,0.08); padding: 12px; border-radius: 6px; margin: 16px 0;">
+            <h5 style="margin: 0 0 8px 0; color: var(--accent-2);">💡 Tips for Success:</h5>
+            <ul style="margin: 0; font-size: 14px; line-height: 1.6;">
+              <li><strong>Use simulation mode</strong> while developing—it's faster than connecting a Muse headset</li>
+              <li><strong>Check the Reference panel</strong> in BrainImation for P5.js and eegData documentation</li>
+              <li><strong>Start simple</strong>—get something basic working, then add complexity</li>
+              <li><strong>Test with different brain states</strong>—adjust simulation sliders to see how it responds</li>
+              <li><strong>Comment your code</strong> as you write it—makes the writeup easier later</li>
+              <li><strong>Save frequently</strong>—use the Save button to download your progress</li>
+            </ul>
+          </div>
         </div>
 
         <div class="assignment-card" style="opacity: 0.6; border: 1px dashed rgba(214,51,132,0.3);">
