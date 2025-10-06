@@ -1040,15 +1040,22 @@
         }
 
         processEEGReading(reading) {
+          // Map numeric electrode indices to channel names
+          // Muse sends: 0 = TP9, 1 = AF7, 2 = AF8, 3 = TP10
+          const electrodeMap = ['TP9', 'AF7', 'AF8', 'TP10'];
+          const electrodeName = typeof reading.electrode === 'number' 
+            ? electrodeMap[reading.electrode] 
+            : reading.electrode;
+          
           // Log first few readings to confirm data flow
           if (this.dataBuffer.length < 5) {
-            console.log(`📊 EEG data received from ${reading.electrode}:`, 
-                       reading.samples.length, 'samples');
+            console.log(`📊 EEG data received from ${electrodeName} (${reading.electrode}):`, 
+                       reading.samples.length, 'samples, first value:', reading.samples[0]?.toFixed(2));
           }
           
-          // Add to buffer for frequency analysis
+          // Add to buffer for frequency analysis (use mapped name)
           this.dataBuffer.push({
-            electrode: reading.electrode,
+            electrode: electrodeName,
             samples: reading.samples,
             timestamp: Date.now()
           });
@@ -1059,23 +1066,25 @@
           }
 
           // Update raw values for immediate access (compatibility)
-          const electrodeIndex = ['TP9', 'AF7', 'AF8', 'TP10'].indexOf(reading.electrode);
+          const electrodeIndex = typeof reading.electrode === 'number' 
+            ? reading.electrode 
+            : electrodeMap.indexOf(reading.electrode);
+          
           if (electrodeIndex !== -1 && reading.samples.length > 0) {
             eegData.raw[electrodeIndex] = reading.samples[reading.samples.length - 1];
           }
 
           // NEW: Add ALL samples to raw history for time-series access
-          const electrode = reading.electrode;
-          if (!eegData.rawHistory[electrode]) {
-            eegData.rawHistory[electrode] = [];
+          if (!eegData.rawHistory[electrodeName]) {
+            eegData.rawHistory[electrodeName] = [];
           }
           
           // Add all samples from this reading (usually 12 samples per packet)
-          eegData.rawHistory[electrode].push(...reading.samples);
+          eegData.rawHistory[electrodeName].push(...reading.samples);
           
           // Maintain buffer size (keep last N samples)
-          if (eegData.rawHistory[electrode].length > eegData.historyLength) {
-            eegData.rawHistory[electrode] = eegData.rawHistory[electrode].slice(-eegData.historyLength);
+          if (eegData.rawHistory[electrodeName].length > eegData.historyLength) {
+            eegData.rawHistory[electrodeName] = eegData.rawHistory[electrodeName].slice(-eegData.historyLength);
           }
 
           // Calculate frequency bands every few samples
@@ -1106,6 +1115,11 @@
           });
 
           // Calculate power in different bands (simplified)
+          // Average across all electrodes for more stable estimates
+          let totalVariance = 0;
+          let totalMean = 0;
+          let electrodeCount = 0;
+          
           Object.keys(electrodeData).forEach(electrode => {
             const samples = electrodeData[electrode].slice(-64);
             if (samples.length >= 64) {
@@ -1113,17 +1127,39 @@
               const variance = this.calculateVariance(samples);
               const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
               
-              // Update frequency bands (this is a simplified approach)
-              eegData.alpha = Math.max(0, Math.min(1, variance * 0.1));
-              eegData.beta = Math.max(0, Math.min(1, Math.abs(mean) * 0.05));
-              eegData.theta = Math.max(0, Math.min(1, variance * 0.05));
-              eegData.delta = Math.max(0, Math.min(1, variance * 0.02));
-              
-              // Calculate attention and meditation (simplified)
-              eegData.attention = Math.max(0, Math.min(1, (eegData.beta + eegData.gamma) / 2));
-              eegData.meditation = Math.max(0, Math.min(1, (eegData.alpha + eegData.theta) / 2));
+              totalVariance += variance;
+              totalMean += Math.abs(mean);
+              electrodeCount++;
             }
           });
+          
+          if (electrodeCount > 0) {
+            // Average variance and mean across electrodes
+            const avgVariance = totalVariance / electrodeCount;
+            const avgMean = totalMean / electrodeCount;
+            
+            // Update frequency bands (this is a simplified approach)
+            // Scale factors adjusted based on typical EEG variance values
+            eegData.alpha = Math.max(0, Math.min(1, avgVariance * 0.001));
+            eegData.beta = Math.max(0, Math.min(1, avgVariance * 0.0008));
+            eegData.theta = Math.max(0, Math.min(1, avgVariance * 0.0012));
+            eegData.delta = Math.max(0, Math.min(1, avgVariance * 0.0015));
+            eegData.gamma = Math.max(0, Math.min(1, avgVariance * 0.0005));
+            
+            // Calculate attention and meditation (simplified)
+            eegData.attention = Math.max(0, Math.min(1, (eegData.beta + eegData.gamma) / 2));
+            eegData.meditation = Math.max(0, Math.min(1, (eegData.alpha + eegData.theta) / 2));
+            
+            // Debug log every 10 calculations
+            if (this.dataBuffer.length % 320 === 0) {
+              console.log('📊 Frequency bands updated:', {
+                alpha: eegData.alpha.toFixed(3),
+                beta: eegData.beta.toFixed(3),
+                theta: eegData.theta.toFixed(3),
+                variance: avgVariance.toFixed(2)
+              });
+            }
+          }
 
           eegData.connected = this.isConnected;
           this.updateDataDisplay();
