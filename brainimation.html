@@ -1,4 +1,4 @@
-git <!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -14,14 +14,11 @@ git <!doctype html>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
     
-    <!-- Muse-js for Bluetooth EEG -->
-    <script src="https://unpkg.com/muse-js@4.0.0/dist/muse.umd.js"></script>
+    <!-- Muse-js for Bluetooth EEG - using the exact method from p5.eegedu -->
+    <script src="https://unpkg.com/muse-js@latest"></script>
     
     <!-- Monaco Editor for live coding -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
-    
-    <!-- RxJS for data streaming -->
-    <script src="https://unpkg.com/rxjs@7.8.1/dist/bundles/rxjs.umd.min.js"></script>
     
     <style>
       :root {
@@ -294,7 +291,11 @@ git <!doctype html>
           <button class="btn btn-primary" id="connect-btn">Connect Muse</button>
           <button class="btn btn-secondary" id="simulate-btn">Simulate Data</button>
           <button class="btn btn-success" id="run-btn">Run Code</button>
+          <button class="btn btn-secondary" id="save-btn">💾 Save</button>
+          <button class="btn btn-secondary" id="load-btn">📁 Load</button>
+          <button class="btn btn-secondary" id="reload-btn" disabled>🔄 Reload</button>
           <button class="btn btn-secondary" id="fullscreen-btn">Fullscreen</button>
+          <input type="file" id="file-input" accept=".js" style="display: none;">
         </div>
       </div>
 
@@ -587,8 +588,11 @@ git <!doctype html>
 
         async connect() {
           try {
-            this.muse = new window.Muse.MuseClient();
+            // Use the exact approach from p5.eegedu
+            console.log('Attempting to connect to Muse...');
+            this.muse = new window.MuseClient();
             await this.muse.connect();
+            await this.muse.start();
             
             this.isConnected = true;
             this.updateStatus('Connected', 'connected');
@@ -725,6 +729,8 @@ git <!doctype html>
           this.editor = null;
           this.currentSketch = null;
           this.autoRun = true;
+          this.lastLoadedCode = null; // Track last loaded/selected code
+          this.lastLoadedFilename = null; // Track filename
           this.setupEditor();
         }
 
@@ -1087,6 +1093,67 @@ function draw() {
           const errorConsole = document.getElementById('error-console');
           errorConsole.textContent = message;
           errorConsole.style.display = 'block';
+        }
+
+        saveCode() {
+          const code = this.editor.getValue();
+          const blob = new Blob([code], { type: 'text/javascript' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          
+          // Generate filename with timestamp
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+          const filename = this.lastLoadedFilename || `brainimation-${timestamp}.js`;
+          
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          console.log('Code saved as:', filename);
+        }
+
+        loadCodeFromFile(file) {
+          const reader = new FileReader();
+          
+          reader.onload = (e) => {
+            const code = e.target.result;
+            this.editor.setValue(code);
+            this.lastLoadedCode = code;
+            this.lastLoadedFilename = file.name;
+            
+            // Enable reload button
+            document.getElementById('reload-btn').disabled = false;
+            
+            console.log('Code loaded from:', file.name);
+            
+            // Auto-run the loaded code
+            if (this.autoRun) {
+              this.runCode();
+            }
+          };
+          
+          reader.onerror = (e) => {
+            this.showError('Error loading file: ' + e.target.error);
+          };
+          
+          reader.readAsText(file);
+        }
+
+        reloadCode() {
+          if (this.lastLoadedCode) {
+            this.editor.setValue(this.lastLoadedCode);
+            console.log('Code reloaded:', this.lastLoadedFilename || 'last loaded code');
+            
+            // Auto-run the reloaded code
+            if (this.autoRun) {
+              this.runCode();
+            }
+          } else {
+            console.log('No code to reload');
+          }
         }
 
         loadExample(exampleName) {
@@ -1543,7 +1610,14 @@ function draw() {
           };
 
           if (examples[exampleName]) {
-            this.editor.setValue(examples[exampleName]);
+            const exampleCode = examples[exampleName];
+            this.editor.setValue(exampleCode);
+            this.lastLoadedCode = exampleCode;
+            this.lastLoadedFilename = `${exampleName}-example.js`;
+            
+            // Enable reload button
+            document.getElementById('reload-btn').disabled = false;
+            
             this.runCode();
           }
         }
@@ -1608,6 +1682,31 @@ function draw() {
           codeEditor.runCode();
         });
 
+        // Save button
+        document.getElementById('save-btn').addEventListener('click', () => {
+          codeEditor.saveCode();
+        });
+
+        // Load button - trigger file input
+        document.getElementById('load-btn').addEventListener('click', () => {
+          document.getElementById('file-input').click();
+        });
+
+        // File input change handler
+        document.getElementById('file-input').addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            codeEditor.loadCodeFromFile(file);
+          }
+          // Reset input so same file can be loaded again
+          e.target.value = '';
+        });
+
+        // Reload button
+        document.getElementById('reload-btn').addEventListener('click', () => {
+          codeEditor.reloadCode();
+        });
+
         document.getElementById('fullscreen-btn').addEventListener('click', () => {
           const overlay = document.getElementById('fullscreen-overlay');
           const canvas = document.querySelector('#canvas-container canvas');
@@ -1659,6 +1758,9 @@ function draw() {
           }
         });
 
+        // Check if MuseClient is available
+        console.log('MuseClient available:', !!window.MuseClient);
+        
         console.log('🧠 BrainImation initialized successfully!');
       }
 
