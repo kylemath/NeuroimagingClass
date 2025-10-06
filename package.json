@@ -1,0 +1,14 @@
+{
+  "name": "brainimation-muse-bundle",
+  "version": "1.0.0",
+  "description": "Browser bundle for muse-js",
+  "scripts": {
+    "build": "esbuild src/muse-bundle.js --bundle --format=iife --outfile=muse-browser.js"
+  },
+  "dependencies": {
+    "muse-js": "^3.3.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.0"
+  }
+}
