@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Midterm 1: Brain-Computer Interface & ERP Analysis</title>
+    <meta name="description" content="Midterm 1 for PSYCH 403A1: BCI Innovation and Event-Related Potentials">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 920px;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 36px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3, h4 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 42px);
+        font-weight: 700;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 32px);
+        color: #4a2d4a;
+        margin-top: 2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: #5a3d5a;
+        margin-top: 1.5em;
+      }
+      h4 {
+        font-size: clamp(16px, 2.2vw, 20px);
+        color: var(--muted);
+        margin-top: 1.2em;
+      }
+
+      p { margin: 0.85em 0; }
+      
+      .lead {
+        font-size: clamp(17px, 2.2vw, 20px);
+        color: #4a2d4a;
+        font-weight: 500;
+      }
+
+      ul, ol { 
+        padding-left: 1.3em;
+        margin: 1em 0;
+      }
+      li { 
+        margin: 0.6em 0;
+        line-height: 1.6;
+      }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .callout {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 2px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin: 24px 0;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.15);
+      }
+
+      .callout-warning {
+        background: linear-gradient(135deg, rgba(255,152,0,0.12), rgba(255,107,157,0.08));
+        border-color: rgba(255,152,0,0.5);
+      }
+
+      .callout-info {
+        background: linear-gradient(135deg, rgba(78,205,196,0.12), rgba(107,179,255,0.08));
+        border-color: rgba(78,205,196,0.5);
+      }
+
+      .callout h3, .callout h4 {
+        margin-top: 0;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+        font-weight: 600;
+      }
+
+      .tag-part1 {
+        background: linear-gradient(45deg, rgba(214,51,132,0.2), rgba(255,107,157,0.15));
+        border-color: var(--accent);
+      }
+
+      .tag-part2 {
+        background: linear-gradient(45deg, rgba(32,201,151,0.2), rgba(78,205,196,0.15));
+        border-color: var(--accent-2);
+      }
+
+      code {
+        background: rgba(0,0,0,0.08);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.9em;
+      }
+
+      pre {
+        background: rgba(0,0,0,0.05);
+        padding: 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        border-left: 4px solid var(--accent);
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 32px 0;
+        border-radius: 2px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 14px;
+      }
+
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid rgba(32,201,151,0.3);
+      }
+
+      th {
+        background: rgba(214,51,132,0.15);
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      tr:nth-child(even) {
+        background: rgba(32,201,151,0.05);
+      }
+
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        background: var(--accent);
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(214,51,132,0.3);
+      }
+
+      .button:hover {
+        background: #e55a8a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(214,51,132,0.4);
+        text-decoration: none;
+      }
+
+      .button-secondary {
+        background: var(--accent-2);
+        box-shadow: 0 4px 12px rgba(32,201,151,0.3);
+      }
+
+      .button-secondary:hover {
+        background: #45b8ad;
+        box-shadow: 0 6px 16px rgba(32,201,151,0.4);
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(214,51,132,0.25);
+        color: var(--muted);
+        font-size: 14px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 24px 16px 60px;
+        }
+        table {
+          font-size: 12px;
+        }
+        th, td {
+          padding: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="brand">PSYCH 403A1 — Midterm 1</div>
+        <nav style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="./index.html">Course Home</a>
+          <a href="./syllabus.html">Syllabus</a>
+          <a href="./brainimation.html" style="color: var(--accent-2);">BrainImation</a>
+        </nav>
+      </header>
+
+      <main>
+        <h1>Midterm 1: Brain-Computer Interface Innovation & Event-Related Potentials</h1>
+        
+        <div class="callout callout-warning">
+          <h3 style="margin-top: 0;">📅 Due Date & Format</h3>
+          <p><strong>Due:</strong> Monday, October 27, 2025 at 9:00 AM (before class starts)</p>
+          <p><strong>Format:</strong> Take-home midterm — work on it during the week at your own pace</p>
+          <p><strong>Help Available:</strong> Tamari and Professor Mathewson are available for discussion and help throughout the week. Yes, you can ask for help even though it's called a "midterm"! This is a learning experience.</p>
+        </div>
+
+        <p class="lead">This midterm has two parts: (1) Extend your Assignment 2 BrainImation project with novel BCI concepts, and (2) Create an Event-Related Potential (ERP) experiment using BrainImation.</p>
+
+        <div class="beat"></div>
+
+        <h2><span class="tag tag-part1">Part 1 — 50%</span> BCI Innovation: Beyond Basic Control</h2>
+
+        <h3>Overview</h3>
+        <p>Most students have followed the traditional BCI art loop:</p>
+        <p style="text-align: center; font-style: italic; color: var(--muted);">
+          Brain waves → Variables → Art parameters → Brain changes → Repeat
+        </p>
+
+        <p>For this midterm, extend your Assignment 2 work by implementing a <strong>novel BCI concept</strong> that goes beyond simple "brain waves control visual parameters." You can either:</p>
+        <ul>
+          <li><strong>Option A:</strong> Significantly extend your existing Assignment 2 project with one of the novel approaches below</li>
+          <li><strong>Option B:</strong> Create a new BrainImation that demonstrates a novel BCI concept</li>
+        </ul>
+
+        <h3>Novel BCI Approaches (Choose One or Invent Your Own)</h3>
+
+        <h4>1. Target Brain State Training (Neurofeedback)</h4>
+        <p>Instead of just visualizing brain waves, create a system that guides the user toward a specific brain state:</p>
+        <pre><code>Target brain wave pattern
+  ↓
+Collect current brain waves
+  ↓
+Measure difference from target
+  ↓
+Change animation to indicate progress
+  ↓
+User adjusts mental state
+  ↓
+Collect brain waves → Measure difference
+  ↓
+Minimize differences over time through learning</code></pre>
+
+        <p><strong>Implementation ideas:</strong></p>
+        <ul>
+          <li>Set a target alpha/theta ratio for meditation training</li>
+          <li>Create visual feedback that gets "better" (smoother, more colorful, more harmonious) as user approaches target</li>
+          <li>Track progress over time with a score or distance metric</li>
+          <li>Add audio feedback when target state is reached</li>
+        </ul>
+
+        <h4>2. Adaptive Difficulty System</h4>
+        <p>Use brain waves to adjust the difficulty of a task or game:</p>
+        <pre><code>Brain wave measurement → Game/task difficulty parameter
+  ↓
+High attention/stress → Easier difficulty
+Low attention/stress → Harder difficulty</code></pre>
+
+        <p><strong>Implementation ideas:</strong></p>
+        <ul>
+          <li>Simple game where speed/complexity adjusts to keep user in "flow state"</li>
+          <li>Visual patterns that become more complex when alpha is high (relaxed) and simpler when beta is high (stressed)</li>
+          <li>Memory task where number of items adjusts based on attention level</li>
+        </ul>
+
+        <h4>3. Multi-State Classification</h4>
+        <p>Detect and respond to distinct mental states:</p>
+        <ul>
+          <li>Eyes open vs. eyes closed (alpha spike detection)</li>
+          <li>Relaxed vs. focused vs. stressed (different frequency band ratios)</li>
+          <li>Different visualization modes triggered by different brain states</li>
+        </ul>
+
+        <h4>4. Your Own Novel Idea</h4>
+        <p>Think beyond traditional control paradigms:</p>
+        <ul>
+          <li>Use brain data to generate music or soundscapes</li>
+          <li>Create a "brain state diary" that records and visualizes patterns over time</li>
+          <li>Build a collaborative BCI where multiple people's brain data interact</li>
+          <li>Use raw EEG channels for more sophisticated signal processing</li>
+          <li>Implement artifact detection (blinks, jaw clenches) as interaction triggers</li>
+        </ul>
+
+        <div class="callout">
+          <h4>What to Submit for Part 1</h4>
+          <ul>
+            <li><strong>Code:</strong> Your JavaScript code saved as a <code>.txt</code> file (e.g., <code>lastname_midterm_part1.txt</code>)</li>
+            <li><strong>Description:</strong> A brief explanation (200-400 words) describing:
+              <ul>
+                <li>What novel BCI concept you implemented</li>
+                <li>How it works (the loop/logic)</li>
+                <li>What makes it different from basic parameter control</li>
+                <li>What you learned from implementing it</li>
+              </ul>
+            </li>
+            <li><strong>Video/GIF:</strong> A screen recording or animated gif showing your BrainImation in action (especially important for demonstrating interaction over time, adaptation, or neurofeedback effects). You can use:
+              <ul>
+                <li>Screen recording tools (QuickTime on Mac, Game Bar on Windows, browser extensions)</li>
+                <li>Upload to YouTube/Google Drive and share the link</li>
+                <li>Or create an animated GIF using tools like GIPHY Capture or ScreenToGif</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="beat"></div>
+
+        <h2><span class="tag tag-part2">Part 2 — 50%</span> Event-Related Potentials: Build Your Own ERP Experiment</h2>
+
+        <h3>Overview</h3>
+        <p>Event-Related Potentials (ERPs) are time-locked brain responses to specific stimuli. In this part, you'll create a BrainImation that presents stimuli and averages the EEG response, mimicking the classic 1970s ERP averaging devices.</p>
+
+        <h3>Starting Example: Circle-Annulus ERP</h3>
+        <p>I demonstrated a working example that you should use as your starting point. The example presents a circle stimulus followed by an annulus, with precise timing:</p>
+
+        <div style="margin: 20px 0; text-align: center;">
+          <iframe width="560" height="315" 
+                  src="https://www.youtube.com/embed/sTB3CKRmMBk" 
+                  title="ERP Experiment Demo" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowfullscreen
+                  style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></iframe>
+          <p style="font-size: 13px; color: var(--muted); margin-top: 8px;">Video demonstration of creating an ERP experiment with AI assistance</p>
+        </div>
+
+        <pre><code>Timeline for each trial (1000 ms total):
+  0 ms     - Baseline period starts
+  1000 ms  - Black circle appears (30 ms duration)
+  1030 ms  - Circle disappears
+  1090 ms  - Annulus appears (30 ms duration, 60 ms after circle offset)
+  1120 ms  - Annulus disappears
+  2000 ms  - Next trial begins</code></pre>
+
+        <div class="callout callout-info">
+          <h4>🤖 How to Create the Starting Code with AI</h4>
+          <p>Use this prompt structure with Claude/ChatGPT to generate your starting code:</p>
+          <pre style="background: white; border-color: var(--accent-2);"><code>"I am making a p5.js animation in BrainImation (https://neuroimneurostim.netlify.app/brainimation)
+
+Here is a working example from the site:
+[paste an example code you like - try 'multichannel' or 'eegtrace']
+
+The page streams EEG data with these variables:
+- eegData.alpha, beta, theta, delta, gamma (0.0-1.0)
+- eegData.attention, meditation (0.0-1.0)
+- eegData.getRawChannel(channel, numSamples) - channels: 'TP9', 'AF7', 'AF8', 'TP10'
+- eegData.getAllChannels(numSamples)
+- eegData.getRecentEpoch(numSamples)
+- eegData.sampleRate (256 Hz)
+- eegData.connected (boolean)
+
+Please modify this to create an ERP averaging display with two panels:
+1. Top panel: Averaged EEG trace (showing epochs aligned to stimulus onset)
+2. Bottom panel: Stimulus display showing what's currently on screen
+
+Stimulus timing:
+- Start 1 second baseline period
+- At 0 ms: Show filled black circle (diameter 100px) for 30 ms
+- 60 ms after circle offset: Show annulus (inner radius matches circle, outer radius 2x) for 30 ms
+- Total stimulus sequence: 120 ms
+- Wait 880 ms until next trial (1000 ms inter-trial interval)
+
+Display features:
+- Add a vertical line at 0 ms (stimulus onset)
+- Add tick marks every 100 ms
+- Show both baseline period before circle and post-stimulus period
+- Average the last 20 trials for each channel
+- Label the channels (TP9, AF7, AF8, TP10)"</code></pre>
+        </div>
+
+        <h3>Your Task: Create Your Own ERP Experiment</h3>
+        <p>Starting from the circle-annulus example, create an ERP experiment to measure one of the following classic components (or design your own):</p>
+
+        <div style="background: linear-gradient(135deg, rgba(32,201,151,0.08), rgba(214,51,132,0.05)); padding: 20px; border-radius: 12px; margin: 20px 0;">
+          <h4 style="color: var(--accent); margin-top: 0;">🎮 Interactive ERP Pokedex</h4>
+          <p style="font-size: 14px; margin-bottom: 16px;"><em>Each shows animation + starter code you can copy into BrainImation!</em></p>
+          
+          <div id="erp-pokedex" style="display: grid; gap: 20px;">
+            <!-- P300 -->
+            <div class="erp-card" style="background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <div style="display: grid; grid-template-columns: 260px 0.9fr; gap: 20px; margin-bottom: 16px;">
+                <div>
+                  <div style="background: #1a1a1a; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+                    <div id="p300-canvas"></div>
+                  </div>
+                  <h5 style="margin: 0 0 8px 0; color: var(--accent); font-size: 16px;">
+                    <a href="https://en.wikipedia.org/wiki/P300_(neuroscience)" target="_blank" style="color: var(--accent); text-decoration: none;">P300 (P3)</a>
+                    <span style="font-size: 11px; color: var(--muted); font-weight: normal;"> → 300-600 ms</span>
+                  </h5>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Discovery:</strong> Sutton et al. (1965)</p>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Measures:</strong> Attention allocation, stimulus salience, working memory updating</p>
+                  <p style="margin: 8px 0; font-size: 12px; line-height: 1.5;">The P300 is a positive deflection in the EEG peaking around 300-600ms after an unexpected or task-relevant stimulus. It reflects the brain's "orienting response" to significant events. Originally discovered by Sutton, Braren, Zubin and John (1965), the P300 has become one of the most studied ERP components. It's typically larger for rare, unexpected, or task-relevant stimuli compared to frequent or irrelevant ones. The amplitude reflects the amount of attention allocated to the stimulus, while the latency relates to stimulus evaluation time. In the classic oddball paradigm, participants count rare target stimuli (e.g., 20% of trials) among frequent standards (80%), producing a large P300 to targets.</p>
+                  <p style="margin: 4px 0; font-size: 11px;"><strong>Key Reference:</strong> Polich, J. (2007). Updating P300: An integrative theory. <em>Clinical Neurophysiology</em>, 118(10), 2128-2148.</p>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: bold; color: #666;">Starter Code:</span>
+                    <button onclick="copyCode('p300')" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px;">📋 Copy</button>
+                  </div>
+                  <pre style="background: #2d2d2d; color: #d4d4d4; padding: 12px; border-radius: 6px; overflow-y: auto; margin: 0; font-size: 11px; line-height: 1.4; height: 460px;"><code id="code-p300">// P300 Oddball Paradigm
+let trial = 0;
+let isRare = false;
+
+function setup() {
+  createCanvas(200, 150);
+  frameRate(2);
+}
+
+function draw() {
+  background(20);
+  
+  // 20% rare, 80% standard
+  isRare = random() < 0.2;
+  
+  noStroke();
+  fill(isRare ? color(255, 50, 80) : color(80, 150, 255));
+  ellipse(width/2, height/2, 60, 60);
+  
+  fill(255);
+  textAlign(CENTER);
+  textSize(10);
+  text(isRare ? "RARE" : "STANDARD", width/2, height - 20);
+  text("Trial " + (trial++), width/2, 15);
+}</code></pre>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 12px; font-weight: bold; color: #666;">📚 Learn More on Wikipedia:</span>
+                </div>
+                <iframe src="https://en.wikipedia.org/wiki/P300_(neuroscience)" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 6px; background: white;"></iframe>
+              </div>
+            </div>
+
+            <!-- N170 -->
+            <div class="erp-card" style="background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <div style="display: grid; grid-template-columns: 260px 0.9fr; gap: 20px; margin-bottom: 16px;">
+                <div>
+                  <div style="background: #1a1a1a; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+                    <div id="n170-canvas"></div>
+                  </div>
+                  <h5 style="margin: 0 0 8px 0; color: var(--accent); font-size: 16px;">
+                    <a href="https://en.wikipedia.org/wiki/N170" target="_blank" style="color: var(--accent); text-decoration: none;">N170</a>
+                    <span style="font-size: 11px; color: var(--muted); font-weight: normal;"> → 170 ms</span>
+                  </h5>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Discovery:</strong> Bentin et al. (1996)</p>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Measures:</strong> Face-selective perceptual processing, structural encoding</p>
+                  <p style="margin: 8px 0; font-size: 12px; line-height: 1.5;">The N170 is a negative deflection appearing around 170ms after stimulus onset, predominantly over posterior temporal cortex. It's considered a marker of face perception and structural encoding of faces. Discovered by Bentin and colleagues (1996), the N170 is consistently larger for faces than for other object categories, though it also responds to other objects of expertise (e.g., cars for car experts). The component is thought to reflect the configural processing of faces—detecting the arrangement of facial features. Interestingly, inverted faces produce a delayed and enhanced N170, suggesting disruption of normal face processing. To measure it, simply present face stimuli (photos, drawings, or even simple schematic faces) and compare with non-face objects.</p>
+                  <p style="margin: 4px 0; font-size: 11px;"><strong>Key Reference:</strong> Bentin, S., et al. (1996). Electrophysiological studies of face perception in humans. <em>Journal of Cognitive Neuroscience</em>, 8(6), 551-565.</p>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: bold; color: #666;">Starter Code:</span>
+                    <button onclick="copyCode('n170')" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px;">📋 Copy</button>
+                  </div>
+                  <pre style="background: #2d2d2d; color: #d4d4d4; padding: 12px; border-radius: 6px; overflow-y: auto; margin: 0; font-size: 11px; line-height: 1.4; height: 460px;"><code id="code-n170">// N170 Face Processing
+let showFace = true;
+let trial = 0;
+let showStim = true;
+
+function setup() {
+  createCanvas(200, 150);
+  frameRate(2);
+}
+
+function draw() {
+  background(20);
+  
+  if (showStim) {
+    fill(255);
+    noStroke();
+    if (showFace) {
+      // Simple face
+      ellipse(width/2, height/2, 50, 60);
+      fill(20);
+      ellipse(width/2 - 12, height/2 - 8, 8, 8);
+      ellipse(width/2 + 12, height/2 - 8, 8, 8);
+      arc(width/2, height/2 + 8, 25, 15, 0, PI);
+      fill(255);
+      textAlign(CENTER);
+      textSize(10);
+      text("FACE", width/2, height - 20);
+    } else {
+      rect(width/2 - 25, height/2 - 25, 50, 50);
+      textAlign(CENTER);
+      textSize(10);
+      text("OBJECT", width/2, height - 20);
+    }
+    text("Trial " + (trial++), width/2, 15);
+    showFace = !showFace;
+  } else {
+    fill(100);
+    textAlign(CENTER);
+    textSize(9);
+    text("ITI", width/2, height/2);
+  }
+  showStim = !showStim;
+}</code></pre>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 12px; font-weight: bold; color: #666;">📚 Learn More on Wikipedia:</span>
+                </div>
+                <iframe src="https://en.wikipedia.org/wiki/N170" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 6px; background: white;"></iframe>
+              </div>
+            </div>
+
+            <!-- N400 -->
+            <div class="erp-card" style="background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <div style="display: grid; grid-template-columns: 260px 0.9fr; gap: 20px; margin-bottom: 16px;">
+                <div>
+                  <div style="background: #1a1a1a; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+                    <div id="n400-canvas"></div>
+                  </div>
+                  <h5 style="margin: 0 0 8px 0; color: var(--accent); font-size: 16px;">
+                    <a href="https://en.wikipedia.org/wiki/N400_(neuroscience)" target="_blank" style="color: var(--accent); text-decoration: none;">N400</a>
+                    <span style="font-size: 11px; color: var(--muted); font-weight: normal;"> → 400 ms</span>
+                  </h5>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Discovery:</strong> Kutas & Hillyard (1980)</p>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Measures:</strong> Semantic integration, meaning processing, expectancy violation</p>
+                  <p style="margin: 8px 0; font-size: 12px; line-height: 1.5;">The N400 is a negative-going deflection that peaks around 400ms after presentation of a meaningful stimulus. Discovered by Kutas and Hillyard (1980) in their famous sentence-ending experiment ("I take coffee with cream and socks"), the N400 is sensitive to semantic incongruity. It's larger (more negative) when a word or concept doesn't fit the context compared to when it does. The N400 reflects the ease of semantic integration—how well a stimulus fits with the preceding context. It's elicited not just by words, but by any meaningful stimuli (pictures, sounds, gestures). The classic manipulation presents semantically related pairs ("DOG-CAT") versus unrelated pairs ("DOG-FORK"), with unrelated items producing larger N400s. The N400 has become a fundamental tool for studying how we access and integrate meaning in real-time.</p>
+                  <p style="margin: 4px 0; font-size: 11px;"><strong>Key Reference:</strong> Kutas, M., & Federmeier, K. D. (2011). Thirty years and counting: Finding meaning in the N400. <em>Neuroscience Reviews</em>, 62(14), 621-647.</p>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: bold; color: #666;">Starter Code:</span>
+                    <button onclick="copyCode('n400')" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px;">📋 Copy</button>
+                  </div>
+                  <pre style="background: #2d2d2d; color: #d4d4d4; padding: 12px; border-radius: 6px; overflow-y: auto; margin: 0; font-size: 11px; line-height: 1.4; height: 460px;"><code id="code-n400">// N400 Semantic Violation
+let pairs = [["CAT","DOG",true], ["CAT","TREE",false], 
+             ["SUN","MOON",true], ["SUN","FORK",false]];
+let pairIndex = 0;
+let showSecond = false;
+let showStim = true;
+
+function setup() {
+  createCanvas(200, 150);
+  frameRate(1.5);
+}
+
+function draw() {
+  background(20);
+  
+  if (showStim) {
+    let pair = pairs[pairIndex % pairs.length];
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(16);
+    if (showSecond) {
+      text(pair[1], width/2, height/2);
+      textSize(10);
+      fill(pair[2] ? color(100,255,100) : color(255,100,100));
+      text(pair[2] ? "MATCH" : "MISMATCH", width/2, height-20);
+      pairIndex++;
+    } else {
+      text(pair[0], width/2, height/2);
+    }
+    showSecond = !showSecond;
+  } else {
+    fill(100);
+    textAlign(CENTER);
+    textSize(9);
+    text("ITI", width/2, height/2);
+  }
+  showStim = !showStim;
+}</code></pre>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 12px; font-weight: bold; color: #666;">📚 Learn More on Wikipedia:</span>
+                </div>
+                <iframe src="https://en.wikipedia.org/wiki/N400_(neuroscience)" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 6px; background: white;"></iframe>
+              </div>
+            </div>
+
+            <!-- MMN -->
+            <div class="erp-card" style="background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <div style="display: grid; grid-template-columns: 260px 0.9fr; gap: 20px; margin-bottom: 16px;">
+                <div>
+                  <div style="background: #1a1a1a; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+                    <div id="mmn-canvas"></div>
+                  </div>
+                  <h5 style="margin: 0 0 8px 0; color: var(--accent); font-size: 16px;">
+                    <a href="https://en.wikipedia.org/wiki/Mismatch_negativity" target="_blank" style="color: var(--accent); text-decoration: none;">MMN (Mismatch Negativity)</a>
+                    <span style="font-size: 11px; color: var(--muted); font-weight: normal;"> → 150-250 ms</span>
+                  </h5>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Discovery:</strong> Näätänen et al. (1978)</p>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Measures:</strong> Pre-attentive auditory/visual change detection, sensory memory</p>
+                  <p style="margin: 8px 0; font-size: 12px; line-height: 1.5;">The Mismatch Negativity (MMN) is a negative deflection occurring 150-250ms after a deviant stimulus that differs from a repetitive standard. Discovered by Risto Näätänen and colleagues (1978) in auditory research, the MMN is remarkable because it occurs automatically—even when participants aren't paying attention to the stimuli. It reflects the brain's automatic comparison process: the brain builds a neural representation (or "memory trace") of the standard stimulus, and when a deviant appears that violates this representation, the MMN is generated. This makes it a window into pre-conscious sensory processing and auditory memory. The MMN has clinical applications in assessing perceptual abilities in patients who cannot communicate. Classic paradigms present frequent standard tones (85-90%) and rare deviant tones (10-15%) differing in pitch, duration, or intensity.</p>
+                  <p style="margin: 4px 0; font-size: 11px;"><strong>Key Reference:</strong> Näätänen, R., et al. (2007). The mismatch negativity (MMN): A unique window to disturbed central auditory processing. <em>Clinical Neurophysiology</em>, 118(10), 2544-2590.</p>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: bold; color: #666;">Starter Code:</span>
+                    <button onclick="copyCode('mmn')" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px;">📋 Copy</button>
+                  </div>
+                  <pre style="background: #2d2d2d; color: #d4d4d4; padding: 12px; border-radius: 6px; overflow-y: auto; margin: 0; font-size: 11px; line-height: 1.4; height: 460px;"><code id="code-mmn">// Mismatch Negativity
+let isDeviant = false;
+let trial = 0;
+let showStim = true;
+
+function setup() {
+  createCanvas(200, 150);
+  frameRate(2);
+}
+
+function draw() {
+  background(20);
+  
+  if (showStim) {
+    isDeviant = random() < 0.15;
+    noStroke();
+    fill(isDeviant ? color(255,200,100) : color(150,150,255));
+    let size = isDeviant ? 80 : 50;
+    ellipse(width/2, height/2, size, size);
+    stroke(255);
+    strokeWeight(2);
+    noFill();
+    for (let i=0; i<3; i++) {
+      ellipse(width/2, height/2, size/2+5+i*8, size/2+5+i*8);
+    }
+    noStroke();
+    fill(255);
+    textAlign(CENTER);
+    textSize(10);
+    text(isDeviant ? "DEVIANT" : "STANDARD", width/2, height-20);
+    text("Trial " + (trial++), width/2, 15);
+  } else {
+    fill(100);
+    textAlign(CENTER);
+    textSize(9);
+    text("ITI", width/2, height/2);
+  }
+  showStim = !showStim;
+}</code></pre>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 12px; font-weight: bold; color: #666;">📚 Learn More on Wikipedia:</span>
+                </div>
+                <iframe src="https://en.wikipedia.org/wiki/Mismatch_negativity" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 6px; background: white;"></iframe>
+              </div>
+            </div>
+
+            <!-- P100/N100 -->
+            <div class="erp-card" style="background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <div style="display: grid; grid-template-columns: 260px 0.9fr; gap: 20px; margin-bottom: 16px;">
+                <div>
+                  <div style="background: #1a1a1a; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+                    <div id="p100-canvas"></div>
+                  </div>
+                  <h5 style="margin: 0 0 8px 0; color: var(--accent); font-size: 16px;">
+                    <a href="https://en.wikipedia.org/wiki/C1_and_P1" target="_blank" style="color: var(--accent); text-decoration: none;">P100/N100</a>
+                    <span style="font-size: 11px; color: var(--muted); font-weight: normal;"> → 80-150 ms</span>
+                  </h5>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5; font-style: italic; color: #666;"><strong>Note:</strong> Also known as Visual P1 and Visual N1</p>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Discovery:</strong> Ciganek (1961); refined by Hillyard et al. (1970s-80s)</p>
+                  <p style="margin: 4px 0; font-size: 11px; line-height: 1.5;"><strong>Measures:</strong> Early visual processing, stimulus intensity, spatial attention</p>
+                  <p style="margin: 8px 0; font-size: 12px; line-height: 1.5;">The P100 (or P1) and N100 (or N1) are early sensory components reflecting the first wave of cortical processing of visual stimuli. The P1, a positive deflection peaking around 80-120ms over occipital cortex, is sensitive to low-level stimulus features like luminance, contrast, and spatial frequency. The N1, occurring around 150-200ms, reflects more discriminative processing and attention allocation. These components were first systematically characterized by Ciganek (1961) and later refined by Steven Hillyard's spatial attention studies showing that P1 and N1 are enhanced for stimuli at attended locations. The P1 is thought to reflect sensory gain control in extrastriate visual cortex, while the N1 may involve attention-related filtering. To measure them, manipulate stimulus intensity (bright vs. dim flashes), spatial attention (attended vs. unattended locations), or pattern complexity (simple vs. complex).</p>
+                  <p style="margin: 4px 0; font-size: 11px;"><strong>Key Reference:</strong> Hillyard, S. A., & Anllo-Vento, L. (1998). Event-related brain potentials in the study of visual selective attention. <em>PNAS</em>, 95(3), 781-787.</p>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: bold; color: #666;">Starter Code:</span>
+                    <button onclick="copyCode('p100')" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px;">📋 Copy</button>
+                  </div>
+                  <pre style="background: #2d2d2d; color: #d4d4d4; padding: 12px; border-radius: 6px; overflow-y: auto; margin: 0; font-size: 11px; line-height: 1.4; height: 460px;"><code id="code-p100">// P100/N100 Flash Intensity
+let bright = true;
+let trial = 0;
+let showStim = true;
+
+function setup() {
+  createCanvas(200, 150);
+  frameRate(2);
+}
+
+function draw() {
+  background(20);
+  
+  if (showStim) {
+    noStroke();
+    fill(bright ? 255 : 120);
+    rect(width/2-40, height/2-30, 80, 60);
+    fill(bright ? 20 : 255);
+    textAlign(CENTER, CENTER);
+    textSize(10);
+    text(bright ? "BRIGHT" : "DIM", width/2, height-20);
+    fill(255);
+    text("Trial " + (trial++), width/2, 15);
+    bright = !bright;
+  } else {
+    fill(100);
+    textAlign(CENTER);
+    textSize(9);
+    text("ITI", width/2, height/2);
+  }
+  showStim = !showStim;
+}</code></pre>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 12px; font-weight: bold; color: #666;">📚 Learn More on Wikipedia:</span>
+                </div>
+                <iframe src="https://en.wikipedia.org/wiki/C1_and_P1" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 6px; background: white;"></iframe>
+              </div>
+            </div>
+
+            <!-- Collapsed list for remaining components -->
+            <div class="erp-card" style="background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <details>
+                <summary style="cursor: pointer; font-weight: bold; color: var(--accent); margin-bottom: 12px;">
+                  📚 More ERP Components (click to expand)
+                </summary>
+                <p style="font-size: 13px; color: #666; margin-top: 8px;">Additional classic ERP components you can explore:</p>
+                <ul style="font-size: 13px; line-height: 1.8;">
+                  <li><strong><a href="https://en.wikipedia.org/wiki/Auditory_N1" target="_blank">Auditory N1</a></strong> (~100ms) - Sound onset detection and intensity processing. Compare loud vs. soft tones or different sound frequencies (can use p5.sound library).</li>
+                  <li><strong><a href="https://en.wikipedia.org/wiki/Somatosensory_evoked_potential" target="_blank">Somatosensory P1/N1</a></strong> (50-150ms) - Tactile stimulus processing. Since we can't deliver actual touch, simulate with visual cues representing left vs. right hand stimulation or different pressure intensities.</li>
+                  <li><strong><a href="https://en.wikipedia.org/wiki/Lateralized_readiness_potential" target="_blank">LRP (Lateralized Readiness Potential)</a></strong> (pre-response, -400 to 0ms) - Motor preparation and response selection. Present left/right arrow cues and compare contralateral vs. ipsilateral motor cortex activity before response execution.</li>
+                  <li><strong><a href="https://en.wikipedia.org/wiki/P600_(neuroscience)" target="_blank">P600</a></strong> (~600ms) - Syntactic violation and reanalysis. Present grammatically correct vs. incorrect sentences.</li>
+                  <li><strong><a href="https://en.wikipedia.org/wiki/Error-related_negativity" target="_blank">ERN/Ne (Error-Related Negativity)</a></strong> (~50-100ms after error) - Error detection and performance monitoring. Create a choice task where participants can make mistakes.</li>
+                </ul>
+              </details>
+            </div>
+          </div>
+        </div>
+
+        <h3>Requirements for Your ERP Experiment</h3>
+        <ul>
+          <li>✅ Present at least <strong>two stimulus categories</strong> (e.g., frequent vs. rare, faces vs. objects)</li>
+          <li>✅ Collect and average EEG data separately for each category</li>
+          <li>✅ Display both averaged ERP traces on the same plot (different colors)</li>
+          <li>✅ Show the current stimulus in a separate display area</li>
+          <li>✅ Include timing markers (0 ms stimulus onset line, tick marks every 100 ms)</li>
+          <li>✅ Label the time axis and show at least 200 ms before stimulus and 800 ms after</li>
+          <li>✅ Include a counter showing how many trials have been averaged for each category</li>
+          <li>✅ Make it visually clear and easy to understand</li>
+        </ul>
+
+        <h3>Tips for Success</h3>
+        <ul>
+          <li><strong>Start simple:</strong> Get the basic stimulus presentation working first, then add ERP averaging</li>
+          <li><strong>Use simulation mode:</strong> Test your timing and averaging logic with simulated data before trying with real EEG</li>
+          <li><strong>Epoch length:</strong> Typically use 1000-1500 ms epochs (-200 to +800 ms around stimulus)</li>
+          <li><strong>Baseline correction:</strong> The pre-stimulus period (-200 to 0 ms) should average to ~0</li>
+          <li><strong>Number of trials:</strong> ERPs typically need 20-50 trials per condition to see clear components</li>
+          <li><strong>Sampling rate:</strong> Muse samples at 256 Hz, so each ms has 0.256 samples</li>
+        </ul>
+
+        <div class="callout">
+          <h4>What to Submit for Part 2</h4>
+          <ul>
+            <li><strong>Code:</strong> Your JavaScript code saved as a <code>.txt</code> file (e.g., <code>lastname_midterm_part2.txt</code>)</li>
+            <li><strong>Description:</strong> A brief explanation (200-400 words) describing:
+              <ul>
+                <li>What ERP component you chose to measure</li>
+                <li>What stimulus manipulation you used</li>
+                <li>How your averaging system works</li>
+                <li>What you would expect to see if testing with real EEG (based on the literature)</li>
+              </ul>
+            </li>
+            <li><strong>Video/Screenshot:</strong> A screen recording or screenshot showing your experiment running, demonstrating:
+              <ul>
+                <li>The stimulus presentation timing and display</li>
+                <li>The ERP averaging plot with both conditions</li>
+                <li>Time markers and labels</li>
+                <li>Trial counters for each condition</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="beat"></div>
+
+        <h2>📤 Submission Instructions</h2>
+
+        <div class="callout callout-warning">
+          <h3>How to Submit</h3>
+          <ol>
+            <li><strong>Save your code:</strong> 
+              <ul>
+                <li>In BrainImation, click the 💾 Save button to download your code</li>
+                <li>Rename the file from <code>.js</code> to <code>.txt</code> (Google Forms doesn't accept .js files)</li>
+                <li>Name format: <code>lastname_midterm_part1.txt</code> and <code>lastname_midterm_part2.txt</code></li>
+              </ul>
+            </li>
+            <li><strong>Write your descriptions:</strong> Create a document (PDF or Word) with:
+              <ul>
+                <li>Your name and student ID</li>
+                <li>Part 1 description (200-400 words) + video/GIF link or embedded media</li>
+                <li>Part 2 description (200-400 words) + video/screenshot link or embedded media</li>
+              </ul>
+            </li>
+            <li><strong>Submit via Google Form:</strong>
+              <ul>
+                <li>Use the same assignment submission form</li>
+                <li>Select "Midterm 1" from the dropdown</li>
+                <li>Upload both <code>.txt</code> files and your description document</li>
+              </ul>
+            </li>
+          </ol>
+
+          <p style="text-align: center; margin-top: 24px;">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdkZyzDGpeOv8PTrNUDTYWPArQUwqzoZbiAdmgntMpt59f2tg/viewform?usp=dialog" target="_blank" class="button button-secondary">Submit Midterm 1 →</a>
+          </p>
+        </div>
+
+        <h2>💡 Getting Help</h2>
+        <p>Remember, this is a <strong>learning experience</strong>, not a test of what you've memorized. We want you to explore, experiment, and learn:</p>
+        <ul>
+          <li><strong>Ask questions:</strong> Discord, email, or in-person during the week</li>
+          <li><strong>TAs are here to help:</strong> Tamari Shalamberidze (shalambe@ualberta.ca)</li>
+          <li><strong>Professor Mathewson:</strong> kmathews@ualberta.ca</li>
+          <li><strong>Use AI assistants:</strong> ChatGPT, Claude, and the built-in AI helper in BrainImation are all fair game</li>
+          <li><strong>Collaborate on concepts:</strong> You can discuss ideas with classmates, but write your own code and descriptions</li>
+        </ul>
+
+        <h2>📊 Grading Rubric</h2>
+
+        <h3>Part 1: BCI Innovation (50 points)</h3>
+        <ul>
+          <li><strong>Implementation (25 points):</strong> Code works, demonstrates novel BCI concept clearly</li>
+          <li><strong>Creativity (15 points):</strong> Goes beyond basic parameter control, shows thoughtful design</li>
+          <li><strong>Documentation (10 points):</strong> Clear written explanation (5 pts) + video/GIF demonstration (5 pts)</li>
+        </ul>
+
+        <h3>Part 2: ERP Experiment (50 points)</h3>
+        <ul>
+          <li><strong>Stimulus Presentation (15 points):</strong> Correct timing, two conditions, clear display</li>
+          <li><strong>ERP Averaging (20 points):</strong> Properly collects epochs, averages separately by condition, displays results</li>
+          <li><strong>Visualization (10 points):</strong> Clear plot with labels, time markers, easy to understand</li>
+          <li><strong>Documentation (5 points):</strong> Written explanation (3 pts) + video/screenshot demonstration (2 pts)</li>
+        </ul>
+
+        <div class="beat"></div>
+
+        <h2>🚀 Ready to Begin?</h2>
+        <p style="text-align: center; font-size: 18px; margin: 32px 0;">
+          <a href="./brainimation.html" class="button" style="font-size: 18px; padding: 16px 32px;">Open BrainImation →</a>
+        </p>
+
+        <p style="text-align: center; color: var(--muted);">
+          Good luck! Remember: creativity and learning are more important than perfection. 🧠✨
+        </p>
+
+      </main>
+
+      <footer>
+        <p>PSYCH 403A1 — Neuroimaging and Neurostimulation</p>
+        <p>Questions? Contact Prof. Mathewson (kmathews@ualberta.ca) or Tamari (shalambe@ualberta.ca)</p>
+      </footer>
+    </div>
+
+    <!-- P5.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    
+    <!-- ERP Animation Scripts -->
+    <script>
+      // Copy code to clipboard
+      function copyCode(erpType) {
+        const codeElement = document.getElementById('code-' + erpType);
+        if (codeElement) {
+          navigator.clipboard.writeText(codeElement.textContent).then(function() {
+            alert('Code copied to clipboard! Paste it into BrainImation to get started.');
+          }, function() {
+            alert('Failed to copy code. Please select and copy manually.');
+          });
+        }
+      }
+      
+      // Create P300 animation
+      new p5(function(p) {
+        let trial = 0;
+        let isRare = false;
+        let showStim = true;
+        
+        p.setup = function() {
+          p.createCanvas(200, 150);
+          p.frameRate(2);
+        };
+        
+        p.draw = function() {
+          p.background(20);
+          
+          if (showStim) {
+            isRare = p.random() < 0.2;
+            p.noStroke();
+            p.fill(isRare ? p.color(255, 50, 80) : p.color(80, 150, 255));
+            p.ellipse(p.width/2, p.height/2, 60, 60);
+            p.fill(255);
+            p.textAlign(p.CENTER);
+            p.textSize(10);
+            p.text(isRare ? "RARE" : "STANDARD", p.width/2, p.height - 20);
+            p.text("Trial " + (trial++), p.width/2, 15);
+          } else {
+            p.fill(100);
+            p.textAlign(p.CENTER);
+            p.textSize(9);
+            p.text("ITI", p.width/2, p.height/2);
+          }
+          
+          showStim = !showStim;
+        };
+      }, 'p300-canvas');
+      
+      // Create N170 animation
+      new p5(function(p) {
+        let showFace = true;
+        let trial = 0;
+        let showStim = true;
+        
+        p.setup = function() {
+          p.createCanvas(200, 150);
+          p.frameRate(2);
+        };
+        
+        p.draw = function() {
+          p.background(20);
+          
+          if (showStim) {
+            p.fill(255);
+            p.noStroke();
+            if (showFace) {
+              p.ellipse(p.width/2, p.height/2, 50, 60);
+              p.fill(20);
+              p.ellipse(p.width/2 - 12, p.height/2 - 8, 8, 8);
+              p.ellipse(p.width/2 + 12, p.height/2 - 8, 8, 8);
+              p.arc(p.width/2, p.height/2 + 8, 25, 15, 0, p.PI);
+              p.fill(255);
+              p.textAlign(p.CENTER);
+              p.textSize(10);
+              p.text("FACE", p.width/2, p.height - 20);
+            } else {
+              p.rect(p.width/2 - 25, p.height/2 - 25, 50, 50);
+              p.textAlign(p.CENTER);
+              p.textSize(10);
+              p.text("OBJECT", p.width/2, p.height - 20);
+            }
+            p.text("Trial " + (trial++), p.width/2, 15);
+            showFace = !showFace;
+          } else {
+            p.fill(100);
+            p.textAlign(p.CENTER);
+            p.textSize(9);
+            p.text("ITI", p.width/2, p.height/2);
+          }
+          showStim = !showStim;
+        };
+      }, 'n170-canvas');
+      
+      // Create N400 animation
+      new p5(function(p) {
+        let pairs = [["CAT","DOG",true], ["CAT","TREE",false], ["SUN","MOON",true], ["SUN","FORK",false]];
+        let pairIndex = 0;
+        let showSecond = false;
+        let showStim = true;
+        
+        p.setup = function() {
+          p.createCanvas(200, 150);
+          p.frameRate(1.5);
+        };
+        
+        p.draw = function() {
+          p.background(20);
+          
+          if (showStim) {
+            let pair = pairs[pairIndex % pairs.length];
+            p.fill(255);
+            p.textAlign(p.CENTER, p.CENTER);
+            p.textSize(16);
+            if (showSecond) {
+              p.text(pair[1], p.width/2, p.height/2);
+              p.textSize(10);
+              p.fill(pair[2] ? p.color(100,255,100) : p.color(255,100,100));
+              p.text(pair[2] ? "MATCH" : "MISMATCH", p.width/2, p.height-20);
+              pairIndex++;
+            } else {
+              p.text(pair[0], p.width/2, p.height/2);
+            }
+            showSecond = !showSecond;
+          } else {
+            p.fill(100);
+            p.textAlign(p.CENTER);
+            p.textSize(9);
+            p.text("ITI", p.width/2, p.height/2);
+          }
+          showStim = !showStim;
+        };
+      }, 'n400-canvas');
+      
+      // Create MMN animation
+      new p5(function(p) {
+        let isDeviant = false;
+        let trial = 0;
+        let showStim = true;
+        
+        p.setup = function() {
+          p.createCanvas(200, 150);
+          p.frameRate(2);
+        };
+        
+        p.draw = function() {
+          p.background(20);
+          
+          if (showStim) {
+            isDeviant = p.random() < 0.15;
+            p.noStroke();
+            p.fill(isDeviant ? p.color(255,200,100) : p.color(150,150,255));
+            let size = isDeviant ? 80 : 50;
+            p.ellipse(p.width/2, p.height/2, size, size);
+            p.stroke(255);
+            p.strokeWeight(2);
+            p.noFill();
+            for (let i=0; i<3; i++) {
+              p.ellipse(p.width/2, p.height/2, size/2+5+i*8, size/2+5+i*8);
+            }
+            p.noStroke();
+            p.fill(255);
+            p.textAlign(p.CENTER);
+            p.textSize(10);
+            p.text(isDeviant ? "DEVIANT" : "STANDARD", p.width/2, p.height-20);
+            p.text("Trial " + (trial++), p.width/2, 15);
+          } else {
+            p.fill(100);
+            p.textAlign(p.CENTER);
+            p.textSize(9);
+            p.text("ITI", p.width/2, p.height/2);
+          }
+          showStim = !showStim;
+        };
+      }, 'mmn-canvas');
+      
+      // Create P100 animation
+      new p5(function(p) {
+        let bright = true;
+        let trial = 0;
+        let showStim = true;
+        
+        p.setup = function() {
+          p.createCanvas(200, 150);
+          p.frameRate(2);
+        };
+        
+        p.draw = function() {
+          p.background(20);
+          
+          if (showStim) {
+            p.noStroke();
+            p.fill(bright ? 255 : 120);
+            p.rect(p.width/2-40, p.height/2-30, 80, 60);
+            p.fill(bright ? 20 : 255);
+            p.textAlign(p.CENTER, p.CENTER);
+            p.textSize(10);
+            p.text(bright ? "BRIGHT" : "DIM", p.width/2, p.height-20);
+            p.fill(255);
+            p.text("Trial " + (trial++), p.width/2, 15);
+            bright = !bright;
+          } else {
+            p.fill(100);
+            p.textAlign(p.CENTER);
+            p.textSize(9);
+            p.text("ITI", p.width/2, p.height/2);
+          }
+          showStim = !showStim;
+        };
+      }, 'p100-canvas');
+    </script>
+  </body>
+</html>
