@@ -1339,8 +1339,9 @@
             this.muse = new window.muse.MuseClient();
             logger.log('✅ MuseClient created successfully', 'success');
             
-            // Enable PPG if available (for better compatibility)
-            this.muse.enablePpg = true;
+            // Don't enable PPG by default - it's only available on Muse 2 and Muse S
+            // Enabling it causes connection failures on Muse 2016 devices
+            // this.muse.enablePpg = false; // Default is already false
             
             // Step 4: Request device pairing
             logger.log('Step 4: Opening Bluetooth device selector...', 'info');
