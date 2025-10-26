@@ -217,13 +217,20 @@
       }
 
       .code-panel-view {
-        flex: 1;
+        flex: 1 1 auto;
         display: none;
         flex-direction: column;
+        min-height: 0; /* Important for flex scrolling */
+        overflow: hidden;
       }
 
       .code-panel-view.active {
         display: flex;
+      }
+
+      /* Ensure log view fills space properly */
+      #log-view {
+        padding: 0;
       }
 
       .panel-header {
@@ -338,20 +345,14 @@
       .console-log-panel {
         background: var(--bg);
         padding: 8px;
-        max-height: 200px;
-        overflow-y: auto;
         font-family: 'Monaco', 'Courier New', monospace;
         font-size: 11px;
         display: flex;
         flex-direction: column;
-        gap: 2px;
-      }
-
-      /* When in tab view, use full height */
-      .code-panel-view .console-log-panel {
-        max-height: none;
+        gap: 4px;
+        overflow: hidden;
         height: 100%;
-        border-top: none;
+        box-sizing: border-box;
       }
 
       .console-log-header {
@@ -362,6 +363,7 @@
         background: var(--bg-2);
         border-radius: 4px;
         margin-bottom: 4px;
+        flex-shrink: 0; /* Don't let header shrink */
       }
 
       .console-log-title {
@@ -388,21 +390,51 @@
       }
 
       .console-log-messages {
-        flex: 1;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        min-height: 0; /* Important for flex scrolling */
+        flex: 1 1 0;
+        overflow-y: scroll; /* Always show scrollbar */
+        overflow-x: hidden;
+        display: block; /* Use block instead of flex for simpler scrolling */
+        padding: 4px;
+        scroll-behavior: smooth;
+        min-height: 0;
+      }
+      
+      .console-log-messages::-webkit-scrollbar {
+        width: 10px;
+      }
+      
+      .console-log-messages::-webkit-scrollbar-track {
+        background: var(--bg);
+        border-radius: 4px;
+        margin: 4px;
+      }
+      
+      .console-log-messages::-webkit-scrollbar-thumb {
+        background: var(--accent-2);
+        border-radius: 4px;
+        border: 2px solid var(--bg);
+      }
+      
+      .console-log-messages::-webkit-scrollbar-thumb:hover {
+        background: var(--accent);
+      }
+
+      /* For Firefox */
+      .console-log-messages {
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-2) var(--bg);
       }
 
       .log-message {
         padding: 4px 8px;
+        margin-bottom: 2px;
         border-radius: 3px;
         background: var(--bg-2);
         border-left: 3px solid;
         word-wrap: break-word;
+        word-break: break-word;
         animation: slideIn 0.2s ease-out;
+        line-height: 1.4;
       }
 
       @keyframes slideIn {
@@ -749,7 +781,7 @@
 
           <!-- System Log View -->
           <div class="code-panel-view" id="log-view">
-            <div class="console-log-panel" id="console-log-panel" style="max-height: none; height: 100%;">
+            <div class="console-log-panel" id="console-log-panel">
               <div class="console-log-header">
                 <div class="console-log-title">📋 System Log</div>
                 <button class="console-log-clear" id="clear-log-btn">Clear</button>
@@ -757,7 +789,7 @@
               <div class="console-log-messages" id="log-messages">
                 <div class="log-message log-info">
                   <span class="log-timestamp">[Ready]</span>
-                  Console initialized. Connection messages will appear here.
+                  System Log initialized. Messages appear from oldest (top) to newest (bottom). Scroll to view history.
                 </div>
               </div>
             </div>
@@ -889,6 +921,29 @@
             this.addMessage(this.formatArgs(args), 'info');
           };
 
+          // Catch uncaught runtime errors
+          window.addEventListener('error', (event) => {
+            const errorMsg = `❌ Runtime Error: ${event.message}`;
+            const location = event.filename ? ` at line ${event.lineno}` : '';
+            this.addMessage(errorMsg + location, 'error');
+            
+            // Try to extract more details about the error
+            if (event.error && event.error.stack) {
+              const stackLines = event.error.stack.split('\n').slice(0, 3); // First 3 lines
+              stackLines.forEach(line => {
+                if (line.trim()) {
+                  this.addMessage('  ' + line.trim(), 'error');
+                }
+              });
+            }
+          });
+
+          // Catch unhandled promise rejections
+          window.addEventListener('unhandledrejection', (event) => {
+            const errorMsg = `❌ Unhandled Promise Rejection: ${event.reason}`;
+            this.addMessage(errorMsg, 'error');
+          });
+
           this.log('✅ Console logging system initialized', 'success');
         }
 
@@ -923,6 +978,10 @@
             ${this.escapeHtml(message)}
           `;
 
+          // Check if user was scrolled to bottom before adding message
+          const wasAtBottom = this.logContainer.scrollHeight - this.logContainer.scrollTop <= this.logContainer.clientHeight + 50;
+
+          // Add new message at the bottom
           this.logContainer.appendChild(logEntry);
 
           // Keep only last N messages
@@ -930,15 +989,26 @@
             this.logContainer.removeChild(this.logContainer.firstChild);
           }
 
-          // Auto-scroll to bottom
-          this.logContainer.scrollTop = this.logContainer.scrollHeight;
+          // Auto-scroll to bottom only if user was at bottom (or close to it)
+          // This prevents interrupting if user is reading older messages
+          if (wasAtBottom || type === 'error') {
+            // Small delay to ensure DOM has updated
+            requestAnimationFrame(() => {
+              this.logContainer.scrollTop = this.logContainer.scrollHeight;
+            });
+          }
 
-          // Auto-switch to log tab on errors or important messages
-          if ((type === 'error' || type === 'warning') && window.codePanelTabs) {
+          // Auto-switch to log tab on errors
+          if (type === 'error' && window.codePanelTabs) {
             // Small delay to ensure tab manager is initialized
             setTimeout(() => {
               if (codePanelTabs.currentTab !== 'log') {
                 codePanelTabs.switchTab('log');
+                // Add a visual indicator
+                const logTab = document.querySelector('[data-panel="log"]');
+                if (logTab) {
+                  logTab.style.animation = 'pulse 1s ease-in-out 3';
+                }
               }
             }, 100);
           }
@@ -958,6 +1028,10 @@
           if (this.logContainer) {
             this.logContainer.innerHTML = '';
             this.addMessage('Console cleared', 'info');
+            // Ensure we're at the bottom after clearing
+            requestAnimationFrame(() => {
+              this.logContainer.scrollTop = this.logContainer.scrollHeight;
+            });
           }
         }
       }
@@ -1978,13 +2052,6 @@ function draw() {
             this.currentSketch = new p5((p) => {
               // Store original p5 functions
               let userSetup, userDraw, userWindowResized;
-              
-              // Override console.error to catch p5 errors
-              const originalError = console.error;
-              console.error = function(...args) {
-                originalError.apply(console, args);
-                showError(args.join(' '));
-              };
 
               // Make p5 functions available globally within the sketch context
               const bindP5Functions = () => {
@@ -2174,7 +2241,18 @@ function draw() {
                 // Call user setup if it exists
                 if (userSetup) {
                   console.log('Calling user setup function');
-                  userSetup();
+                  try {
+                    userSetup();
+                  } catch (error) {
+                    console.error('❌ Error in setup() function: ' + error.message);
+                    if (error.stack) {
+                      const stackLine = error.stack.split('\n')[1];
+                      if (stackLine) {
+                        console.error('   ' + stackLine.trim());
+                      }
+                    }
+                    console.warn('💡 Tip: Check your setup() function in the Code Editor tab for syntax or logic errors.');
+                  }
                 } else {
                   console.log('No user setup function found');
                 }
@@ -2189,7 +2267,20 @@ function draw() {
                 
                 // Call user draw if it exists
                 if (userDraw) {
-                  userDraw();
+                  try {
+                    userDraw();
+                  } catch (error) {
+                    console.error('❌ Error in draw() function: ' + error.message);
+                    if (error.stack) {
+                      const stackLine = error.stack.split('\n')[1];
+                      if (stackLine) {
+                        console.error('   ' + stackLine.trim());
+                      }
+                    }
+                    console.warn('💡 Tip: Check your code in the Code Editor tab. The animation has been paused to prevent error spam.');
+                    // Stop the sketch to prevent error spam
+                    p.noLoop();
+                  }
                 } else {
                   // Show a test pattern if no user draw function
                   p.background(50);
@@ -2229,6 +2320,11 @@ function draw() {
           const errorConsole = document.getElementById('error-console');
           errorConsole.textContent = message;
           errorConsole.style.display = 'block';
+          
+          // Also log to System Log
+          if (window.logger) {
+            logger.log('❌ Code Error: ' + message, 'error');
+          }
         }
 
         saveCode() {
@@ -4173,11 +4269,14 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
             }
           });
 
-          // If switching to log, scroll to bottom
+          // If switching to log, scroll to bottom to show most recent messages
           if (panelName === 'log') {
             const logMessages = document.getElementById('log-messages');
             if (logMessages) {
-              logMessages.scrollTop = logMessages.scrollHeight;
+              // Use requestAnimationFrame to ensure DOM is rendered
+              requestAnimationFrame(() => {
+                logMessages.scrollTop = logMessages.scrollHeight;
+              });
             }
           }
         }
