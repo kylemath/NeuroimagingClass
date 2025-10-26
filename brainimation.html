@@ -536,12 +536,18 @@
         background: var(--bg);
         border-radius: 3px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         border: 1px solid transparent;
         overflow: hidden;
       }
       
       .function-item:hover {
+        background: var(--bg-2);
+        border-color: var(--accent);
+        transform: translateX(2px);
+      }
+      
+      .function-item.expanded {
         background: var(--accent);
         color: white;
         border-color: var(--accent);
@@ -550,8 +556,23 @@
       .function-name {
         font-family: 'Courier New', monospace;
         font-weight: 600;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         padding: 2px 0;
+      }
+      
+      .function-name::after {
+        content: '▶';
+        font-size: 8px;
+        color: var(--muted);
+        transition: transform 0.2s ease;
+        margin-left: 8px;
+      }
+      
+      .function-item.expanded .function-name::after {
+        transform: rotate(90deg);
+        color: white;
       }
       
       .function-tooltip {
@@ -560,13 +581,15 @@
         transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
         padding: 0;
         margin: 0;
+        opacity: 0;
       }
       
-      .function-item:hover .function-tooltip {
-        max-height: 300px;
+      .function-item.expanded .function-tooltip {
+        max-height: 500px;
         padding-top: 8px;
         margin-top: 4px;
         border-top: 1px solid rgba(255,255,255,0.3);
+        opacity: 1;
       }
       
       .tooltip-signature {
@@ -578,7 +601,7 @@
         word-wrap: break-word;
       }
       
-      .function-item:hover .tooltip-signature {
+      .function-item.expanded .tooltip-signature {
         color: white;
         opacity: 0.9;
       }
@@ -590,9 +613,28 @@
         word-wrap: break-word;
       }
       
-      .function-item:hover .tooltip-description {
+      .function-item.expanded .tooltip-description {
         color: white;
         opacity: 0.85;
+      }
+      
+      .function-item.code-inserted {
+        animation: codeInserted 0.5s ease;
+      }
+      
+      @keyframes codeInserted {
+        0% {
+          transform: scale(1);
+          background: var(--accent);
+        }
+        50% {
+          transform: scale(1.05);
+          background: var(--success);
+        }
+        100% {
+          transform: scale(1);
+          background: var(--accent);
+        }
       }
       
       .ai-assistant {
@@ -701,6 +743,7 @@
           <button class="btn btn-secondary" id="load-btn">📁 Load</button>
           <button class="btn btn-secondary" id="reload-btn" disabled>🔄 Reload</button>
           <button class="btn btn-secondary" id="fullscreen-btn">Fullscreen</button>
+          <button class="btn btn-secondary" id="test-sound-btn">🔊 Test Sound</button>
           <button class="toggle-reference" id="toggle-reference-btn">📖 Reference</button>
           <input type="file" id="file-input" accept=".js" style="display: none;">
         </div>
@@ -773,6 +816,11 @@
               <option value="colorfulGrid">Animated Grid</option>
               <option value="webcamInput">Webcam Input</option>
             </optgroup>
+            <optgroup label="Sound & Music">
+              <option value="brainBeats">Brain Beats (Sound Test)</option>
+              <option value="alphaMusic">Alpha Wave Music</option>
+              <option value="brainSynth">Brain Synthesizer</option>
+            </optgroup>
               </select>
             </div>
             <div class="code-editor" id="code-editor"></div>
@@ -801,6 +849,8 @@
       <div class="reference-panel" id="reference-panel">
         <div class="reference-tabs">
           <div class="reference-tab active" data-tab="p5js">P5.js</div>
+          <div class="reference-tab" data-tab="sound">Sound</div>
+          <div class="reference-tab" data-tab="input">Input</div>
           <div class="reference-tab" data-tab="eeg">EEG Data</div>
           <div class="reference-tab" data-tab="ai">AI Helper</div>
         </div>
@@ -1736,6 +1786,210 @@
         }
       };
 
+      // Sound Reference - p5.sound library
+      const soundReference = {
+        'Synthesizers': {
+          'p5.Oscillator': {
+            signature: 'new p5.Oscillator([freq], [type])',
+            description: 'Creates an oscillator for generating tones. Types: "sine", "triangle", "square", "sawtooth". Use .start() to begin, .freq() to set frequency, .amp() to set volume.'
+          },
+          'p5.PolySynth': {
+            signature: 'new p5.PolySynth([synth], [maxVoices])',
+            description: 'Polyphonic synthesizer for playing multiple notes simultaneously. Use .play(note, velocity, time, duration) to trigger notes.'
+          },
+          'p5.MonoSynth': {
+            signature: 'new p5.MonoSynth()',
+            description: 'Monophonic synthesizer with ADSR envelope. Use .play(note, velocity, time) to trigger sounds.'
+          }
+        },
+        'Sound Files': {
+          'loadSound': {
+            signature: 'loadSound(path, [successCallback], [errorCallback])',
+            description: 'Loads an audio file (mp3, wav, ogg). Returns p5.SoundFile object. Use in preload() or with callback.'
+          },
+          'p5.SoundFile': {
+            signature: 'soundFile.play(), .pause(), .stop()',
+            description: 'Object for playing audio files. Methods: play(), pause(), stop(), loop(), setVolume(), rate(), duration().'
+          }
+        },
+        'Analysis': {
+          'p5.FFT': {
+            signature: 'new p5.FFT([smoothing], [bins])',
+            description: 'Fast Fourier Transform for frequency analysis. Use .analyze() for frequency spectrum, .waveform() for time-domain data.'
+          },
+          'p5.Amplitude': {
+            signature: 'new p5.Amplitude([smoothing])',
+            description: 'Measures volume/amplitude of audio. Use .getLevel() to get current amplitude (0.0 to 1.0).'
+          }
+        },
+        'Effects': {
+          'p5.Reverb': {
+            signature: 'new p5.Reverb()',
+            description: 'Reverb effect for spatial depth. Use .process(sound, duration, decayRate) to apply.'
+          },
+          'p5.Delay': {
+            signature: 'new p5.Delay()',
+            description: 'Delay/echo effect. Use .process(sound, delayTime, feedback, filterFreq) to apply.'
+          },
+          'p5.Filter': {
+            signature: 'new p5.Filter([type])',
+            description: 'Audio filter (lowpass, highpass, bandpass). Use .freq() to set cutoff frequency.'
+          },
+          'p5.Distortion': {
+            signature: 'new p5.Distortion([amount], [oversample])',
+            description: 'Distortion effect. Use .process(sound, amount) to add harmonic distortion.'
+          },
+          'p5.Compressor': {
+            signature: 'new p5.Compressor()',
+            description: 'Dynamic range compressor. Balances loud and quiet parts of audio.'
+          }
+        },
+        'Control': {
+          'userStartAudio': {
+            signature: 'userStartAudio()',
+            description: '⚠️ REQUIRED: Call this in mousePressed() or touchStarted() before playing any sound. Enables audio context after user interaction.'
+          },
+          'getAudioContext': {
+            signature: 'getAudioContext()',
+            description: 'Returns the Web Audio API AudioContext. Advanced: for custom audio processing.'
+          },
+          'masterVolume': {
+            signature: 'masterVolume([volume], [rampTime])',
+            description: 'Sets or gets master volume for all sounds (0.0 to 1.0). Can ramp smoothly over time.'
+          },
+          'soundFormats': {
+            signature: 'soundFormats("mp3", "ogg")',
+            description: 'Defines which audio formats to try when loading. Place before loadSound() in preload().'
+          }
+        }
+      };
+
+      // Input Reference - Mouse, Keyboard, Touch
+      const inputReference = {
+        'Mouse Events': {
+          'mousePressed': {
+            signature: 'function mousePressed() { }',
+            description: 'Called once when mouse button is pressed. Use mouseButton to check which button (LEFT, RIGHT, CENTER).'
+          },
+          'mouseReleased': {
+            signature: 'function mouseReleased() { }',
+            description: 'Called once when mouse button is released.'
+          },
+          'mouseClicked': {
+            signature: 'function mouseClicked() { }',
+            description: 'Called once after mouse is pressed and released.'
+          },
+          'mouseMoved': {
+            signature: 'function mouseMoved() { }',
+            description: 'Called every time the mouse moves (while not pressed).'
+          },
+          'mouseDragged': {
+            signature: 'function mouseDragged() { }',
+            description: 'Called every time the mouse moves while a button is pressed.'
+          },
+          'mouseWheel': {
+            signature: 'function mouseWheel(event) { }',
+            description: 'Called when mouse wheel is scrolled. Access event.delta for scroll amount.'
+          }
+        },
+        'Mouse Variables': {
+          'mouseX': {
+            signature: 'mouseX',
+            description: 'Current horizontal position of the mouse, relative to (0, 0) of the canvas.'
+          },
+          'mouseY': {
+            signature: 'mouseY',
+            description: 'Current vertical position of the mouse, relative to (0, 0) of the canvas.'
+          },
+          'pmouseX': {
+            signature: 'pmouseX',
+            description: 'Previous horizontal position of the mouse (from last frame).'
+          },
+          'pmouseY': {
+            signature: 'pmouseY',
+            description: 'Previous vertical position of the mouse (from last frame).'
+          },
+          'mouseButton': {
+            signature: 'mouseButton',
+            description: 'Which mouse button is pressed: LEFT, RIGHT, or CENTER.'
+          },
+          'mouseIsPressed': {
+            signature: 'mouseIsPressed',
+            description: 'Boolean: true if any mouse button is currently pressed, false otherwise.'
+          }
+        },
+        'Keyboard Events': {
+          'keyPressed': {
+            signature: 'function keyPressed() { }',
+            description: 'Called once when any key is pressed. Return false to prevent default browser behavior.'
+          },
+          'keyReleased': {
+            signature: 'function keyReleased() { }',
+            description: 'Called once when any key is released.'
+          },
+          'keyTyped': {
+            signature: 'function keyTyped() { }',
+            description: 'Called once when any printable key is pressed (letters, numbers, symbols).'
+          }
+        },
+        'Keyboard Variables': {
+          'key': {
+            signature: 'key',
+            description: 'The character of the most recently pressed key. For letters: lowercase (\'a\', \'b\'). For special keys, see keyCode.'
+          },
+          'keyCode': {
+            signature: 'keyCode',
+            description: 'Numeric code for special keys: BACKSPACE, DELETE, ENTER, RETURN, TAB, ESCAPE, SHIFT, CONTROL, OPTION, ALT, UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW.'
+          },
+          'keyIsPressed': {
+            signature: 'keyIsPressed',
+            description: 'Boolean: true if any key is currently pressed, false otherwise.'
+          }
+        },
+        'Touch Events': {
+          'touchStarted': {
+            signature: 'function touchStarted() { }',
+            description: 'Called once when screen is touched. Return false to prevent default browser behavior (like scrolling).'
+          },
+          'touchMoved': {
+            signature: 'function touchMoved() { }',
+            description: 'Called every time a touch point moves. Return false to prevent default behavior.'
+          },
+          'touchEnded': {
+            signature: 'function touchEnded() { }',
+            description: 'Called once when touch is released. Return false to prevent default behavior.'
+          }
+        },
+        'Touch Variables': {
+          'touches': {
+            signature: 'touches[]',
+            description: 'Array of current touch points. Each has properties: x, y, id. Use touches.length to count simultaneous touches.'
+          },
+          'touchX': {
+            signature: 'touchX',
+            description: 'Horizontal position of first touch point (or mouseX if no touches). Convenient for single-touch interactions.'
+          },
+          'touchY': {
+            signature: 'touchY',
+            description: 'Vertical position of first touch point (or mouseY if no touches). Convenient for single-touch interactions.'
+          }
+        },
+        'Examples': {
+          'Multi-touch': {
+            signature: 'for (let touch of touches) { ellipse(touch.x, touch.y, 50); }',
+            description: 'Access all touch points for multi-touch interactions. Each touch has x, y, and id properties.'
+          },
+          'Prevent Scrolling': {
+            signature: 'function touchMoved() { return false; }',
+            description: 'Return false from touch events to prevent default browser behavior like scrolling or zooming.'
+          },
+          'Sound Activation': {
+            signature: 'function mousePressed() { userStartAudio(); }',
+            description: 'Call userStartAudio() in mousePressed() or touchStarted() before playing sounds (browser requirement).'
+          }
+        }
+      };
+
       // EEG Data Reference
       const eegReference = {
         'Frequency Bands': {
@@ -1828,6 +2082,37 @@
             });
           });
           
+          // Create completion items for sound functions
+          const soundCompletionItems = [];
+          Object.keys(soundReference).forEach(category => {
+            Object.keys(soundReference[category]).forEach(funcName => {
+              const func = soundReference[category][funcName];
+              soundCompletionItems.push({
+                label: funcName,
+                kind: monaco.languages.CompletionItemKind.Function,
+                documentation: `${func.signature}\n\n${func.description}`,
+                insertText: funcName,
+                detail: `Sound: ${category}`
+              });
+            });
+          });
+          
+          // Create completion items for input events/variables
+          const inputCompletionItems = [];
+          Object.keys(inputReference).forEach(category => {
+            Object.keys(inputReference[category]).forEach(itemName => {
+              const item = inputReference[category][itemName];
+              const isEvent = category.includes('Events');
+              inputCompletionItems.push({
+                label: itemName,
+                kind: isEvent ? monaco.languages.CompletionItemKind.Function : monaco.languages.CompletionItemKind.Variable,
+                documentation: `${item.signature}\n\n${item.description}`,
+                insertText: itemName,
+                detail: `Input: ${category}`
+              });
+            });
+          });
+          
           // Create completion items for eegData
           const eegCompletionItems = [];
           Object.keys(eegReference).forEach(category => {
@@ -1867,9 +2152,14 @@
                 };
               }
               
-              // Otherwise show p5.js functions
+              // Otherwise show all completions (p5.js, sound, input, and eegData)
               return {
-                suggestions: [...p5CompletionItems, ...eegCompletionItems].map(item => ({
+                suggestions: [
+                  ...p5CompletionItems, 
+                  ...soundCompletionItems,
+                  ...inputCompletionItems,
+                  ...eegCompletionItems
+                ].map(item => ({
                   ...item,
                   range: range
                 }))
@@ -1877,7 +2167,7 @@
             }
           });
           
-          console.log('✅ Autocomplete registered for p5.js and eegData');
+          console.log('✅ Autocomplete registered for p5.js, sound, input, and eegData');
         }
 
         setupEditor() {
@@ -2047,136 +2337,96 @@ function draw() {
             const containerHeight = containerRect.height || 600;
             console.log('Container dimensions:', containerWidth, 'x', containerHeight);
 
-            // Execute the sketch with proper p5.js instance mode
-            console.log('Creating p5 sketch...');
-            this.currentSketch = new p5((p) => {
-              // Store original p5 functions
-              let userSetup, userDraw, userWindowResized;
+              // Execute the sketch with proper p5.js instance mode
+              console.log('Creating p5 sketch...');
+              this.currentSketch = new p5((p) => {
+                // Store original p5 functions
+                let userSetup, userDraw, userWindowResized;
+                
+                // Store user event handlers
+                let userMousePressed, userMouseReleased, userMouseClicked;
+                let userMouseMoved, userMouseDragged, userMouseWheel;
+                let userKeyPressed, userKeyReleased, userKeyTyped;
+                let userTouchStarted, userTouchMoved, userTouchEnded;
 
               // Make p5 functions available globally within the sketch context
               const bindP5Functions = () => {
-                // Core p5 functions
-                window.createCanvas = p.createCanvas.bind(p);
-                window.background = p.background.bind(p);
-                window.fill = p.fill.bind(p);
-                window.stroke = p.stroke.bind(p);
-                window.noStroke = p.noStroke.bind(p);
-                window.noFill = p.noFill.bind(p);
-                window.strokeWeight = p.strokeWeight.bind(p);
-                window.ellipse = p.ellipse.bind(p);
-                window.rect = p.rect.bind(p);
-                window.line = p.line.bind(p);
-                window.point = p.point.bind(p);
-                window.triangle = p.triangle.bind(p);
-                window.quad = p.quad.bind(p);
-                window.arc = p.arc.bind(p);
-                window.text = p.text.bind(p);
-                window.textAlign = p.textAlign.bind(p);
-                window.textSize = p.textSize.bind(p);
-                window.textFont = p.textFont ? p.textFont.bind(p) : undefined;
-                window.textWidth = p.textWidth.bind(p);
-                window.beginShape = p.beginShape.bind(p);
-                window.endShape = p.endShape.bind(p);
-                window.vertex = p.vertex.bind(p);
-                window.curveVertex = p.curveVertex ? p.curveVertex.bind(p) : undefined;
-                window.bezierVertex = p.bezierVertex ? p.bezierVertex.bind(p) : undefined;
+                console.log('🔧 Auto-binding ALL p5.js functions and constants...');
                 
-                // Loop control
-                window.loop = p.loop.bind(p);
-                window.noLoop = p.noLoop.bind(p);
-                window.redraw = p.redraw.bind(p);
+                // AUTOMATIC BINDING APPROACH:
+                // Instead of manually listing every function, iterate through all p5 properties
+                // and bind them automatically. This supports ALL p5 libraries without modification!
                 
-                // Math and utility
-                window.map = p.map.bind(p);
-                window.random = p.random.bind(p);
-                window.randomSeed = p.randomSeed.bind(p);
-                window.noise = p.noise.bind(p);
-                window.noiseSeed = p.noiseSeed.bind(p);
-                window.noiseDetail = p.noiseDetail ? p.noiseDetail.bind(p) : undefined;
-                window.sin = p.sin.bind(p);
-                window.cos = p.cos.bind(p);
-                window.tan = p.tan.bind(p);
-                window.asin = p.asin ? p.asin.bind(p) : undefined;
-                window.acos = p.acos ? p.acos.bind(p) : undefined;
-                window.atan = p.atan ? p.atan.bind(p) : undefined;
-                window.atan2 = p.atan2 ? p.atan2.bind(p) : undefined;
-                window.dist = p.dist.bind(p);
-                window.abs = p.abs.bind(p);
-                window.max = p.max.bind(p);
-                window.min = p.min.bind(p);
-                window.floor = p.floor.bind(p);
-                window.ceil = p.ceil.bind(p);
-                window.round = p.round.bind(p);
-                window.sqrt = p.sqrt ? p.sqrt.bind(p) : undefined;
-                window.pow = p.pow ? p.pow.bind(p) : undefined;
-                window.constrain = p.constrain ? p.constrain.bind(p) : undefined;
-                window.lerp = p.lerp ? p.lerp.bind(p) : undefined;
-                window.norm = p.norm ? p.norm.bind(p) : undefined;
+                const excludedProps = new Set([
+                  // Internal p5 properties that shouldn't be exposed
+                  '_setupDone', '_renderer', '_curElement', '_elements', 
+                  '_accessibleOutputs', '_events', '_registeredMethods',
+                  'constructor', 'prototype', '_start', '_setup', '_draw',
+                  '_onBlur', '_onFocus', 'setup', 'draw', 'preload',
+                  // Properties we handle specially
+                  'width', 'height', 'windowWidth', 'windowHeight', 'frameCount'
+                ]);
                 
-                // Color functions
-                window.colorMode = p.colorMode.bind(p);
-                window.color = p.color.bind(p);
-                window.lerpColor = p.lerpColor.bind(p);
-                window.red = p.red ? p.red.bind(p) : undefined;
-                window.green = p.green ? p.green.bind(p) : undefined;
-                window.blue = p.blue ? p.blue.bind(p) : undefined;
-                window.alpha = p.alpha ? p.alpha.bind(p) : undefined;
-                window.hue = p.hue ? p.hue.bind(p) : undefined;
-                window.saturation = p.saturation ? p.saturation.bind(p) : undefined;
-                window.brightness = p.brightness ? p.brightness.bind(p) : undefined;
+                let boundCount = 0;
+                let soundFunctionsFound = 0;
                 
-                // Color mode constants
-                window.HSB = p.HSB;
-                window.RGB = p.RGB;
-                window.HSL = p.HSL;
+                // Iterate through all properties of the p5 instance
+                for (let prop in p) {
+                  // Skip excluded properties and properties already on window
+                  if (excludedProps.has(prop)) continue;
+                  
+                  try {
+                    const value = p[prop];
+                    
+                    // Bind functions
+                    if (typeof value === 'function') {
+                      window[prop] = value.bind(p);
+                      boundCount++;
+                      
+                      // Track if we found sound functions
+                      if (prop.toLowerCase().includes('sound') || 
+                          prop === 'loadSound' || prop === 'getAudioContext' ||
+                          prop === 'userStartAudio') {
+                        soundFunctionsFound++;
+                        console.log(`  ✅ Found p5.sound function: ${prop}`);
+                      }
+                    }
+                    // Copy constants and properties (numbers, strings, objects)
+                    else if (typeof value !== 'object' || value === null || 
+                             value.constructor === Object || value.constructor === Array) {
+                      window[prop] = value;
+                      boundCount++;
+                    }
+                    // For special objects (like constants), copy by value
+                    else {
+                      window[prop] = value;
+                    }
+                  } catch (e) {
+                    // Some properties may throw errors when accessed, skip them
+                    console.log(`  ⚠️ Could not bind property: ${prop}`);
+                  }
+                }
                 
-                // Transformation functions
-                window.translate = p.translate.bind(p);
-                window.rotate = p.rotate.bind(p);
-                window.rotateX = p.rotateX ? p.rotateX.bind(p) : undefined;
-                window.rotateY = p.rotateY ? p.rotateY.bind(p) : undefined;
-                window.rotateZ = p.rotateZ ? p.rotateZ.bind(p) : undefined;
-                window.scale = p.scale.bind(p);
-                window.shearX = p.shearX ? p.shearX.bind(p) : undefined;
-                window.shearY = p.shearY ? p.shearY.bind(p) : undefined;
-                window.push = p.push.bind(p);
-                window.pop = p.pop.bind(p);
-                window.resetMatrix = p.resetMatrix ? p.resetMatrix.bind(p) : undefined;
+                console.log(`✅ Auto-bound ${boundCount} p5.js functions and constants`);
+                if (soundFunctionsFound > 0) {
+                  console.log(`🔊 Found ${soundFunctionsFound} p5.sound functions - audio is ready!`);
+                } else {
+                  console.log('⚠️ No p5.sound functions detected. Make sure p5.sound.js is loaded.');
+                }
                 
-                // Shape detail
-                window.rectMode = p.rectMode ? p.rectMode.bind(p) : undefined;
-                window.ellipseMode = p.ellipseMode ? p.ellipseMode.bind(p) : undefined;
-                window.strokeCap = p.strokeCap ? p.strokeCap.bind(p) : undefined;
-                window.strokeJoin = p.strokeJoin ? p.strokeJoin.bind(p) : undefined;
-                window.smooth = p.smooth ? p.smooth.bind(p) : undefined;
-                window.noSmooth = p.noSmooth ? p.noSmooth.bind(p) : undefined;
-                
-                // Constants
-                window.TWO_PI = p.TWO_PI;
-                window.PI = p.PI;
-                window.HALF_PI = p.HALF_PI;
-                window.QUARTER_PI = p.QUARTER_PI;
-                window.CENTER = p.CENTER;
-                window.LEFT = p.LEFT;
-                window.RIGHT = p.RIGHT;
-                window.TOP = p.TOP;
-                window.BOTTOM = p.BOTTOM;
-                window.CORNER = p.CORNER;
-                window.CORNERS = p.CORNERS;
-                window.RADIUS = p.RADIUS;
-                window.CLOSE = p.CLOSE;
-                window.OPEN = p.OPEN;
-                
-                // Frame and time
-                window.frameCount = p.frameCount;
-                window.millis = p.millis.bind(p);
-                window.frameRate = p.frameRate.bind(p);
-                
-                // Dimensions (will be updated after canvas creation)
+                // Manually set dimensions (these need special handling)
                 window.width = containerWidth;
                 window.height = containerHeight;
                 window.windowWidth = containerWidth;
                 window.windowHeight = containerHeight;
+                
+                // Log some key functions to verify
+                console.log('📋 Sample bound functions:', {
+                  drawing: typeof window.ellipse === 'function',
+                  sound: typeof window.loadSound === 'function',
+                  color: typeof window.colorMode === 'function',
+                  math: typeof window.noise === 'function'
+                });
               };
 
               // Bind p5 functions
@@ -2191,6 +2441,18 @@ function draw() {
                 window.setup = undefined;
                 window.draw = undefined;
                 window.windowResized = undefined;
+                window.mousePressed = undefined;
+                window.mouseReleased = undefined;
+                window.mouseClicked = undefined;
+                window.mouseMoved = undefined;
+                window.mouseDragged = undefined;
+                window.mouseWheel = undefined;
+                window.keyPressed = undefined;
+                window.keyReleased = undefined;
+                window.keyTyped = undefined;
+                window.touchStarted = undefined;
+                window.touchMoved = undefined;
+                window.touchEnded = undefined;
                 
                 // Use eval with 'this' bound to window to ensure global scope
                 eval.call(window, code);
@@ -2218,6 +2480,29 @@ function draw() {
                   userWindowResized = window.windowResized;
                   console.log('✅ User windowResized function captured');
                 }
+                
+                // Capture mouse event handlers (assign to existing variables, not const)
+                userMousePressed = window.mousePressed;
+                userMouseReleased = window.mouseReleased;
+                userMouseClicked = window.mouseClicked;
+                userMouseMoved = window.mouseMoved;
+                userMouseDragged = window.mouseDragged;
+                userMouseWheel = window.mouseWheel;
+                
+                // Capture keyboard event handlers
+                userKeyPressed = window.keyPressed;
+                userKeyReleased = window.keyReleased;
+                userKeyTyped = window.keyTyped;
+                
+                // Capture touch event handlers
+                userTouchStarted = window.touchStarted;
+                userTouchMoved = window.touchMoved;
+                userTouchEnded = window.touchEnded;
+                
+                // Log captured interaction events
+                if (userMousePressed) console.log('✅ User mousePressed function captured');
+                if (userKeyPressed) console.log('✅ User keyPressed function captured');
+                if (userTouchStarted) console.log('✅ User touchStarted function captured');
               } catch (error) {
                 console.error('Error in user code:', error);
                 showError('Error in user code: ' + error.message);
@@ -2265,6 +2550,30 @@ function draw() {
                 window.width = p.width;
                 window.height = p.height;
                 
+                // Update mouse position variables
+                window.mouseX = p.mouseX;
+                window.mouseY = p.mouseY;
+                window.pmouseX = p.pmouseX;
+                window.pmouseY = p.pmouseY;
+                window.mouseButton = p.mouseButton;
+                window.mouseIsPressed = p.mouseIsPressed;
+                
+                // Update touch variables
+                window.touches = p.touches;
+                if (p.touches && p.touches.length > 0) {
+                  window.touchX = p.touches[0].x;
+                  window.touchY = p.touches[0].y;
+                } else {
+                  // Fallback to mouse position if no touches
+                  window.touchX = p.mouseX;
+                  window.touchY = p.mouseY;
+                }
+                
+                // Update keyboard variables
+                window.keyIsPressed = p.keyIsPressed;
+                window.key = p.key;
+                window.keyCode = p.keyCode;
+                
                 // Call user draw if it exists
                 if (userDraw) {
                   try {
@@ -2306,6 +2615,200 @@ function draw() {
                 if (userWindowResized) {
                   userWindowResized();
                 }
+              };
+
+              // Mouse event handlers
+              p.mousePressed = function() {
+                // Update mouse position globals
+                window.mouseX = p.mouseX;
+                window.mouseY = p.mouseY;
+                window.pmouseX = p.pmouseX;
+                window.pmouseY = p.pmouseY;
+                window.mouseButton = p.mouseButton;
+                
+                if (userMousePressed && typeof userMousePressed === 'function') {
+                  try {
+                    return userMousePressed();
+                  } catch (error) {
+                    console.error('❌ Error in mousePressed(): ' + error.message);
+                  }
+                }
+              };
+
+              p.mouseReleased = function() {
+                window.mouseX = p.mouseX;
+                window.mouseY = p.mouseY;
+                window.mouseButton = p.mouseButton;
+                
+                if (userMouseReleased && typeof userMouseReleased === 'function') {
+                  try {
+                    return userMouseReleased();
+                  } catch (error) {
+                    console.error('❌ Error in mouseReleased(): ' + error.message);
+                  }
+                }
+              };
+
+              p.mouseClicked = function() {
+                window.mouseX = p.mouseX;
+                window.mouseY = p.mouseY;
+                window.mouseButton = p.mouseButton;
+                
+                if (userMouseClicked && typeof userMouseClicked === 'function') {
+                  try {
+                    return userMouseClicked();
+                  } catch (error) {
+                    console.error('❌ Error in mouseClicked(): ' + error.message);
+                  }
+                }
+              };
+
+              p.mouseMoved = function() {
+                window.mouseX = p.mouseX;
+                window.mouseY = p.mouseY;
+                window.pmouseX = p.pmouseX;
+                window.pmouseY = p.pmouseY;
+                
+                if (userMouseMoved && typeof userMouseMoved === 'function') {
+                  try {
+                    return userMouseMoved();
+                  } catch (error) {
+                    console.error('❌ Error in mouseMoved(): ' + error.message);
+                  }
+                }
+              };
+
+              p.mouseDragged = function() {
+                window.mouseX = p.mouseX;
+                window.mouseY = p.mouseY;
+                window.pmouseX = p.pmouseX;
+                window.pmouseY = p.pmouseY;
+                window.mouseButton = p.mouseButton;
+                
+                if (userMouseDragged && typeof userMouseDragged === 'function') {
+                  try {
+                    return userMouseDragged();
+                  } catch (error) {
+                    console.error('❌ Error in mouseDragged(): ' + error.message);
+                  }
+                }
+              };
+
+              p.mouseWheel = function(event) {
+                if (userMouseWheel && typeof userMouseWheel === 'function') {
+                  try {
+                    return userMouseWheel(event);
+                  } catch (error) {
+                    console.error('❌ Error in mouseWheel(): ' + error.message);
+                  }
+                }
+              };
+
+              // Keyboard event handlers
+              p.keyPressed = function() {
+                window.key = p.key;
+                window.keyCode = p.keyCode;
+                
+                if (userKeyPressed && typeof userKeyPressed === 'function') {
+                  try {
+                    return userKeyPressed();
+                  } catch (error) {
+                    console.error('❌ Error in keyPressed(): ' + error.message);
+                  }
+                }
+              };
+
+              p.keyReleased = function() {
+                window.key = p.key;
+                window.keyCode = p.keyCode;
+                
+                if (userKeyReleased && typeof userKeyReleased === 'function') {
+                  try {
+                    return userKeyReleased();
+                  } catch (error) {
+                    console.error('❌ Error in keyReleased(): ' + error.message);
+                  }
+                }
+              };
+
+              p.keyTyped = function() {
+                window.key = p.key;
+                
+                if (userKeyTyped && typeof userKeyTyped === 'function') {
+                  try {
+                    return userKeyTyped();
+                  } catch (error) {
+                    console.error('❌ Error in keyTyped(): ' + error.message);
+                  }
+                }
+              };
+
+              // Touch event handlers
+              p.touchStarted = function() {
+                // Update touch variables
+                window.touches = p.touches;
+                if (p.touches && p.touches.length > 0) {
+                  window.touchX = p.touches[0].x;
+                  window.touchY = p.touches[0].y;
+                }
+                
+                if (userTouchStarted && typeof userTouchStarted === 'function') {
+                  try {
+                    const result = userTouchStarted();
+                    // If the function returns false, prevent default behavior
+                    if (result === false) {
+                      return false;
+                    }
+                  } catch (error) {
+                    console.error('❌ Error in touchStarted(): ' + error.message);
+                  }
+                }
+                // Prevent default touch behavior (like scrolling) on canvas
+                return false;
+              };
+
+              p.touchMoved = function() {
+                // Update touch variables
+                window.touches = p.touches;
+                if (p.touches && p.touches.length > 0) {
+                  window.touchX = p.touches[0].x;
+                  window.touchY = p.touches[0].y;
+                }
+                
+                if (userTouchMoved && typeof userTouchMoved === 'function') {
+                  try {
+                    const result = userTouchMoved();
+                    if (result === false) {
+                      return false;
+                    }
+                  } catch (error) {
+                    console.error('❌ Error in touchMoved(): ' + error.message);
+                  }
+                }
+                // Prevent default touch behavior
+                return false;
+              };
+
+              p.touchEnded = function() {
+                // Update touch variables
+                window.touches = p.touches;
+                if (p.touches && p.touches.length > 0) {
+                  window.touchX = p.touches[0].x;
+                  window.touchY = p.touches[0].y;
+                }
+                
+                if (userTouchEnded && typeof userTouchEnded === 'function') {
+                  try {
+                    const result = userTouchEnded();
+                    if (result === false) {
+                      return false;
+                    }
+                  } catch (error) {
+                    console.error('❌ Error in touchEnded(): ' + error.message);
+                  }
+                }
+                // Prevent default touch behavior
+                return false;
               };
 
             });
@@ -3890,6 +4393,397 @@ function draw() {
     textSize(14);
     text("Waiting for webcam...", width/2, height/2);
   }
+}`,
+
+            brainBeats: `// Brain Beats - Simple sound test with EEG
+let osc;
+let isPlaying = false;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  // Create oscillator for brain-controlled tones
+  osc = new p5.Oscillator('sine');
+  osc.amp(0); // Start silent
+  osc.start();
+  
+  console.log('🔊 === Brain Beats Sound Test ===');
+  console.log('✅ Oscillator created successfully');
+  console.log('👆 CLICK ANYWHERE ON THE CANVAS to enable sound');
+  console.log('📊 Alpha waves control the tone frequency (200-800 Hz)');
+  console.log('📊 Beta waves control the volume');
+  console.log('');
+  console.log('💡 TIP: If you don\'t hear anything after clicking:');
+  console.log('   1. Check your computer volume');
+  console.log('   2. Click the "Test Sound" button in the header');
+  console.log('   3. Make sure you clicked inside the black canvas area');
+}
+
+function draw() {
+  background(0, 0, 10);
+  
+  // Visual feedback
+  let visualAlpha = eegData.alpha;
+  let visualBeta = eegData.beta;
+  
+  // Draw sound wave visualization
+  translate(width/2, height/2);
+  
+  // Outer circle - attention level (pulsing)
+  let outerSize = 100 + eegData.attention * 200;
+  noFill();
+  stroke(180, 70, 90, 0.8);
+  strokeWeight(3);
+  ellipse(0, 0, outerSize);
+  
+  // Inner circle - frequency indicator
+  let freq = map(visualAlpha, 0, 1, 200, 800);
+  let innerSize = 50 + visualAlpha * 150;
+  let hue = map(visualAlpha, 0, 1, 200, 320);
+  
+  fill(hue, 80, 90, 0.5);
+  noStroke();
+  ellipse(0, 0, innerSize);
+  
+  // Volume indicator (small circle)
+  let volumeSize = 10 + visualBeta * 30;
+  fill(60, 80, 90, 0.8);
+  ellipse(0, 0, volumeSize);
+  
+  // Update sound if playing
+  if (isPlaying) {
+    osc.freq(freq);
+    let volume = map(visualBeta, 0, 1, 0, 0.3);
+    osc.amp(volume, 0.1);
+  }
+  
+  // Instructions
+  resetMatrix();
+  fill(0, 0, 100);
+  textAlign(CENTER, TOP);
+  textSize(18);
+  text(isPlaying ? "🔊 Sound is ON" : "🔇 CLICK HERE to start sound", width/2, 20);
+  
+  textSize(14);
+  text("Alpha controls frequency: " + freq.toFixed(0) + " Hz", width/2, 50);
+  text("Beta controls volume: " + (visualBeta * 100).toFixed(0) + "%", width/2, 70);
+  
+  // Add a pulsing border when not playing to indicate clickability
+  if (!isPlaying) {
+    noFill();
+    stroke(255, 100, 100, sin(frameCount * 0.1) * 0.3 + 0.5);
+    strokeWeight(4);
+    rect(5, 5, width - 10, height - 10);
+  }
+  
+  if (!eegData.connected) {
+    textSize(14);
+    fill(0, 0, 70);
+    text("⚠️ Connect Muse or use Simulate Data for brain control", width/2, height - 30);
+  }
+}
+
+function mousePressed() {
+  console.log('👆 Canvas clicked!');
+  
+  // User interaction required to start audio
+  console.log('Attempting to start audio context...');
+  userStartAudio();
+  
+  // Toggle sound
+  isPlaying = !isPlaying;
+  
+  if (isPlaying) {
+    console.log('🔊 Sound enabled!');
+    console.log('You should hear a tone that changes with your brain waves');
+  } else {
+    osc.amp(0, 0.1);
+    console.log('🔇 Sound disabled');
+  }
+}`,
+
+            alphaMusic: `// Alpha Wave Music - Generative music from brain waves
+let notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // C major scale (C4-C5)
+let noteNames = ['C4', 'D4', 'E4', 'G4', 'A4', 'C5'];
+let synth;
+let reverb;
+let lastNoteTime = 0;
+let isPlaying = false;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  console.log('🎵 === Alpha Wave Music ===');
+  console.log('Creating polyphonic synthesizer...');
+  
+  // Create synthesizer
+  synth = new p5.PolySynth();
+  console.log('✅ Synthesizer created');
+  
+  // Add reverb effect
+  reverb = new p5.Reverb();
+  reverb.process(synth, 3, 2);
+  console.log('✅ Reverb effect added');
+  
+  console.log('');
+  console.log('👆 CLICK THE CANVAS to start generative music');
+  console.log('📊 Your brain waves control the music:');
+  console.log('   - Alpha: selects which note to play');
+  console.log('   - Attention: controls tempo (speed)');
+  console.log('   - Beta: note duration');
+  console.log('   - Meditation: note velocity (loudness)');
+  console.log('');
+  console.log('💡 Use "Simulate Data" to control the music without a Muse');
+}
+
+function draw() {
+  background(0, 0, 5, 0.1);
+  
+  // Generate music based on brain waves
+  if (isPlaying && millis() - lastNoteTime > map(eegData.attention, 0, 1, 800, 200)) {
+    playBrainNote();
+    lastNoteTime = millis();
+  }
+  
+  // Visualize music
+  translate(width/2, height/2);
+  
+  // Draw concentric circles for each frequency band
+  let bands = [
+    {value: eegData.delta, color: 0, radius: 50, name: 'Delta'},
+    {value: eegData.theta, color: 60, radius: 100, name: 'Theta'},
+    {value: eegData.alpha, color: 180, radius: 150, name: 'Alpha'},
+    {value: eegData.beta, color: 270, radius: 200, name: 'Beta'},
+    {value: eegData.gamma, color: 300, radius: 250, name: 'Gamma'}
+  ];
+  
+  for (let band of bands) {
+    let size = band.radius + band.value * 50;
+    stroke(band.color, 70, 90, 0.6);
+    strokeWeight(2 + band.value * 5);
+    noFill();
+    ellipse(0, 0, size * 2);
+  }
+  
+  // Info
+  resetMatrix();
+  
+  // Add pulsing border when not playing
+  if (!isPlaying) {
+    noFill();
+    stroke(180, 100, 100, sin(frameCount * 0.1) * 0.3 + 0.5);
+    strokeWeight(4);
+    rect(5, 5, width - 10, height - 10);
+  }
+  
+  fill(0, 0, 100);
+  textAlign(CENTER, TOP);
+  textSize(18);
+  text(isPlaying ? "🎵 Music Playing" : "🎵 CLICK HERE to start music", width/2, 20);
+  
+  textSize(12);
+  text("Alpha: note selection | Attention: tempo | Beta: duration | Meditation: volume", width/2, 45);
+  
+  // Show current parameters
+  if (isPlaying) {
+    textSize(11);
+    fill(180, 70, 90);
+    let currentNote = floor(map(eegData.alpha, 0, 1, 0, notes.length));
+    currentNote = constrain(currentNote, 0, notes.length - 1);
+    let tempo = map(eegData.attention, 0, 1, 800, 200).toFixed(0);
+    text(\`Current: \${noteNames[currentNote]} | Tempo: \${tempo}ms | Duration: \${eegData.beta.toFixed(2)}\`, width/2, 65);
+  }
+  
+  if (!eegData.connected) {
+    textSize(14);
+    fill(0, 0, 70);
+    text("⚠️ Use 'Simulate Data' button to control the music", width/2, height - 30);
+  }
+}
+
+function playBrainNote() {
+  // Select note based on alpha
+  let noteIndex = floor(map(eegData.alpha, 0, 1, 0, notes.length));
+  noteIndex = constrain(noteIndex, 0, notes.length - 1);
+  
+  // Duration based on beta
+  let duration = map(eegData.beta, 0, 1, 0.1, 0.5);
+  
+  // Velocity based on meditation
+  let velocity = map(eegData.meditation, 0, 1, 0.3, 1.0);
+  
+  // Play the note
+  synth.play(notes[noteIndex], velocity, 0, duration);
+  
+  // Log occasionally (every 10th note)
+  if (frameCount % 10 === 0) {
+    console.log(\`🎵 Playing: \${noteNames[noteIndex]} at \${(velocity * 100).toFixed(0)}% volume\`);
+  }
+}
+
+function mousePressed() {
+  console.log('👆 Canvas clicked!');
+  console.log('Starting audio context...');
+  userStartAudio();
+  
+  isPlaying = !isPlaying;
+  
+  if (isPlaying) {
+    console.log('🎵 Music started! Listen as your brain waves create melodies...');
+  } else {
+    console.log('🎵 Music stopped');
+  }
+}`,
+
+            brainSynth: `// Brain Synthesizer - Full control over sound parameters
+let carrier;
+let modulator;
+let analyzer;
+let isPlaying = false;
+
+function setup() {
+  colorMode(HSB, 360, 100, 100);
+  
+  console.log('🎹 === Brain Synthesizer (FM Synthesis) ===');
+  console.log('Creating carrier oscillator...');
+  
+  // Create FM synthesis
+  carrier = new p5.Oscillator('sine');
+  modulator = new p5.Oscillator('sine');
+  console.log('✅ Oscillators created');
+  
+  // Modulate carrier frequency with modulator
+  modulator.disconnect();
+  carrier.amp(0);
+  modulator.amp(0);
+  
+  carrier.start();
+  modulator.start();
+  modulator.disconnect();
+  carrier.freq(modulator);
+  console.log('✅ FM synthesis configured');
+  
+  // Analyzer for visualization
+  analyzer = new p5.FFT();
+  analyzer.setInput(carrier);
+  console.log('✅ Audio analyzer ready');
+  
+  console.log('');
+  console.log('👆 CLICK THE CANVAS to start the synthesizer');
+  console.log('📊 Brain wave control mapping:');
+  console.log('   - Alpha: carrier frequency (pitch)');
+  console.log('   - Beta: modulation frequency (timbre)');
+  console.log('   - Theta: modulation depth (intensity)');
+  console.log('   - Attention: overall volume');
+  console.log('');
+  console.log('💡 This is FM (Frequency Modulation) synthesis');
+  console.log('   The modulator oscillator modulates the carrier frequency');
+  console.log('   creating complex harmonic timbres');
+}
+
+function draw() {
+  background(0, 0, 5);
+  
+  if (isPlaying) {
+    // Map brain waves to synthesis parameters
+    
+    // Alpha controls carrier frequency (200-800 Hz)
+    let carrierFreq = map(eegData.alpha, 0, 1, 200, 800);
+    
+    // Beta controls modulation frequency (0-100 Hz)
+    let modFreq = map(eegData.beta, 0, 1, 0, 100);
+    
+    // Theta controls modulation depth
+    let modDepth = map(eegData.theta, 0, 1, 0, 500);
+    
+    // Attention controls overall volume
+    let volume = map(eegData.attention, 0, 1, 0, 0.2);
+    
+    // Update synthesis parameters
+    carrier.freq(carrierFreq);
+    modulator.freq(modFreq);
+    modulator.amp(modDepth);
+    carrier.amp(volume, 0.1);
+    
+    // Visualize waveform
+    let waveform = analyzer.waveform();
+    
+    noFill();
+    stroke(180 + eegData.theta * 180, 80, 90);
+    strokeWeight(2);
+    
+    beginShape();
+    for (let i = 0; i < waveform.length; i++) {
+      let x = map(i, 0, waveform.length, 0, width);
+      let y = map(waveform[i], -1, 1, height * 0.3, height * 0.7);
+      vertex(x, y);
+    }
+    endShape();
+    
+    // Draw spectrum
+    let spectrum = analyzer.analyze();
+    noStroke();
+    for (let i = 0; i < spectrum.length; i++) {
+      let x = map(i, 0, spectrum.length, 0, width);
+      let h = map(spectrum[i], 0, 255, 0, height * 0.3);
+      let hue = map(i, 0, spectrum.length, 180, 300);
+      fill(hue, 70, 90, 0.8);
+      rect(x, height, width / spectrum.length, -h);
+    }
+  }
+  
+  // Add pulsing border when not playing
+  if (!isPlaying) {
+    noFill();
+    stroke(180, 100, 100, sin(frameCount * 0.1) * 0.3 + 0.5);
+    strokeWeight(4);
+    rect(5, 5, width - 10, height - 10);
+  }
+  
+  // Display parameters
+  fill(0, 0, 100);
+  textAlign(CENTER, TOP);
+  textSize(16);
+  text(isPlaying ? "🎹 Synthesizer ON" : "🎹 CLICK HERE to start", width/2, 10);
+  
+  if (isPlaying) {
+    textAlign(LEFT, TOP);
+    textSize(11);
+    fill(180, 70, 90);
+    text("Carrier: " + carrier.getFreq().toFixed(1) + " Hz (Alpha)", 10, 35);
+    text("Mod Freq: " + modulator.getFreq().toFixed(1) + " Hz (Beta)", 10, 50);
+    text("Mod Depth: " + modulator.getAmp().toFixed(1) + " (Theta)", 10, 65);
+    text("Volume: " + (carrier.getAmp() * 100).toFixed(0) + "% (Attention)", 10, 80);
+  } else {
+    textAlign(CENTER, TOP);
+    textSize(12);
+    fill(0, 0, 70);
+    text("Alpha = Pitch | Beta = Timbre | Theta = Intensity | Attention = Volume", width/2, 35);
+  }
+  
+  if (!eegData.connected) {
+    textAlign(CENTER, BOTTOM);
+    textSize(14);
+    fill(0, 0, 70);
+    text("⚠️ Use 'Simulate Data' to control the synthesizer", width/2, height - 20);
+  }
+}
+
+function mousePressed() {
+  console.log('👆 Canvas clicked!');
+  console.log('Starting audio context...');
+  userStartAudio();
+  
+  isPlaying = !isPlaying;
+  
+  if (isPlaying) {
+    console.log('🎹 Synthesizer started!');
+    console.log('Listen to the complex timbres created by FM synthesis');
+    console.log('Adjust the simulation sliders to hear different sounds');
+  } else {
+    carrier.amp(0, 0.1);
+    console.log('🎹 Synthesizer stopped');
+  }
 }`
           };
 
@@ -3943,6 +4837,10 @@ function draw() {
             
             if (tabName === 'p5js') {
               contentDiv.innerHTML = this.renderReference(p5Reference);
+            } else if (tabName === 'sound') {
+              contentDiv.innerHTML = this.renderReference(soundReference);
+            } else if (tabName === 'input') {
+              contentDiv.innerHTML = this.renderReference(inputReference);
             } else if (tabName === 'eeg') {
               contentDiv.innerHTML = this.renderReference(eegReference);
             }
@@ -3980,50 +4878,111 @@ function draw() {
 
         setupFunctionClicks() {
           document.querySelectorAll('.function-item').forEach(item => {
-            item.addEventListener('click', () => {
-              const funcName = item.dataset.function;
-              if (codeEditor && codeEditor.editor) {
-                // Get the function signature to extract parameters
-                let signature = '';
-                let reference = this.currentTab === 'p5js' ? p5Reference : eegReference;
-                
-                // Find the function in the reference
-                for (let group in reference) {
-                  if (reference[group][funcName]) {
-                    signature = reference[group][funcName].signature;
-                    break;
+            // Handle click/touch to toggle expanded state
+            const toggleExpanded = (e) => {
+              // If clicking on an already expanded item, insert code
+              if (item.classList.contains('expanded')) {
+                // Only insert code if not clicking on the tooltip area
+                const clickedOnTooltip = e.target.closest('.function-tooltip');
+                if (!clickedOnTooltip) {
+                  this.insertFunctionCode(item);
+                }
+              } else {
+                // Collapse all other items
+                document.querySelectorAll('.function-item.expanded').forEach(expandedItem => {
+                  if (expandedItem !== item) {
+                    expandedItem.classList.remove('expanded');
                   }
-                }
+                });
                 
-                // Parse parameters from signature
-                let snippetText = this.createSnippet(funcName, signature);
+                // Expand this item
+                item.classList.add('expanded');
                 
-                // Insert as Monaco snippet with placeholders
-                const position = codeEditor.editor.getPosition();
-                
-                // Use Monaco's snippet controller for proper tab-through behavior
-                const snippetController = codeEditor.editor.getContribution('snippetController2');
-                if (snippetController && snippetText.includes('${')) {
-                  // Insert with snippet support (allows tab through placeholders)
-                  snippetController.insert(snippetText);
-                } else {
-                  // Fallback to simple text insertion
-                  codeEditor.editor.executeEdits('', [{
-                    range: new monaco.Range(
-                      position.lineNumber,
-                      position.column,
-                      position.lineNumber,
-                      position.column
-                    ),
-                    text: snippetText,
-                    forceMoveMarkers: true
-                  }]);
-                }
-                
-                codeEditor.editor.focus();
+                // Scroll into view if needed
+                item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
               }
+              
+              e.stopPropagation();
+            };
+            
+            item.addEventListener('click', toggleExpanded);
+            item.addEventListener('touchstart', (e) => {
+              e.preventDefault();
+              toggleExpanded(e);
             });
           });
+          
+          // Close expanded items when clicking outside
+          document.getElementById('reference-content').addEventListener('click', (e) => {
+            if (!e.target.closest('.function-item')) {
+              document.querySelectorAll('.function-item.expanded').forEach(item => {
+                item.classList.remove('expanded');
+              });
+            }
+          });
+        }
+        
+        insertFunctionCode(item) {
+          const funcName = item.dataset.function;
+          if (codeEditor && codeEditor.editor) {
+            // Get the function signature to extract parameters
+            let signature = '';
+            let reference;
+            
+            // Determine which reference to use
+            if (this.currentTab === 'p5js') {
+              reference = p5Reference;
+            } else if (this.currentTab === 'sound') {
+              reference = soundReference;
+            } else if (this.currentTab === 'input') {
+              reference = inputReference;
+            } else if (this.currentTab === 'eeg') {
+              reference = eegReference;
+            }
+            
+            // Find the function in the reference
+            for (let group in reference) {
+              if (reference[group][funcName]) {
+                signature = reference[group][funcName].signature;
+                break;
+              }
+            }
+            
+            // Parse parameters from signature
+            let snippetText = this.createSnippet(funcName, signature);
+            
+            // Insert as Monaco snippet with placeholders
+            const position = codeEditor.editor.getPosition();
+            
+            // Use Monaco's snippet controller for proper tab-through behavior
+            const snippetController = codeEditor.editor.getContribution('snippetController2');
+            if (snippetController && snippetText.includes('${')) {
+              // Insert with snippet support (allows tab through placeholders)
+              snippetController.insert(snippetText);
+            } else {
+              // Fallback to simple text insertion
+              codeEditor.editor.executeEdits('', [{
+                range: new monaco.Range(
+                  position.lineNumber,
+                  position.column,
+                  position.lineNumber,
+                  position.column
+                ),
+                text: snippetText,
+                forceMoveMarkers: true
+              }]);
+            }
+            
+            codeEditor.editor.focus();
+            
+            // Show feedback
+            item.style.animation = 'none';
+            setTimeout(() => {
+              item.style.animation = '';
+              item.classList.add('code-inserted');
+              setTimeout(() => item.classList.remove('code-inserted'), 500);
+            }, 10);
+          }
         }
         
         createSnippet(funcName, signature) {
@@ -4282,6 +5241,189 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
         }
       }
 
+      // Sound Testing and Diagnostics
+      class SoundTester {
+        constructor() {
+          this.testOsc = null;
+          this.isInitialized = false;
+          this.testSketch = null;
+        }
+
+        async testSound() {
+          logger.log('🔊 === SOUND SYSTEM DIAGNOSTIC ===', 'info');
+          
+          // Check if p5.sound is loaded
+          logger.log('Step 1: Checking if p5.sound library is loaded...', 'info');
+          if (typeof p5.Oscillator === 'undefined') {
+            logger.log('❌ p5.sound library is NOT loaded!', 'error');
+            logger.log('The p5.sound.js script may have failed to load from CDN', 'error');
+            alert('❌ Sound library not loaded!\n\nThe p5.sound.js library failed to load. Please check your internet connection and refresh the page.');
+            return false;
+          }
+          logger.log('✅ p5.sound library is loaded', 'success');
+          
+          // Check browser audio support
+          logger.log('Step 2: Checking browser audio support...', 'info');
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) {
+            logger.log('❌ Web Audio API not supported in this browser', 'error');
+            alert('❌ Your browser does not support the Web Audio API.\n\nPlease use a modern browser like Chrome, Firefox, or Edge.');
+            return false;
+          }
+          logger.log('✅ Web Audio API is supported', 'success');
+          
+          // Get audio context state (access through p5.soundOut or create our own test)
+          logger.log('Step 3: Checking audio context state...', 'info');
+          
+          // We need to access p5.sound functions - check if they're available globally
+          let audioContextState = 'unknown';
+          try {
+            // Try to get audio context from p5.sound
+            if (window.getAudioContext && typeof window.getAudioContext === 'function') {
+              const audioContext = window.getAudioContext();
+              audioContextState = audioContext.state;
+            } else if (p5.soundOut && p5.soundOut.audiocontext) {
+              audioContextState = p5.soundOut.audiocontext.state;
+            } else {
+              // Create a temporary AudioContext to test
+              const testCtx = new (window.AudioContext || window.webkitAudioContext)();
+              audioContextState = testCtx.state;
+              testCtx.close();
+            }
+          } catch (error) {
+            logger.log('⚠️ Could not determine audio context state: ' + error.message, 'warning');
+          }
+          
+          logger.log(`Audio context state: ${audioContextState}`, 'info');
+          
+          if (audioContextState === 'suspended') {
+            logger.log('Audio context is suspended (normal before user interaction)', 'warning');
+            logger.log('Will attempt to resume when playing test tone...', 'info');
+          } else if (audioContextState === 'running') {
+            logger.log('✅ Audio context is already running', 'success');
+          }
+          
+          // Skip master volume check - it's not critical and may not be available
+          logger.log('Step 4: Skipping master volume check (will be set when sound plays)', 'info');
+          
+          // Create and play test tone
+          logger.log('Step 5: Playing test tone (440 Hz for 1 second)...', 'info');
+          logger.log('🔊 You should hear a beep now!', 'info');
+          
+          try {
+            // Clean up any existing test oscillator
+            if (this.testOsc) {
+              try {
+                this.testOsc.stop();
+              } catch (e) {
+                // Ignore errors when stopping
+              }
+              this.testOsc = null;
+            }
+            
+            // Create new oscillator using p5.sound
+            this.testOsc = new p5.Oscillator('sine');
+            this.testOsc.freq(440); // A4 note
+            this.testOsc.amp(0);    // Start at 0
+            this.testOsc.start();
+            
+            logger.log('✅ Test oscillator created and started', 'success');
+            
+            // Resume audio context if needed and ramp up volume
+            try {
+              // Try to call userStartAudio if it's available globally
+              if (window.userStartAudio && typeof window.userStartAudio === 'function') {
+                await window.userStartAudio();
+                logger.log('✅ Audio context resumed', 'success');
+              } else if (p5.soundOut && p5.soundOut.audiocontext) {
+                if (p5.soundOut.audiocontext.state === 'suspended') {
+                  await p5.soundOut.audiocontext.resume();
+                  logger.log('✅ Audio context resumed', 'success');
+                }
+              }
+            } catch (e) {
+              logger.log('⚠️ Audio context resume: ' + e.message, 'warning');
+            }
+            
+            // Ramp up volume
+            this.testOsc.amp(0.3, 0.1);
+            logger.log('🔊 Playing 440 Hz tone at 30% volume...', 'info');
+            
+            // Stop after 1 second
+            setTimeout(() => {
+              if (this.testOsc) {
+                try {
+                  this.testOsc.amp(0, 0.1);
+                  setTimeout(() => {
+                    if (this.testOsc) {
+                      this.testOsc.stop();
+                      this.testOsc = null;
+                    }
+                  }, 150);
+                } catch (e) {
+                  logger.log('⚠️ Error stopping oscillator: ' + e.message, 'warning');
+                }
+                
+                logger.log('Test tone stopped', 'info');
+                logger.log('', 'info');
+                logger.log('=== DIAGNOSTIC COMPLETE ===', 'info');
+                logger.log('', 'info');
+                logger.log('❓ Did you hear the beep?', 'info');
+                logger.log('', 'info');
+                logger.log('✅ YES? Great! Your sound system is working correctly!', 'success');
+                logger.log('   Now try the sound examples in the dropdown menu.', 'success');
+                logger.log('', 'info');
+                logger.log('❌ NO? Here are troubleshooting steps:', 'warning');
+                logger.log('   1. Check your computer volume is turned up', 'warning');
+                logger.log('   2. Check the correct audio output device is selected', 'warning');
+                logger.log('   3. Check browser is not muted (look for 🔇 icon in browser tab)', 'warning');
+                logger.log('   4. Try clicking the "Test Sound" button again', 'warning');
+                logger.log('   5. Open your system sound settings and test audio there', 'warning');
+                logger.log('', 'info');
+                logger.log('💡 TIP: If system audio works but this doesn\'t, try:', 'info');
+                logger.log('   - Refresh the page and test again', 'info');
+                logger.log('   - Try a different browser (Chrome recommended)', 'info');
+                logger.log('   - Check browser permissions for audio', 'info');
+              }
+            }, 1000);
+            
+            this.isInitialized = true;
+            return true;
+            
+          } catch (error) {
+            logger.log('❌ Error creating test tone: ' + error.message, 'error');
+            if (error.stack) {
+              const stackLines = error.stack.split('\n').slice(0, 3);
+              stackLines.forEach(line => {
+                if (line.trim()) logger.log('   ' + line.trim(), 'error');
+              });
+            }
+            return false;
+          }
+        }
+        
+        // Quick check without playing sound
+        checkAudioReady() {
+          if (typeof p5.Oscillator === 'undefined') {
+            return { ready: false, reason: 'p5.sound library not loaded' };
+          }
+          
+          try {
+            if (p5.soundOut && p5.soundOut.audiocontext) {
+              if (p5.soundOut.audiocontext.state === 'suspended') {
+                return { ready: false, reason: 'Audio context suspended (click to activate)' };
+              }
+              return { ready: true, reason: 'Audio system ready' };
+            }
+          } catch (e) {
+            // If we can't check, assume it needs activation
+            return { ready: false, reason: 'Audio may need user interaction' };
+          }
+          
+          return { ready: true, reason: 'Audio system appears ready' };
+        }
+      }
+
       // Application initialization
       let museManager;
       let eegSimulator;
@@ -4289,6 +5431,7 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
       let referencePanel;
       let aiAssistant;
       let codePanelTabs;
+      let soundTester;
       let currentDataSource = null; // 'muse' or 'simulator'
 
       function initApp() {
@@ -4298,6 +5441,7 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
         referencePanel = new ReferencePanel();
         aiAssistant = new AIAssistant();
         codePanelTabs = new CodePanelTabs();
+        soundTester = new SoundTester();
 
         // Toggle reference panel
         document.getElementById('toggle-reference-btn').addEventListener('click', () => {
@@ -4413,6 +5557,15 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
             console.error('Fullscreen error:', error);
             alert('Fullscreen mode is not supported or was blocked. Please try pressing F11 or allow fullscreen permissions.');
           }
+        });
+
+        // Test Sound button
+        document.getElementById('test-sound-btn').addEventListener('click', async () => {
+          // Switch to System Log tab to see diagnostic info
+          codePanelTabs.switchTab('log');
+          
+          // Run the sound test
+          await soundTester.testSound();
         });
 
         // Example selector dropdown
