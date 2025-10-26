@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Browser bundle for muse-js",
   "scripts": {
-    "build": "esbuild src/muse-bundle.js --bundle --format=iife --outfile=muse-browser.js"
+    "build": "esbuild src/muse-bundle.js --bundle --format=iife --outfile=muse-browser.js",
+    "build:eeg-only": "esbuild src/muse-bundle-eeg-only.js --bundle --format=iife --outfile=muse-browser-eeg-only.js",
+    "build:custom": "esbuild src/custom-muse-bundle.js --bundle --format=iife --outfile=muse-browser-custom.js"
   },
   "dependencies": {
     "muse-js": "^3.3.0"

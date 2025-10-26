@@ -14,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
     
-    <!-- Muse-js for Bluetooth EEG - LOCAL BROWSER BUNDLE -->
+    <!-- Muse-js for Bluetooth EEG - Local bundle (freshly rebuilt) -->
     <script src="./muse-browser.js"></script>
     
     <!-- Monaco Editor for live coding -->
@@ -1582,6 +1582,98 @@
           document.getElementById('beta-value').textContent = eegData.beta.toFixed(2);
           document.getElementById('theta-value').textContent = eegData.theta.toFixed(2);
           document.getElementById('delta-value').textContent = eegData.delta.toFixed(2);
+        }
+
+        async setupEEGCharacteristics() {
+          // Set up EEG characteristics after device initialization
+          // They only appear after start() sends commands
+          try {
+            if (!this.muse._museService) {
+              logger.log('⚠️ No service reference available, EEG may already be set up', 'warning');
+              return;
+            }
+            
+            const EEG_CHARACTERISTICS = [
+              '273e0003-4c4d-454d-96be-f03bac821358', // TP9
+              '273e0004-4c4d-454d-96be-f03bac821358', // AF7
+              '273e0005-4c4d-454d-96be-f03bac821358', // AF8
+              '273e0006-4c4d-454d-96be-f03bac821358'  // TP10
+            ];
+            
+            // Wait a bit for characteristics to appear after start()
+            logger.log('Waiting for EEG characteristics to appear...', 'info');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            logger.log('Fetching EEG characteristics...', 'info');
+            const eegObservables = [];
+            
+            for (let i = 0; i < 4; i++) {
+              try {
+                const characteristic = await this.muse._museService.getCharacteristic(EEG_CHARACTERISTICS[i]);
+                logger.log(`✅ Got EEG channel ${i}`, 'success');
+                
+                // Start notifications
+                await characteristic.startNotifications();
+                logger.log(`  ✓ Notifications started for channel ${i}`, 'info');
+                
+                // Add event listener directly and forward to eegReadings
+                const channelIndex = i;
+                characteristic.addEventListener('characteristicvaluechanged', (event) => {
+                  const data = event.target.value;
+                  const view = new DataView(data.buffer);
+                  const index = view.getUint16(0);
+                  const samples = this.decodeEEGSamples(new Uint8Array(data.buffer).subarray(2));
+                  
+                  const reading = {
+                    electrode: channelIndex,
+                    index: index,
+                    samples: samples,
+                    timestamp: Date.now()
+                  };
+                  
+                  // Forward directly to the existing processing
+                  this.processEEGReading(reading);
+                });
+                
+                eegObservables.push(characteristic); // Just track that we set it up
+              } catch (error) {
+                logger.log(`⚠️ Could not get EEG channel ${i}: ${error.message}`, 'warning');
+              }
+            }
+            
+            if (eegObservables.length > 0) {
+              logger.log(`✅ EEG characteristics set up successfully! (${eegObservables.length} channels)`, 'success');
+            } else {
+              logger.log('❌ No EEG characteristics could be set up', 'error');
+            }
+          } catch (error) {
+            logger.log(`❌ Error setting up EEG characteristics: ${error.message}`, 'error');
+          }
+        }
+        
+        decodeEEGSamples(data) {
+          // Decode 12-bit EEG samples
+          const samples = [];
+          for (let i = 0; i < 12; i++) {
+            const byteIndex = i * 1.5;
+            let sample;
+            
+            if (i % 2 === 0) {
+              sample = (data[Math.floor(byteIndex)] << 4) | (data[Math.floor(byteIndex) + 1] >> 4);
+            } else {
+              sample = ((data[Math.floor(byteIndex)] & 0x0F) << 8) | data[Math.floor(byteIndex) + 1];
+            }
+            
+            // Convert to signed 12-bit
+            if (sample > 2047) {
+              sample -= 4096;
+            }
+            
+            // Convert to microvolts
+            samples.push(sample * 0.48828125);
+          }
+          
+          return samples;
         }
 
         disconnect() {

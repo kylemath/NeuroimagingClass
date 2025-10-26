@@ -12413,27 +12413,12 @@
                       return muse_utils_1.decodeResponse(new Uint8Array(data.buffer));
                     }), operators_1.share());
                     this.controlResponses = muse_parse_1.parseControl(this.rawControlData);
-                    return [4, service.getCharacteristic(TELEMETRY_CHARACTERISTIC)];
-                  case 8:
-                    telemetryCharacteristic = _g.sent();
-                    _d = this;
-                    return [4, muse_utils_1.observableCharacteristic(telemetryCharacteristic)];
-                  case 9:
-                    _d.telemetryData = _g.sent().pipe(operators_1.map(muse_parse_1.parseTelemetry));
-                    return [4, service.getCharacteristic(GYROSCOPE_CHARACTERISTIC)];
-                  case 10:
-                    gyroscopeCharacteristic = _g.sent();
-                    _e = this;
-                    return [4, muse_utils_1.observableCharacteristic(gyroscopeCharacteristic)];
-                  case 11:
-                    _e.gyroscopeData = _g.sent().pipe(operators_1.map(muse_parse_1.parseGyroscope));
-                    return [4, service.getCharacteristic(ACCELEROMETER_CHARACTERISTIC)];
-                  case 12:
-                    accelerometerCharacteristic = _g.sent();
-                    _f = this;
-                    return [4, muse_utils_1.observableCharacteristic(accelerometerCharacteristic)];
-                  case 13:
-                    _f.accelerometerData = _g.sent().pipe(operators_1.map(muse_parse_1.parseAccelerometer));
+                    // PATCHED: Skip optional telemetry/gyro/accel for Muse 2016 compatibility
+                    // These characteristics don't exist on older Muse devices
+                    console.log('⚠️ Skipping optional characteristics (telemetry/gyro/accel) for compatibility');
+                    this.telemetryData = new rxjs_1.Subject();
+                    this.gyroscopeData = new rxjs_1.Subject();
+                    this.accelerometerData = new rxjs_1.Subject();
                     this.eventMarkers = new rxjs_1.Subject();
                     if (!this.enablePpg)
                       return [3, 18];
