@@ -182,6 +182,50 @@
         flex-direction: column;
       }
 
+      .code-panel-tabs {
+        display: flex;
+        background: var(--bg);
+        border-bottom: 2px solid var(--muted);
+      }
+
+      .code-panel-tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        background: var(--bg);
+      }
+
+      .code-panel-tab:hover {
+        background: var(--bg-2);
+        color: var(--text);
+      }
+
+      .code-panel-tab.active {
+        color: var(--accent-2);
+        border-bottom-color: var(--accent);
+      }
+
+      .code-panel-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .code-panel-view {
+        flex: 1;
+        display: none;
+        flex-direction: column;
+      }
+
+      .code-panel-view.active {
+        display: flex;
+      }
+
       .panel-header {
         background: var(--bg);
         padding: 8px 12px;
@@ -288,6 +332,115 @@
         max-height: 100px;
         overflow-y: auto;
         display: none;
+      }
+
+      /* Console Log Panel */
+      .console-log-panel {
+        background: var(--bg);
+        padding: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 11px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      /* When in tab view, use full height */
+      .code-panel-view .console-log-panel {
+        max-height: none;
+        height: 100%;
+        border-top: none;
+      }
+
+      .console-log-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 8px;
+        background: var(--bg-2);
+        border-radius: 4px;
+        margin-bottom: 4px;
+      }
+
+      .console-log-title {
+        color: var(--accent-2);
+        font-weight: 600;
+        font-size: 12px;
+      }
+
+      .console-log-clear {
+        background: var(--bg);
+        border: 1px solid var(--muted);
+        color: var(--text);
+        padding: 2px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 10px;
+        transition: all 0.2s;
+      }
+
+      .console-log-clear:hover {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      .console-log-messages {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-height: 0; /* Important for flex scrolling */
+      }
+
+      .log-message {
+        padding: 4px 8px;
+        border-radius: 3px;
+        background: var(--bg-2);
+        border-left: 3px solid;
+        word-wrap: break-word;
+        animation: slideIn 0.2s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .log-message.log-info {
+        border-left-color: var(--accent-2);
+        color: var(--text);
+      }
+
+      .log-message.log-success {
+        border-left-color: var(--success);
+        color: var(--success);
+      }
+
+      .log-message.log-warning {
+        border-left-color: var(--warning);
+        color: var(--warning);
+      }
+
+      .log-message.log-error {
+        border-left-color: var(--error);
+        color: var(--error);
+        font-weight: 600;
+      }
+
+      .log-timestamp {
+        opacity: 0.6;
+        font-size: 9px;
+        margin-right: 6px;
       }
 
       .reference-panel {
@@ -526,16 +679,22 @@
 
       <!-- Code Editor Panel -->
       <div class="code-panel">
-        <div class="panel-header">Live P5.js Code Editor</div>
-        <div class="examples-bar">
-          <label for="example-selector" class="examples-label">Example Animations:</label>
-          <select id="example-selector" class="example-selector">
-            <option value="">-- Select an Example --</option>
-            <optgroup label="Getting Started">
-              <option value="basic">Basic Animation</option>
-              <option value="basicShapes">Basic Shapes</option>
-              <option value="functionExample">Function Example</option>
-            </optgroup>
+        <div class="code-panel-tabs">
+          <div class="code-panel-tab active" data-panel="code">💻 Code Editor</div>
+          <div class="code-panel-tab" data-panel="log">📋 System Log</div>
+        </div>
+        <div class="code-panel-content">
+          <!-- Code Editor View -->
+          <div class="code-panel-view active" id="code-view">
+            <div class="examples-bar">
+              <label for="example-selector" class="examples-label">Example Animations:</label>
+              <select id="example-selector" class="example-selector">
+                <option value="">-- Select an Example --</option>
+                <optgroup label="Getting Started">
+                  <option value="basic">Basic Animation</option>
+                  <option value="basicShapes">Basic Shapes</option>
+                  <option value="functionExample">Function Example</option>
+                </optgroup>
             <optgroup label="Brain Wave Visualizations">
               <option value="alpha">Alpha Waves</option>
               <option value="waves">Wave Visualization</option>
@@ -582,10 +741,28 @@
               <option value="colorfulGrid">Animated Grid</option>
               <option value="webcamInput">Webcam Input</option>
             </optgroup>
-          </select>
+              </select>
+            </div>
+            <div class="code-editor" id="code-editor"></div>
+            <div class="error-console" id="error-console"></div>
+          </div>
+
+          <!-- System Log View -->
+          <div class="code-panel-view" id="log-view">
+            <div class="console-log-panel" id="console-log-panel" style="max-height: none; height: 100%;">
+              <div class="console-log-header">
+                <div class="console-log-title">📋 System Log</div>
+                <button class="console-log-clear" id="clear-log-btn">Clear</button>
+              </div>
+              <div class="console-log-messages" id="log-messages">
+                <div class="log-message log-info">
+                  <span class="log-timestamp">[Ready]</span>
+                  Console initialized. Connection messages will appear here.
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="code-editor" id="code-editor"></div>
-        <div class="error-console" id="error-console"></div>
       </div>
 
       <!-- Reference Panel -->
@@ -658,74 +835,141 @@
 
     <script>
       // ============================================
-      // BRAINIMATION - MAIN APPLICATION
+      // VISIBLE CONSOLE LOGGING SYSTEM
       // ============================================
-      console.log('🔍 BrainImation Loading...');
-      console.log('📍 muse-browser.js should be loaded by now');
-      console.log('window.muse:', window.muse);
-      console.log('window.muse.MuseClient:', window.muse?.MuseClient);
-      
-      // Function to check library loading
-      function checkMuseLibrary() {
-        console.log('\n🔍 === MUSE LIBRARY DEBUG CHECK ===');
-        console.log('1. window.muse:', window.muse);
-        console.log('2. typeof window.muse:', typeof window.muse);
-        
-        if (window.muse) {
-          console.log('3. window.muse.MuseClient:', window.muse.MuseClient);
-          console.log('4. typeof window.muse.MuseClient:', typeof window.muse.MuseClient);
-          console.log('5. All muse properties:', Object.keys(window.muse));
-          
-          if (window.muse.MuseClient) {
-            console.log('✅ muse-js library loaded successfully!');
-            try {
-              const testClient = new window.muse.MuseClient();
-              console.log('✅ Test client created:', testClient);
-              return true;
-            } catch (e) {
-              console.error('❌ Error creating test client:', e);
-              return false;
-            }
+      class ConsoleLogger {
+        constructor() {
+          this.logContainer = null;
+          this.maxMessages = 100;
+          this.originalConsole = {
+            log: console.log.bind(console),
+            error: console.error.bind(console),
+            warn: console.warn.bind(console),
+            info: console.info.bind(console)
+          };
+          this.init();
+        }
+
+        init() {
+          // Wait for DOM to be ready
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.setupLogging());
           } else {
-            console.error('❌ window.muse exists but MuseClient is missing!');
-            return false;
+            this.setupLogging();
           }
-        } else {
-          console.error('❌ window.muse is undefined - library not loaded!');
-          console.log('💡 This could mean:');
-          console.log('   - CDN is blocked or unreachable');
-          console.log('   - Script tag failed to load');
-          console.log('   - Content Security Policy blocking');
-          console.log('   - CORS or network issue');
-          return false;
+        }
+
+        setupLogging() {
+          this.logContainer = document.getElementById('log-messages');
+          
+          // Setup clear button
+          const clearBtn = document.getElementById('clear-log-btn');
+          if (clearBtn) {
+            clearBtn.addEventListener('click', () => this.clear());
+          }
+
+          // Override console methods
+          console.log = (...args) => {
+            this.originalConsole.log(...args);
+            this.addMessage(this.formatArgs(args), 'info');
+          };
+
+          console.error = (...args) => {
+            this.originalConsole.error(...args);
+            this.addMessage(this.formatArgs(args), 'error');
+          };
+
+          console.warn = (...args) => {
+            this.originalConsole.warn(...args);
+            this.addMessage(this.formatArgs(args), 'warning');
+          };
+
+          console.info = (...args) => {
+            this.originalConsole.info(...args);
+            this.addMessage(this.formatArgs(args), 'info');
+          };
+
+          this.log('✅ Console logging system initialized', 'success');
+        }
+
+        formatArgs(args) {
+          return args.map(arg => {
+            if (typeof arg === 'object') {
+              try {
+                return JSON.stringify(arg, null, 2);
+              } catch (e) {
+                return String(arg);
+              }
+            }
+            return String(arg);
+          }).join(' ');
+        }
+
+        addMessage(message, type = 'info') {
+          if (!this.logContainer) return;
+
+          const logEntry = document.createElement('div');
+          logEntry.className = `log-message log-${type}`;
+          
+          const timestamp = new Date().toLocaleTimeString('en-US', { 
+            hour12: false, 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit' 
+          });
+          
+          logEntry.innerHTML = `
+            <span class="log-timestamp">[${timestamp}]</span>
+            ${this.escapeHtml(message)}
+          `;
+
+          this.logContainer.appendChild(logEntry);
+
+          // Keep only last N messages
+          while (this.logContainer.children.length > this.maxMessages) {
+            this.logContainer.removeChild(this.logContainer.firstChild);
+          }
+
+          // Auto-scroll to bottom
+          this.logContainer.scrollTop = this.logContainer.scrollHeight;
+
+          // Auto-switch to log tab on errors or important messages
+          if ((type === 'error' || type === 'warning') && window.codePanelTabs) {
+            // Small delay to ensure tab manager is initialized
+            setTimeout(() => {
+              if (codePanelTabs.currentTab !== 'log') {
+                codePanelTabs.switchTab('log');
+              }
+            }, 100);
+          }
+        }
+
+        log(message, type = 'info') {
+          this.addMessage(message, type);
+        }
+
+        escapeHtml(text) {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        clear() {
+          if (this.logContainer) {
+            this.logContainer.innerHTML = '';
+            this.addMessage('Console cleared', 'info');
+          }
         }
       }
-      
-      // Check immediately
-      console.log('\n📊 Immediate check:');
-      checkMuseLibrary();
-      
-      // Check again after a delay (scripts might still be loading)
-      setTimeout(() => {
-        console.log('\n📊 Check after 500ms:');
-        const loaded = checkMuseLibrary();
-        
-        if (!loaded) {
-          console.error('\n⚠️ === MUSE LIBRARY STILL NOT LOADED ===');
-          console.log('🔧 TROUBLESHOOTING STEPS:');
-          console.log('1. Check browser console for network errors');
-          console.log('2. Try opening https://unpkg.com/muse-js@4.0.3/dist/muse.min.js in a new tab');
-          console.log('3. Check if you have internet connection');
-          console.log('4. Try opening developer tools > Network tab > refresh page');
-          console.log('5. Look for any Content Security Policy errors');
-        }
-      }, 500);
-      
-      // Check after page fully loaded
-      window.addEventListener('load', () => {
-        console.log('\n📊 Check after window.onload:');
-        checkMuseLibrary();
-      });
+
+      // Initialize the logger immediately
+      const logger = new ConsoleLogger();
+
+      // ============================================
+      // BRAINIMATION - MAIN APPLICATION
+      // ============================================
+      // Note: Console logging is now handled by the ConsoleLogger class above
+      // All console.log, console.error, console.warn messages will appear in the System Log panel
       
       // Global variables for EEG data access in p5 sketches
       let eegData = {
@@ -812,8 +1056,6 @@
           this.updateInterval = setInterval(() => {
             this.generateData();
           }, 50);
-          
-          console.log('EEG Simulation started');
         }
 
         stop() {
@@ -822,7 +1064,6 @@
             clearInterval(this.updateInterval);
             this.updateInterval = null;
           }
-          console.log('EEG Simulation stopped');
         }
 
         setAttention(value) {
@@ -948,93 +1189,123 @@
 
         async connect() {
           try {
-            console.log('\n🔌 === ATTEMPTING TO CONNECT TO MUSE ===');
+            logger.log('🔌 === ATTEMPTING TO CONNECT TO MUSE ===', 'info');
             
-            // First, verify the library is loaded
-            console.log('Step 1: Checking if muse-js library is loaded...');
+            // Step 1: Check Web Bluetooth support
+            logger.log('Step 1: Checking Web Bluetooth support...', 'info');
+            if (!navigator.bluetooth) {
+              throw new Error('Web Bluetooth is not supported in this browser. Please use Chrome, Edge, or Opera.');
+            }
+            logger.log('✅ Web Bluetooth is supported', 'success');
+            
+            // Step 2: Verify the library is loaded
+            logger.log('Step 2: Checking if muse-js library is loaded...', 'info');
             if (!window.muse) {
-              throw new Error('muse-js library not loaded! window.muse is undefined. Check browser console for loading errors.');
+              throw new Error('muse-js library not loaded! The script may have failed to load from CDN. Check your internet connection.');
             }
             
             if (!window.muse.MuseClient) {
-              throw new Error('MuseClient not found in muse-js library! window.muse.MuseClient is undefined.');
+              throw new Error('MuseClient not found in muse-js library! The library may be corrupted or outdated.');
             }
             
-            console.log('✅ muse-js library is loaded');
-            console.log('Step 2: Creating MuseClient instance...');
+            logger.log('✅ muse-js library is loaded correctly', 'success');
             
-            // Create a new MuseClient instance
-            // When loaded from unpkg, muse-js exports as window.muse
+            // Step 3: Create MuseClient instance
+            logger.log('Step 3: Creating MuseClient instance...', 'info');
             this.muse = new window.muse.MuseClient();
-            console.log('✅ MuseClient created:', this.muse);
+            logger.log('✅ MuseClient created successfully', 'success');
             
             // Enable PPG if available (for better compatibility)
             this.muse.enablePpg = true;
             
-            // Connect to the device (this will show the pairing dialog)
-            console.log('Requesting device connection...');
-            await this.muse.connect();
-            console.log('Device connected, setting up subscriptions...');
+            // Step 4: Request device pairing
+            logger.log('Step 4: Opening Bluetooth device selector...', 'info');
+            logger.log('👉 Please select your Muse device from the popup', 'info');
             
-            // Set up subscriptions BEFORE starting the stream
-            // This is crucial for proper data reception
+            await this.muse.connect();
+            logger.log('✅ Device paired successfully', 'success');
+            
+            // Step 5: Set up data subscriptions
+            logger.log('Step 5: Setting up data subscriptions...', 'info');
+            
+            // EEG data subscription
             const eegSubscription = this.muse.eegReadings.subscribe(reading => {
               this.processEEGReading(reading);
             });
             this.subscriptions.push(eegSubscription);
+            logger.log('✅ EEG data subscription active', 'success');
 
-            // Subscribe to accelerometer for movement detection (optional)
+            // Accelerometer subscription (optional)
             const accelSubscription = this.muse.accelerometerData.subscribe(accel => {
-              // Could add movement-based interactions here
+              // Movement detection could be added here
             });
             this.subscriptions.push(accelSubscription);
 
-            // Subscribe to telemetry (battery level, temperature, etc.)
+            // Telemetry subscription (battery, temperature, etc.)
             const telemetrySubscription = this.muse.telemetryData.subscribe(telemetry => {
               if (telemetry.batteryLevel !== undefined) {
-                console.log(`🔋 Battery: ${telemetry.batteryLevel.toFixed(1)}%`);
+                logger.log(`🔋 Battery Level: ${telemetry.batteryLevel.toFixed(1)}%`, 'success');
               }
             });
             this.subscriptions.push(telemetrySubscription);
 
-            // Subscribe to connection status
+            // Connection status subscription
             const statusSubscription = this.muse.connectionStatus.subscribe(status => {
-              console.log('📡 Connection status:', status);
               if (!status) {
-                console.warn('Connection lost!');
+                logger.log('⚠️ Connection lost! Please check your device.', 'error');
                 this.isConnected = false;
                 eegData.connected = false;
                 this.updateStatus('Connection lost', 'error');
               }
             });
             this.subscriptions.push(statusSubscription);
+            
+            logger.log('✅ All subscriptions configured', 'success');
 
-            // Now start the data stream
-            console.log('Starting data stream...');
+            // Step 6: Start the data stream
+            logger.log('Step 6: Starting EEG data stream...', 'info');
             await this.muse.start();
             
             this.isConnected = true;
             eegData.connected = true;
             this.updateStatus('Connected to Muse', 'connected');
 
-            console.log('Muse connected successfully and streaming data');
+            logger.log('🎉 SUCCESS! Muse is connected and streaming data', 'success');
+            logger.log('You should now see brain wave data updating above', 'success');
             
           } catch (error) {
-            console.error('Failed to connect to Muse:', error);
+            logger.log('❌ Connection failed: ' + error.message, 'error');
             this.isConnected = false;
             eegData.connected = false;
             
-            // Provide more detailed error messages
+            // Provide helpful error messages based on error type
             let errorMsg = 'Connection failed';
-            if (error.message && error.message.includes('cancelled')) {
-              errorMsg = 'Connection cancelled by user';
-            } else if (error.message && error.message.includes('GATT')) {
+            let helpText = '';
+            
+            if (error.name === 'NotFoundError' || error.message.includes('cancelled')) {
+              errorMsg = 'No device selected';
+              helpText = '💡 Tip: Make sure to select a Muse device from the Bluetooth pairing dialog.';
+            } else if (error.message.includes('Bluetooth') || error.message.includes('GATT')) {
               errorMsg = 'Bluetooth connection failed';
-            } else if (error.message) {
-              errorMsg = `Connection failed: ${error.message}`;
+              helpText = '💡 Troubleshooting steps:\n' +
+                        '1. Make sure your Muse device is charged and turned on\n' +
+                        '2. Ensure Bluetooth is enabled on your computer\n' +
+                        '3. Try turning the Muse device off and on again\n' +
+                        '4. Move closer to the device (within 10 feet)';
+            } else if (error.message.includes('not supported')) {
+              errorMsg = 'Browser not compatible';
+              helpText = '💡 Please use Chrome, Edge, or Opera browser to connect to Muse devices.';
+            } else if (error.message.includes('library')) {
+              errorMsg = 'Library loading error';
+              helpText = '💡 The muse-js library failed to load. Check your internet connection and refresh the page.';
+            } else {
+              errorMsg = `Connection error: ${error.message}`;
+              helpText = '💡 Try refreshing the page and attempting to connect again.';
             }
             
             this.updateStatus(errorMsg, 'error');
+            logger.log(helpText, 'warning');
+            
             throw error;
           }
         }
@@ -1049,8 +1320,12 @@
           
           // Log first few readings to confirm data flow
           if (this.dataBuffer.length < 5) {
-            console.log(`📊 EEG data received from ${electrodeName} (${reading.electrode}):`, 
-                       reading.samples.length, 'samples, first value:', reading.samples[0]?.toFixed(2));
+            logger.log(`📊 EEG data received from ${electrodeName}: ${reading.samples.length} samples, first value: ${reading.samples[0]?.toFixed(2)} µV`, 'success');
+          }
+          
+          // Log when all channels have sent data
+          if (this.dataBuffer.length === 4) {
+            logger.log('✅ All 4 EEG channels are transmitting data successfully!', 'success');
           }
           
           // Add to buffer for frequency analysis (use mapped name)
@@ -1185,28 +1460,29 @@
         }
 
         disconnect() {
-          console.log('Disconnecting from Muse...');
+          logger.log('🔌 Disconnecting from Muse...', 'info');
           
           // Unsubscribe from all subscriptions
           if (this.subscriptions && this.subscriptions.length > 0) {
-            console.log(`Unsubscribing from ${this.subscriptions.length} subscriptions`);
+            logger.log(`Unsubscribing from ${this.subscriptions.length} data subscriptions`, 'info');
             this.subscriptions.forEach(sub => {
               try {
                 sub.unsubscribe();
               } catch (e) {
-                console.warn('Error unsubscribing:', e);
+                logger.log('Warning during unsubscribe: ' + e.message, 'warning');
               }
             });
             this.subscriptions = [];
+            logger.log('✅ All subscriptions closed', 'success');
           }
           
           // Disconnect the device
           if (this.muse) {
             try {
               this.muse.disconnect();
-              console.log('Muse disconnected');
+              logger.log('✅ Muse device disconnected successfully', 'success');
             } catch (e) {
-              console.warn('Error during disconnect:', e);
+              logger.log('Warning during disconnect: ' + e.message, 'warning');
             }
             this.muse = null;
           }
@@ -1214,6 +1490,7 @@
           this.isConnected = false;
           eegData.connected = false;
           this.updateStatus('Disconnected', '');
+          logger.log('Ready to connect to a new device', 'info');
         }
       }
 
@@ -3859,12 +4136,60 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
         }
       }
 
+      // Code Panel Tab Manager
+      class CodePanelTabs {
+        constructor() {
+          this.currentTab = 'code';
+          this.setupTabs();
+        }
+
+        setupTabs() {
+          document.querySelectorAll('.code-panel-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+              const panelName = tab.dataset.panel;
+              this.switchTab(panelName);
+            });
+          });
+        }
+
+        switchTab(panelName) {
+          this.currentTab = panelName;
+          
+          // Update tab styling
+          document.querySelectorAll('.code-panel-tab').forEach(tab => {
+            if (tab.dataset.panel === panelName) {
+              tab.classList.add('active');
+            } else {
+              tab.classList.remove('active');
+            }
+          });
+
+          // Update view visibility
+          document.querySelectorAll('.code-panel-view').forEach(view => {
+            if (view.id === `${panelName}-view`) {
+              view.classList.add('active');
+            } else {
+              view.classList.remove('active');
+            }
+          });
+
+          // If switching to log, scroll to bottom
+          if (panelName === 'log') {
+            const logMessages = document.getElementById('log-messages');
+            if (logMessages) {
+              logMessages.scrollTop = logMessages.scrollHeight;
+            }
+          }
+        }
+      }
+
       // Application initialization
       let museManager;
       let eegSimulator;
       let codeEditor;
       let referencePanel;
       let aiAssistant;
+      let codePanelTabs;
       let currentDataSource = null; // 'muse' or 'simulator'
 
       function initApp() {
@@ -3873,6 +4198,7 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
         codeEditor = new CodeEditor();
         referencePanel = new ReferencePanel();
         aiAssistant = new AIAssistant();
+        codePanelTabs = new CodePanelTabs();
 
         // Toggle reference panel
         document.getElementById('toggle-reference-btn').addEventListener('click', () => {
@@ -4032,35 +4358,36 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
 
         // Check for Web Bluetooth support first
         if (!navigator.bluetooth) {
-          console.warn('⚠️ Web Bluetooth is not supported in this browser');
-          console.warn('Please use Chrome, Edge, or Opera to connect to Muse devices');
+          logger.log('⚠️ Web Bluetooth is not supported in this browser', 'error');
+          logger.log('Please use Chrome, Edge, or Opera to connect to Muse devices', 'warning');
           document.getElementById('connect-btn').disabled = true;
           document.getElementById('connect-btn').title = 'Web Bluetooth not supported in this browser';
           museManager.updateStatus('Bluetooth not supported', 'error');
         } else {
-          console.log('✅ Web Bluetooth is supported');
+          logger.log('✅ Web Bluetooth is supported in this browser', 'success');
         }
         
         // Check if muse-js library loaded successfully
-        console.log('\n🔍 Checking muse-js library...');
-        console.log('muse-js library loaded:', !!window.muse);
-        console.log('MuseClient available:', !!(window.muse && window.muse.MuseClient));
+        logger.log('🔍 Checking muse-js library...', 'info');
         
         if (window.muse && window.muse.MuseClient) {
-          console.log('✅ muse-js library is ready!');
+          logger.log('✅ muse-js library is ready!', 'success');
           document.getElementById('connect-btn').disabled = false;
           museManager.updateStatus('Ready to connect', '');
+          logger.log('Click "Connect Muse" to pair with your device', 'info');
         } else {
-          console.error('❌ muse-js library failed to load!');
+          logger.log('❌ muse-js library failed to load!', 'error');
+          logger.log('Check your internet connection and refresh the page', 'warning');
           document.getElementById('connect-btn').disabled = true;
           museManager.updateStatus('muse-js library error', 'error');
         }
         
-        console.log('🧠 BrainImation initialized successfully!');
+        logger.log('🧠 BrainImation initialized successfully!', 'success');
       }
 
       // Simulation control functions
       function startSimulation() {
+        logger.log('🎮 Starting EEG data simulation...', 'info');
         eegSimulator.start();
         currentDataSource = 'simulator';
         
@@ -4073,9 +4400,12 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
         // Initialize with current slider values
         eegSimulator.setAttention(document.getElementById('sim-attention').value);
         eegSimulator.setMeditation(document.getElementById('sim-meditation').value);
+        
+        logger.log('✅ Simulation active - Use sliders to control brain wave parameters', 'success');
       }
 
       function stopSimulation() {
+        logger.log('🎮 Stopping EEG data simulation...', 'info');
         eegSimulator.stop();
         currentDataSource = null;
         
@@ -4103,6 +4433,8 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
         document.getElementById('beta-value').textContent = '0.0';
         document.getElementById('theta-value').textContent = '0.0';
         document.getElementById('delta-value').textContent = '0.0';
+        
+        logger.log('✅ Simulation stopped', 'success');
       }
 
       // Global error handler
