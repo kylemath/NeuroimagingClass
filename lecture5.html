@@ -1,0 +1,2448 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20251027-v1">
+    <title>Lecture 5: Hemodynamic Response & Optical Brain Imaging</title>
+    <meta name="description" content="Fifth lecture for PSYCH 403A1: From neural activity to blood flow - exploring optical methods for brain imaging">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20251027" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <style>
+      /* Cache-busted styles - v20251027 */
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 1100px;
+        --warning: #f59e0b;
+        --hemoglobin: #dc2626;
+        --oxygen: #3b82f6;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3, h4 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+      h4 {
+        font-size: clamp(16px, 2.2vw, 20px);
+        color: var(--accent-2);
+        margin-top: 1.2em;
+      }
+
+      p { margin: 0.85em 0; }
+      p.lead {
+        font-size: clamp(18px, 2.4vw, 21px);
+        color: #4a2d4a;
+      }
+
+      .stage {
+        font-style: italic;
+        color: var(--muted);
+        background: linear-gradient(90deg, rgba(214,51,132,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+      .beat::after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--accent) 30%, var(--accent-2) 70%);
+        box-shadow: 0 0 20px var(--glow), 0 0 40px rgba(255,107,157,0.3);
+        animation: neural-pulse 3s ease-in-out infinite;
+      }
+      @keyframes neural-pulse {
+        0%   { left: 0%; opacity: 1; transform: scale(1); }
+        25%  { left: 25%; opacity: 0.7; transform: scale(1.2); }
+        50%  { left: 50%; opacity: 0.4; transform: scale(0.8); }
+        75%  { left: 75%; opacity: 0.7; transform: scale(1.2); }
+        100% { left: 100%; opacity: 1; transform: scale(1); }
+      }
+
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .callout {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 16px 16px 18px;
+        color: var(--text);
+        margin: 18px 0 8px;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .warning {
+        background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(239,68,68,0.08));
+        border: 1px solid rgba(245,158,11,0.4);
+        border-radius: 12px;
+        padding: 16px 16px 18px;
+        color: var(--text);
+        margin: 18px 0 8px;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      .demo-container {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin: 24px 0;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        border: 2px solid rgba(32,201,151,0.3);
+      }
+
+      .demo-title {
+        font-family: Spectral, serif;
+        font-size: 22px;
+        color: var(--accent);
+        margin: 0 0 16px 0;
+      }
+
+      canvas {
+        display: block;
+        margin: 16px auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 16px 0;
+        align-items: center;
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      label {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      input[type="range"] {
+        width: 200px;
+      }
+
+      button {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        font-size: 14px;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+      }
+
+      button:active {
+        transform: scale(0.95);
+      }
+
+      .progress-recap {
+        background: linear-gradient(135deg, rgba(214,51,132,0.1), rgba(32,201,151,0.1));
+        border-left: 4px solid var(--accent);
+        padding: 20px;
+        margin: 24px 0;
+        border-radius: 8px;
+      }
+
+      .progress-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 12px 0;
+      }
+
+      .progress-icon {
+        width: 24px;
+        height: 24px;
+        background: var(--accent-2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+
+      .code-block {
+        background: #2d1b2d;
+        color: #f8f4f8;
+        padding: 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 16px 0;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .timeline {
+        position: relative;
+        padding-left: 30px;
+        margin: 24px 0;
+      }
+
+      .timeline::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      }
+
+      .timeline-item {
+        position: relative;
+        margin: 20px 0;
+      }
+
+      .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -24px;
+        top: 6px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--accent-2);
+        border: 2px solid white;
+        box-shadow: 0 0 0 2px var(--accent-2);
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(122,225,255,0.25);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        input[type="range"] {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">Lecture 5 — Oct 27, 2025</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./brainimation.html" class="tag" style="text-transform:none;background:linear-gradient(45deg,rgba(32,201,151,0.25),rgba(32,201,151,0.2));border-color:#20c997;">BrainImation</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>Lecture 5: Hemodynamic Response & Optical Brain Imaging</h1>
+        <p class="lead">From electrical activity to blood flow: exploring how we can measure brain function through light</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>🎯 Course Progress Recap</h2>
+        
+        <div class="progress-recap">
+          <h3 style="margin-top:0;">What We've Accomplished So Far</h3>
+          
+          <div class="progress-item">
+            <div class="progress-icon">✓</div>
+            <div>
+              <strong>Assignment 1:</strong> EEG filtering and signal processing fundamentals
+            </div>
+          </div>
+          
+          <div class="progress-item">
+            <div class="progress-icon">✓</div>
+            <div>
+              <strong>Assignment 2:</strong> Building brain-computer interfaces with BrainImation
+            </div>
+          </div>
+          
+          <div class="progress-item">
+            <div class="progress-icon">✓</div>
+            <div>
+              <strong>Midterm 1:</strong> Created your own interactive brain art and ERP experiments using p5.js
+            </div>
+          </div>
+          
+          <div class="callout" style="margin-top:16px;">
+            <strong>Key Skills Acquired:</strong>
+            <ul style="margin:8px 0 0 0;">
+              <li>Real-time EEG data processing</li>
+              <li>Frequency domain analysis (FFT, power spectral density)</li>
+              <li>Event-related potential (ERP) detection</li>
+              <li>Interactive visualization with p5.js</li>
+              <li>Brain-computer interface design</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="warning">
+          <strong>🔄 Course Direction Shift:</strong> We're now pivoting from electrical signals to optical measurements of brain activity. This builds on everything we've learned about neural activity, but adds a new dimension: blood flow and oxygenation changes.
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 1: From Neurons to Blood Flow</h2>
+
+        <h3>The Neurovascular Coupling Story</h3>
+        <p>When neurons fire, they consume energy. This triggers a cascade of physiological responses:</p>
+        
+        <div class="timeline">
+          <div class="timeline-item">
+            <strong>0-50ms:</strong> Neural activity increases (electrical signals we've been measuring with EEG)
+          </div>
+          <div class="timeline-item">
+            <strong>1-2s:</strong> Local blood vessels dilate in response to metabolic demand
+          </div>
+          <div class="timeline-item">
+            <strong>4-6s:</strong> Peak blood flow and oxygenation increase
+          </div>
+          <div class="timeline-item">
+            <strong>10-20s:</strong> Return to baseline
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Key Insight:</strong> The hemodynamic response is <em>slow</em> compared to neural firing, but it's easier to measure non-invasively because it involves changes in blood volume and oxygenation that affect how light travels through tissue.
+        </div>
+
+        <h3>MRI & fMRI Physics</h3>
+        
+        <p><strong>Magnetic Resonance Imaging (MRI)</strong> uses powerful magnetic fields to align hydrogen atoms in your body, then measures radio frequency signals as they relax. This gives us incredible structural images of the brain.</p>
+
+        <p><strong>Functional MRI (fMRI)</strong> leverages the fact that oxygenated and deoxygenated hemoglobin have different magnetic properties. The BOLD (Blood Oxygen Level Dependent) signal tracks the ratio of these, revealing brain activity with ~3mm spatial resolution but ~2-3 second temporal resolution.</p>
+
+        <h4>The Physics Behind MRI</h4>
+        <p>To understand MRI, we need to understand how hydrogen nuclei (protons) behave in magnetic fields:</p>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 1: Spin Alignment in the B₀ Field</h3>
+          <p>Hydrogen nuclei normally spin in random directions. When placed in a strong magnetic field (B₀, typically 1.5-7 Tesla), they align either parallel or anti-parallel to the field.</p>
+          <div id="mri-b0-demo"></div>
+          <div class="controls">
+            <button id="toggle-b0">Toggle B₀ Field</button>
+            <div class="control-group">
+              <label for="field-strength">Field Strength:</label>
+              <input type="range" id="field-strength" min="0" max="100" step="5" value="0">
+              <span id="field-value">0%</span>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>Key Insight:</strong> At equilibrium, slightly more spins align parallel (lower energy) than anti-parallel (higher energy). This tiny difference (~1 in 100,000 at 1.5T) is what gives us the MRI signal!
+          </div>
+        </div>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 2: RF Pulse & Signal Measurement</h3>
+          <p>A radiofrequency (RF) pulse at the Larmor frequency tips the net magnetization into the transverse plane. As spins relax back, they emit RF signals we can detect.</p>
+          <div id="mri-rf-demo"></div>
+          <div class="controls">
+            <button id="fire-rf-pulse">Fire RF Pulse (90°)</button>
+            <button id="fire-180-pulse">Fire 180° Pulse</button>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>T1 and T2 Relaxation:</strong>
+            <ul style="margin:8px 0 0 0;">
+              <li><strong>T1 (spin-lattice):</strong> Time for spins to realign with B₀ (hundreds of ms to seconds)</li>
+              <li><strong>T2 (spin-spin):</strong> Time for spins to dephase in the transverse plane (tens of ms)</li>
+              <li>Different tissues have different T1/T2 values, giving MRI contrast!</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 3: Spatial Encoding, k-Space & Image Reconstruction</h3>
+          <p>To create images, we need to know WHERE each signal comes from. Gradient fields make the magnetic field strength (and thus Larmor frequency) vary with position. The RF coil collects all frequencies simultaneously, then Fourier transform decodes them.</p>
+          <div id="mri-gradient-demo"></div>
+          <div class="controls">
+            <button id="toggle-gradient">Toggle Gradient Field</button>
+            <button id="acquire-signal">Acquire Signal & Reconstruct</button>
+            <button id="reset-acquisition">Reset</button>
+            <div class="control-group">
+              <label for="gradient-strength">Gradient Strength:</label>
+              <input type="range" id="gradient-strength" min="0" max="100" step="10" value="80">
+              <span id="gradient-value">80%</span>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>The MRI Signal Chain:</strong>
+            <ol style="margin:8px 0 0 0;">
+              <li><strong>Spatial Encoding:</strong> Gradient makes each position have unique frequency (Larmor frequency: f = γ × B)</li>
+              <li><strong>RF Coil Detection:</strong> Receives mixed signal containing all frequencies simultaneously</li>
+              <li><strong>k-Space:</strong> Raw data in frequency domain (Fourier transform of the image)</li>
+              <li><strong>Image Reconstruction:</strong> Inverse Fourier transform converts k-space → spatial image</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 3b: Slice Selection & 3D Volume Acquisition</h3>
+          <p>MRI typically acquires data one 2D slice at a time using slice-selective RF pulses. Multiple slices are acquired sequentially and stacked to create a 3D volume.</p>
+          <div id="mri-slice-demo"></div>
+          <div class="controls">
+            <button id="acquire-slices">Start Slice Acquisition</button>
+            <button id="reset-slices">Reset</button>
+            <div class="control-group">
+              <label for="slice-thickness">Slice Thickness:</label>
+              <input type="range" id="slice-thickness" min="3" max="15" step="2" value="8">
+              <span id="thickness-value">8mm</span>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>Slice Selection Process:</strong>
+            <ul style="margin:8px 0 0 0;">
+              <li><strong>Z-gradient:</strong> Applied during RF pulse makes frequency vary along z-axis</li>
+              <li><strong>Selective RF:</strong> Narrow-band RF pulse excites only spins at one z-location (one slice)</li>
+              <li><strong>Sequential acquisition:</strong> Repeat for each slice position</li>
+              <li><strong>3D Volume:</strong> Stack all 2D slices to reconstruct full 3D brain image</li>
+              <li><strong>Trade-offs:</strong> Thinner slices = better resolution but longer scan time</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 4: BOLD Signal - Oxy vs Deoxy Hemoglobin</h3>
+          <p>The BOLD effect: Neural activity increases blood flow, changing the ratio of oxygenated to deoxygenated hemoglobin. Deoxy-Hb is paramagnetic and distorts the local field, reducing T2* signal.</p>
+          <div id="mri-bold-demo"></div>
+          <div class="controls">
+            <button id="activate-neuron">Activate Neurons</button>
+            <div class="control-group">
+              <label for="activation-level">Activity Level:</label>
+              <input type="range" id="activation-level" min="0" max="100" step="10" value="0">
+              <span id="activation-value">0%</span>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>BOLD Response Components:</strong>
+            <ul style="margin:8px 0 0 0;">
+              <li><strong>Initial Dip:</strong> Brief T2* decrease as neurons consume oxygen</li>
+              <li><strong>Overcompensation:</strong> Blood flow increases more than needed, increasing oxy-Hb ratio</li>
+              <li><strong>Peak (4-6s):</strong> Maximum T2* signal increase</li>
+              <li><strong>Post-stimulus undershoot:</strong> Return to baseline</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Why we're focusing on optical methods instead:</strong>
+          <ul>
+            <li>MRI requires expensive, fixed equipment ($1-3 million scanner)</li>
+            <li>Limited access and scheduling</li>
+            <li>Can't do real-time experiments as easily</li>
+            <li>Optical methods can be portable, cheaper, and faster!</li>
+            <li>But MRI has superior spatial resolution and whole-brain coverage</li>
+          </ul>
+          
+          <!-- MRI Viewer link temporarily hidden
+          <div style="margin-top:16px;padding:12px;background:rgba(32,201,151,0.15);border-radius:8px;">
+            <strong>🧠 Want to explore real MRI/fMRI data?</strong><br>
+            <a href="./mriView.html" style="color:#d63384;font-weight:600;font-size:15px;">Open the Interactive MRI Viewer →</a><br>
+            <span style="font-size:13px;">Load actual neuroimaging datasets and explore 3D brain structure in your browser!</span>
+          </div>
+          -->
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 2: Introduction to Optical Measurements</h2>
+
+        <h3>Pulse Oximetry: The Gateway to Optical Physiology</h3>
+
+        <p>Before we measure the brain, let's start with something simpler: your finger.</p>
+
+        <div class="callout">
+          <strong>🔬 In-Class Demo:</strong> Pulse oximeter demonstration
+          <ul>
+            <li>Shows heart rate and blood oxygen saturation (SpO₂)</li>
+            <li>Uses two wavelengths of light (typically 660nm red and 940nm infrared)</li>
+            <li>Oxygenated and deoxygenated hemoglobin absorb these differently</li>
+            <li>Measures transmitted light through your fingertip</li>
+          </ul>
+        </div>
+
+        <h4>The Physics of Light in Tissue</h4>
+        <p>When light enters biological tissue, three things happen:</p>
+        <ul>
+          <li><strong>Absorption:</strong> Chromophores (like hemoglobin) absorb specific wavelengths</li>
+          <li><strong>Scattering:</strong> Light bounces off cells, organelles, and tissue structures</li>
+          <li><strong>Transmission/Reflection:</strong> Some light makes it through or bounces back</li>
+        </ul>
+
+        <h3>From Finger to Forehead: Photoplethysmography (PPG)</h3>
+
+        <div class="callout">
+          <strong>💡 Key Concept:</strong> PPG measures volumetric changes in blood vessels by tracking light absorption changes with each heartbeat.
+        </div>
+
+        <p><strong>Your devices already do this:</strong></p>
+        <ul>
+          <li><strong>Smartwatches:</strong> LEDs on the back measure wrist PPG</li>
+          <li><strong>Muse headbands:</strong> Have PPG sensors that can detect pulse at the forehead</li>
+          <li><strong>Your phone camera:</strong> Can detect subtle color changes from blood flow!</li>
+        </ul>
+
+        <div class="demo-container">
+          <h3 class="demo-title">📱 Try This: iPhone Finger Heart Rate</h3>
+          <div class="callout">
+            <strong>Method:</strong>
+            <ol>
+              <li>Cover your iPhone camera and flash with your fingertip</li>
+              <li>Turn on the flashlight</li>
+              <li>Use a camera app that can save video</li>
+              <li>Record 30 seconds of your finger over the lens</li>
+              <li>Extract RGB values frame-by-frame</li>
+              <li>Apply bandpass filter (0.5-4 Hz for heart rate)</li>
+              <li>Find the peak frequency = your heart rate!</li>
+            </ol>
+            <p style="margin-top:12px;"><strong>The red channel works best</strong> because hemoglobin strongly absorbs green light, so changes in blood volume show up as intensity variations in the red channel.</p>
+          </div>
+        </div>
+
+        <h3>Camera-Based Physiological Monitoring</h3>
+
+        <p>Even more impressive: you can measure heart rate just by looking at someone's face with a camera!</p>
+
+        <div class="callout">
+          <strong>The Science:</strong>
+          <ul>
+            <li>Facial skin is translucent enough that blood volume changes affect color</li>
+            <li>Each heartbeat causes tiny brightness/color fluctuations</li>
+            <li>Extract RGB values from face regions</li>
+            <li>Filter to heart rate frequency band</li>
+            <li>Can also work with forehead, cheeks, or any exposed skin</li>
+          </ul>
+        </div>
+
+        <h4>MIT's Eulerian Video Magnification</h4>
+        <p>Researchers at MIT developed a technique to <strong>amplify</strong> these tiny changes to make them visible to the naked eye:</p>
+        <ul>
+          <li>Decompose video into spatial frequency bands</li>
+          <li>Apply temporal filtering to each band</li>
+          <li>Amplify the filtered signals</li>
+          <li>Reconstruct video showing magnified motion/color changes</li>
+        </ul>
+
+        <div class="callout">
+          <strong>🎥 Applications:</strong> Visible heartbeat in face videos, breathing motion amplification, structural vibration analysis, and even detecting lies from facial blood flow patterns!
+          <br><br>
+          <a href="http://people.csail.mit.edu/mrub/evm/" target="_blank">View original MIT research →</a>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 3: Interactive Demos - Light Paths in Tissue</h2>
+
+        <h3>Understanding Photon Migration</h3>
+
+        <p>When we shine light on the head, photons don't travel in straight lines. They scatter through tissue following complex paths. The key insight: <strong>photons that reach a detector have traveled through tissue in a "banana-shaped" sensitivity region.</strong></p>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 1: 2D Photon Path Simulation</h3>
+          <p>This shows how photons scatter through tissue. Each line represents one photon's random walk.</p>
+          <div id="photon-2d-demo"></div>
+          <div class="controls">
+            <button id="reset-2d">Reset Simulation</button>
+            <div class="control-group">
+              <label for="scattering-2d">Scattering Amount:</label>
+              <input type="range" id="scattering-2d" min="0.1" max="2" step="0.1" value="0.8">
+              <span id="scattering-value-2d">0.8</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 2: The "Banana" Sensitivity Profile</h3>
+          <p>This shows which regions of tissue contribute most to the signal. Source on left, detector on right.</p>
+          <div id="banana-demo"></div>
+          <div class="controls">
+            <div class="control-group">
+              <label for="source-detector-distance">Source-Detector Distance:</label>
+              <input type="range" id="source-detector-distance" min="20" max="80" step="5" value="40">
+              <span id="distance-value">40mm</span>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>Key insight:</strong> Greater source-detector separation = deeper penetration = more brain signal (but also more noise from skull and scalp)
+          </div>
+        </div>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 3: Multi-Channel Array</h3>
+          <p>Modern optical imaging systems use multiple sources and detectors to create 2D images.</p>
+          <div id="array-demo"></div>
+          <div class="controls">
+            <button id="toggle-activation">Toggle Brain Activation</button>
+            <button id="toggle-multiplex">Toggle Multiplexing Mode</button>
+            <div class="control-group">
+              <label for="channels">Number of Channels:</label>
+              <input type="range" id="channels" min="2" max="8" step="1" value="4">
+              <span id="channels-value">4</span>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>💡 Multiplexing Explained:</strong>
+            <ul style="margin:8px 0 0 0;">
+              <li><strong>Frequency Multiplexing:</strong> All sources emit simultaneously at different frequencies (shown when "all pairs" mode). Detectors can separate signals by frequency.</li>
+              <li><strong>Time-Division Multiplexing:</strong> Sources activate one at a time in rapid sequence (animated when toggled). Simpler electronics but slower sampling.</li>
+              <li><strong>Cross-talk:</strong> Notice how longer source-detector separations probe deeper tissue, while shorter pairs are more sensitive to superficial layers.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 4: Looking Ahead - Advanced Optical Techniques</h2>
+
+        <h3>Near-Infrared Spectroscopy (NIRS/fNIRS)</h3>
+        <p>What we'll explore in detail next week:</p>
+        <ul>
+          <li>Uses 700-900nm wavelengths (penetrate deeper than visible light)</li>
+          <li>Can measure oxy- and deoxy-hemoglobin separately</li>
+          <li>~2-3cm depth penetration (can reach cortex)</li>
+          <li>Portable, safe, relatively inexpensive</li>
+          <li>Better temporal resolution than fMRI (~10Hz possible)</li>
+        </ul>
+
+        <h3>Event-Related Optical Signal (EROS)</h3>
+        <p>The faster alternative:</p>
+        <ul>
+          <li>Measures changes in light <strong>scattering</strong>, not absorption</li>
+          <li>Scattering changes occur within ~100ms of neural activity</li>
+          <li>Much faster than hemodynamic response!</li>
+          <li>Smaller signal, harder to detect</li>
+          <li>We'll build simulations of this next class</li>
+        </ul>
+
+        <h3>Beyond Blood: Other Optical Signatures</h3>
+        <p><strong>What else could we measure optically?</strong></p>
+        <ul>
+          <li>Cell swelling during neural firing (changes scattering)</li>
+          <li>Mitochondrial activity (fluorescence)</li>
+          <li>Temperature changes (affect absorption spectra)</li>
+          <li>Voltage-sensitive dyes (research tool)</li>
+          <li><strong>Biophoton emission?</strong> More on this controversial topic later...</li>
+        </ul>
+
+        <div class="warning">
+          <strong>🧠 Assignment Challenge:</strong> Think creatively about NEW ways to measure brain activity. What physical properties change during neural firing that we haven't thought to measure yet? Temperature? Pressure? Magnetic fields from ion flow? Sound? Consider the signal strength, temporal resolution, spatial resolution, and practical feasibility.
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Course Trajectory: The Photon Hypothesis</h2>
+
+        <div class="callout">
+          <h3 style="margin-top:0;">🔬 Culminating Experiment</h3>
+          <p>Over the next few weeks, we're building toward testing a fascinating and controversial hypothesis:</p>
+          
+          <strong>Can we detect photons being emitted by living brains?</strong>
+          
+          <p style="margin-top:12px;">Research has shown:</p>
+          <ul>
+            <li>Living organisms emit ultra-weak photons (biophotons) - intensity of ~10-100 photons/cm²/s</li>
+            <li>This emission decreases at death</li>
+            <li>Dr. Michael Persinger's research suggested photons from one brain might influence another</li>
+            <li>Claimed evidence for "photon-mediated" telepathic effects</li>
+          </ul>
+
+          <p style="margin-top:12px;"><strong>Our approach:</strong></p>
+          <ul>
+            <li>Nov 17: Tour optical imaging lab, understand detection limits</li>
+            <li>Nov 24: Conduct controlled experiment in dark room</li>
+            <li>Test with proper controls (empty chamber, shielded head, non-living tissue)</li>
+            <li>Critical thinking: What are the confounds? What artifacts could fool us?</li>
+          </ul>
+
+          <p style="margin-top:12px;color:var(--warning);"><strong>⚠️ Scientific Skepticism Required:</strong> Extraordinary claims require extraordinary evidence. We'll approach this as a lesson in experimental design, control conditions, and critical evaluation of controversial research.</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>🎯 Today's Activities</h2>
+
+        <div class="callout">
+          <h3 style="margin-top:0;">Hands-on Explorations</h3>
+          <ol>
+            <li><strong>Pulse Oximeter Demo:</strong> Understand the basics with medical-grade equipment</li>
+            <li><strong>Smartwatch PPG:</strong> Examine the signals from your own devices</li>
+            <li><strong>Muse PPG Analysis:</strong> Extract heart rate from Muse headband data</li>
+            <li><strong>iPhone Camera HR:</strong> Record and analyze finger video for heart rate</li>
+            <li><strong>Face Video HR (optional):</strong> Extract RGB values from face recording</li>
+            <li><strong>p5.js Experiments:</strong> Modify the demos above to explore optical parameters</li>
+          </ol>
+        </div>
+
+        <h3>Resources for Today</h3>
+        <ul>
+          <li><a href="https://www.researchgate.net/publication/51165024_Heart_Rate_Variability" target="_blank">HRV and PPG fundamentals</a></li>
+          <li><a href="http://people.csail.mit.edu/mrub/evm/" target="_blank">MIT Eulerian Video Magnification</a></li>
+          <li><a href="https://www.ucl.ac.uk/medical-physics-biomedical-engineering/research/biomedicine/near-infrared-spectroscopy" target="_blank">UCL NIRS Research</a></li>
+          <li><a href="https://www.nature.com/articles/s41598-019-43733-7" target="_blank">Biophoton emission research</a></li>
+        </ul>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Next Week (Nov 3)</h2>
+        <p><strong>fNIRS & EROS: Advanced Optical Neuroimaging</strong></p>
+        <ul>
+          <li>Deep dive into NIRS principles and instrumentation</li>
+          <li>Interactive 3D photon path simulations</li>
+          <li>EROS and light scattering mechanisms</li>
+          <li>Build your own optical imaging analysis pipeline</li>
+          <li>Brainstorm novel imaging modalities (assignment prep)</li>
+        </ul>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">Optical Imaging</span>
+          <span class="tag">Hemodynamics</span>
+          <span class="tag">Photoplethysmography</span>
+          <span class="tag">p5.js</span>
+        </div>
+        <div style="margin-top:12px;">© 2025 Kyle Mathewson — <a href="./index.html">Course Home</a></div>
+      </footer>
+    </div>
+
+    <script>
+      // Cache busting script
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
+
+      // ==========================================
+      // Demo 1: 2D Photon Path Simulation
+      // ==========================================
+      let photon2D;
+      
+      const photon2DSketch = (p) => {
+        let paths = [];
+        let scattering = 0.8;
+        const numPhotons = 50;
+        const sourceX = 50;
+        const detectorX = 550;
+        const sourceY = 200;
+        const detectorY = 200; // Same height as source
+        let detectedCount = 0;
+        let totalCount = 0;
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(600, 400);
+          canvas.parent('photon-2d-demo');
+          p.background(250);
+          initializePaths();
+        };
+        
+        function initializePaths() {
+          paths = [];
+          for (let i = 0; i < numPhotons; i++) {
+            paths.push({
+              points: [{x: sourceX, y: sourceY}],
+              active: true,
+              depth: 0,
+              detected: false
+            });
+          }
+        }
+        
+        p.draw = function() {
+          p.background(250);
+          
+          // Draw tissue boundaries with proper depth
+          p.fill(255, 220, 200, 100);
+          p.noStroke();
+          p.rect(0, 80, p.width, 30); // Scalp ~5mm
+          p.fill(230, 230, 230, 100);
+          p.rect(0, 110, p.width, 20); // Skull ~7mm
+          p.fill(255, 200, 200, 100);
+          p.rect(0, 130, p.width, 220); // Brain tissue
+          
+          p.fill(100);
+          p.textSize(12);
+          p.text('Scalp (~5mm)', 10, 75);
+          p.text('Skull (~7mm)', 10, 105);
+          p.text('Brain Cortex', 10, 145);
+          
+          // Draw source and detector
+          p.fill(220, 50, 50);
+          p.circle(sourceX, sourceY, 20);
+          p.fill(50, 50, 220);
+          p.circle(detectorX, sourceY, 20);
+          
+          // Stats
+          p.fill(0);
+          p.textSize(11);
+          p.text(`Detected: ${detectedCount}/${totalCount}`, 400, 30);
+          
+          // Update and draw photon paths
+          for (let path of paths) {
+            if (path.active) {
+              let lastPoint = path.points[path.points.length - 1];
+              
+              // Calculate direction bias toward detector
+              let toDetectorAngle = p.atan2(detectorY - lastPoint.y, detectorX - lastPoint.x);
+              
+              // Scattering with forward bias (more realistic for NIR photons)
+              let randomAngle = p.random(-p.PI/2, p.PI/2) * scattering;
+              let angle = toDetectorAngle + randomAngle;
+              
+              let stepSize = 8;
+              let newX = lastPoint.x + p.cos(angle) * stepSize;
+              let newY = lastPoint.y + p.sin(angle) * stepSize;
+              
+              // Reflect at boundaries
+              if (newY < 80) {
+                newY = 80 + (80 - newY);
+              }
+              if (newY > 350) {
+                newY = 350 - (newY - 350);
+              }
+              
+              path.points.push({x: newX, y: newY});
+              path.depth++;
+              
+              // Check if reached detector
+              if (p.dist(newX, newY, detectorX, sourceY) < 30) {
+                path.active = false;
+                path.detected = true;
+                detectedCount++;
+              }
+              
+              // Photon lost/absorbed
+              if (newX > p.width || newX < 0 || path.depth > 120) {
+                path.active = false;
+                if (!path.detected) totalCount++;
+              }
+            }
+            
+            // Draw path
+            p.noFill();
+            if (path.detected) {
+              p.stroke(50, 220, 50, 150); // Detected photons in green
+              p.strokeWeight(1.5);
+            } else if (!path.active) {
+              p.stroke(200, 100, 100, 40); // Lost photons in faint red
+              p.strokeWeight(0.5);
+            } else {
+              p.stroke(200, 150, 100, 100); // Active photons
+              p.strokeWeight(1);
+            }
+            
+            p.beginShape();
+            for (let point of path.points) {
+              p.vertex(point.x, point.y);
+            }
+            p.endShape();
+          }
+          
+          // If all paths done, reinitialize after a delay
+          if (paths.every(path => !path.active)) {
+            if (p.frameCount % 60 === 0) {
+              totalCount = detectedCount;
+              detectedCount = 0;
+              initializePaths();
+            }
+          }
+        };
+        
+        window.resetPhoton2D = function() {
+          detectedCount = 0;
+          totalCount = 0;
+          initializePaths();
+        };
+        
+        window.updateScattering2D = function(value) {
+          scattering = value;
+        };
+      };
+      
+      photon2D = new p5(photon2DSketch);
+      
+      // Controls for Demo 1
+      document.getElementById('reset-2d').addEventListener('click', () => {
+        window.resetPhoton2D();
+      });
+      
+      document.getElementById('scattering-2d').addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        document.getElementById('scattering-value-2d').textContent = value.toFixed(1);
+        window.updateScattering2D(value);
+      });
+
+      // ==========================================
+      // Demo 2: Banana Sensitivity Profile
+      // ==========================================
+      let bananaDemo;
+      
+      const bananaSketch = (p) => {
+        let distance = 40; // in mm
+        const pixelsPerMM = 2.5; // scale factor for visualization
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(600, 400);
+          canvas.parent('banana-demo');
+        };
+        
+        p.draw = function() {
+          p.background(240);
+          
+          const surfaceY = 80;
+          
+          // Draw head cross-section with realistic scales
+          // Scalp: ~5mm thick
+          p.fill(255, 220, 200, 200);
+          p.noStroke();
+          p.rect(0, surfaceY, p.width, 5 * pixelsPerMM); 
+          
+          // Skull: ~7mm thick  
+          p.fill(220, 220, 220, 200);
+          p.rect(0, surfaceY + 5 * pixelsPerMM, p.width, 7 * pixelsPerMM);
+          
+          // CSF: ~2mm
+          p.fill(200, 220, 240, 150);
+          p.rect(0, surfaceY + 12 * pixelsPerMM, p.width, 2 * pixelsPerMM);
+          
+          // Gray matter (cortex): 3-4mm
+          p.fill(200, 180, 180, 180);
+          p.rect(0, surfaceY + 14 * pixelsPerMM, p.width, 4 * pixelsPerMM);
+          
+          // White matter (deeper)
+          p.fill(240, 230, 230, 150);
+          p.rect(0, surfaceY + 18 * pixelsPerMM, p.width, 200);
+          
+          // Labels
+          p.fill(0);
+          p.textSize(11);
+          p.text('Scalp (5mm)', 10, surfaceY + 10);
+          p.text('Skull (7mm)', 10, surfaceY + 20);
+          p.text('CSF', 10, surfaceY + 33);
+          p.text('Gray Matter (Cortex)', 10, surfaceY + 45);
+          p.text('White Matter', 10, surfaceY + 60);
+          
+          // Source and detector positions
+          let distancePixels = distance * pixelsPerMM;
+          let sourceX = p.width / 2 - distancePixels / 2;
+          let detectorX = p.width / 2 + distancePixels / 2;
+          
+          // Penetration depth: approximately 0.5 × source-detector separation
+          let maxDepthMM = distance * 0.5;
+          let maxDepthPixels = maxDepthMM * pixelsPerMM;
+          
+          // Draw sensitivity banana shape with multiple layers
+          p.noFill();
+          p.strokeWeight(1);
+          
+          for (let i = 0; i < 15; i++) {
+            let alpha = p.map(i, 0, 15, 255, 30);
+            let depthFraction = p.map(i, 0, 15, 0.3, 1.0);
+            let depth = maxDepthPixels * depthFraction;
+            
+            // Color based on depth
+            if (depth < 12 * pixelsPerMM) {
+              p.stroke(220, 150, 50, alpha * 0.5); // Scalp/skull region - less sensitive
+            } else {
+              p.stroke(220, 50, 50, alpha); // Brain region - more sensitive
+            }
+            
+            p.beginShape();
+            for (let t = 0; t <= 1; t += 0.01) {
+              let x = p.lerp(sourceX, detectorX, t);
+              let y = surfaceY + depth * p.sin(t * p.PI);
+              p.vertex(x, y);
+            }
+            p.endShape();
+          }
+          
+          // Draw source and detector
+          p.fill(220, 50, 50);
+          p.noStroke();
+          p.circle(sourceX, surfaceY, 14);
+          p.fill(255);
+          p.textSize(8);
+          p.textAlign(p.CENTER);
+          p.text('S', sourceX, surfaceY + 3);
+          
+          p.fill(0);
+          p.textSize(10);
+          p.text('Source', sourceX, surfaceY - 12);
+          
+          p.fill(50, 50, 220);
+          p.noStroke();
+          p.circle(detectorX, surfaceY, 14);
+          p.fill(255);
+          p.textSize(8);
+          p.text('D', detectorX, surfaceY + 3);
+          
+          p.fill(0);
+          p.textSize(10);
+          p.text('Detector', detectorX, surfaceY - 12);
+          
+          // Measurement info
+          p.textAlign(p.LEFT);
+          p.fill(0);
+          p.textSize(12);
+          p.text(`Source-Detector: ${distance}mm`, 20, 370);
+          p.text(`Max Penetration: ~${maxDepthMM.toFixed(1)}mm`, 20, 385);
+          
+          // Depth ruler on side
+          p.stroke(100);
+          p.strokeWeight(1);
+          p.line(p.width - 30, surfaceY, p.width - 30, surfaceY + maxDepthPixels);
+          p.line(p.width - 35, surfaceY + maxDepthPixels, p.width - 25, surfaceY + maxDepthPixels);
+          p.fill(100);
+          p.textSize(10);
+          p.textAlign(p.RIGHT);
+          p.text(`${maxDepthMM.toFixed(0)}mm`, p.width - 38, surfaceY + maxDepthPixels + 4);
+        };
+        
+        window.updateDistance = function(value) {
+          distance = value;
+        };
+      };
+      
+      bananaDemo = new p5(bananaSketch);
+      
+      // Controls for Demo 2
+      document.getElementById('source-detector-distance').addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        document.getElementById('distance-value').textContent = value + 'mm';
+        window.updateDistance(value);
+      });
+
+      // ==========================================
+      // Demo 3: Multi-Channel Array with Multiplexing
+      // ==========================================
+      let arrayDemo;
+      
+      const arraySketch = (p) => {
+        let numChannels = 4;
+        let activation = false;
+        let activationX = 300;
+        let activationY = 180;
+        let showAllPairs = true;
+        let currentSource = 0;
+        const pixelsPerMM = 2;
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(600, 400);
+          canvas.parent('array-demo');
+        };
+        
+        p.draw = function() {
+          p.background(240);
+          
+          const surfaceY = 80;
+          
+          // Draw tissue layers with proper depth
+          p.fill(255, 220, 200, 100);
+          p.noStroke();
+          p.rect(0, surfaceY, p.width, 5 * pixelsPerMM); // Scalp
+          p.fill(220, 220, 220, 100);
+          p.rect(0, surfaceY + 5 * pixelsPerMM, p.width, 7 * pixelsPerMM); // Skull
+          p.fill(255, 200, 200, 100);
+          p.rect(0, surfaceY + 12 * pixelsPerMM, p.width, 300); // Brain
+          
+          // Calculate optode positions
+          let spacing = p.width / (numChannels + 1);
+          let sources = [];
+          let detectors = [];
+          
+          for (let i = 0; i < numChannels; i++) {
+            let x = spacing * (i + 1);
+            sources.push({x: x - 15, y: surfaceY});
+            detectors.push({x: x + 15, y: surfaceY});
+          }
+          
+          // Draw ALL source-detector pairs (shows cross-talk)
+          let allPairs = [];
+          for (let s = 0; s < sources.length; s++) {
+            for (let d = 0; d < detectors.length; d++) {
+              let src = sources[s];
+              let det = detectors[d];
+              let separation = p.abs(det.x - src.x);
+              
+              // Only include pairs with reasonable separation
+              if (separation > 20 && separation < 300) {
+                allPairs.push({
+                  sourceIdx: s,
+                  detectorIdx: d,
+                  sourceX: src.x,
+                  detectorX: det.x,
+                  separation: separation
+                });
+              }
+            }
+          }
+          
+          // Draw banana shapes for each pair
+          for (let pair of allPairs) {
+            // Skip if multiplexing mode and not current source
+            if (!showAllPairs && pair.sourceIdx !== currentSource) continue;
+            
+            let separationMM = pair.separation / pixelsPerMM;
+            let maxDepthMM = separationMM * 0.5;
+            let maxDepthPixels = maxDepthMM * pixelsPerMM;
+            
+            // Calculate if this pair detects the activation
+            let midX = (pair.sourceX + pair.detectorX) / 2;
+            let peakY = surfaceY + maxDepthPixels;
+            
+            let distToActivation = activation ? p.dist(midX, peakY * 0.7, activationX, activationY) : 999;
+            let detectsActivation = distToActivation < maxDepthPixels * 0.6;
+            
+            // Draw banana with appropriate color
+            p.noFill();
+            let baseAlpha = showAllPairs ? 80 : 150;
+            
+            if (activation && detectsActivation) {
+              // Strong signal - red
+              let intensity = p.map(distToActivation, 0, maxDepthPixels * 0.6, 255, 100);
+              p.stroke(220, 50, 50, p.constrain(intensity, baseAlpha, 255));
+              p.strokeWeight(showAllPairs ? 1.5 : 2.5);
+            } else {
+              // Baseline - faint gray
+              p.stroke(150, 150, 150, showAllPairs ? 40 : 80);
+              p.strokeWeight(showAllPairs ? 0.5 : 1.5);
+            }
+            
+            // Draw banana curve
+            p.beginShape();
+            for (let t = 0; t <= 1; t += 0.02) {
+              let x = p.lerp(pair.sourceX, pair.detectorX, t);
+              let y = surfaceY + maxDepthPixels * p.sin(t * p.PI);
+              p.vertex(x, y);
+            }
+            p.endShape();
+            
+            // Label short, medium, long distances
+            if (showAllPairs && pair.sourceIdx === 0 && pair.detectorIdx === 0) {
+              p.fill(100);
+              p.textSize(9);
+              p.textAlign(p.CENTER);
+              let labelY = surfaceY + maxDepthPixels * 0.5;
+              if (separationMM < 40) p.text('Near', midX, labelY);
+              else if (separationMM < 100) p.text('Mid', midX, labelY);
+              else p.text('Far', midX, labelY);
+            }
+          }
+          
+          // Draw activation spot if enabled
+          if (activation) {
+            p.fill(255, 100, 100, 180);
+            p.noStroke();
+            p.circle(activationX, activationY, 30);
+            p.fill(255, 150, 150, 80);
+            p.circle(activationX, activationY, 60);
+          }
+          
+          // Draw optodes on top
+          for (let i = 0; i < sources.length; i++) {
+            let isActive = showAllPairs || i === currentSource;
+            
+            // Sources (LEDs)
+            p.fill(isActive ? p.color(220, 50, 50) : p.color(150, 150, 150));
+            p.noStroke();
+            p.circle(sources[i].x, sources[i].y, 12);
+            p.fill(255);
+            p.textSize(8);
+            p.textAlign(p.CENTER);
+            p.text('S', sources[i].x, sources[i].y + 3);
+            
+            // Detectors (Photodiodes)
+            p.fill(50, 50, 220);
+            p.circle(detectors[i].x, detectors[i].y, 12);
+            p.fill(255);
+            p.text('D', detectors[i].x, detectors[i].y + 3);
+          }
+          
+          // Legend and info
+          p.textAlign(p.LEFT);
+          p.fill(0);
+          p.textSize(11);
+          p.text(`${allPairs.length} source-detector pairs`, 10, 30);
+          p.text(showAllPairs ? 'Mode: All pairs (frequency multiplexing)' : `Mode: Time-division (Source ${currentSource + 1})`, 10, 45);
+          
+          p.fill(220, 50, 50);
+          p.circle(10, 360, 8);
+          p.fill(0);
+          p.text('Source (LED)', 22, 365);
+          
+          p.fill(50, 50, 220);
+          p.circle(110, 360, 8);
+          p.fill(0);
+          p.text('Detector', 122, 365);
+          
+          if (activation) {
+            p.fill(255, 100, 100);
+            p.circle(200, 360, 8);
+            p.fill(0);
+            p.text('Brain Activation', 212, 365);
+          }
+          
+          // Auto-cycle sources in time-division mode
+          if (!showAllPairs && p.frameCount % 30 === 0) {
+            currentSource = (currentSource + 1) % numChannels;
+          }
+        };
+        
+        p.mousePressed = function() {
+          if (p.mouseY > 100 && p.mouseY < 300 && p.mouseX > 0 && p.mouseX < p.width) {
+            activationX = p.mouseX;
+            activationY = p.mouseY;
+            activation = true;
+          }
+        };
+        
+        window.toggleArrayActivation = function() {
+          activation = !activation;
+          if (activation && activationX === 0) {
+            activationX = 300;
+            activationY = 180;
+          }
+        };
+        
+        window.toggleMultiplexing = function() {
+          showAllPairs = !showAllPairs;
+        };
+        
+        window.updateChannels = function(value) {
+          numChannels = value;
+        };
+      };
+      
+      arrayDemo = new p5(arraySketch);
+      
+      // Controls for Demo 3
+      document.getElementById('toggle-activation').addEventListener('click', () => {
+        window.toggleArrayActivation();
+      });
+      
+      document.getElementById('toggle-multiplex').addEventListener('click', () => {
+        window.toggleMultiplexing();
+      });
+      
+      document.getElementById('channels').addEventListener('input', (e) => {
+        const value = parseInt(e.target.value);
+        document.getElementById('channels-value').textContent = value;
+        window.updateChannels(value);
+      });
+
+      // ==========================================
+      // MRI Demo 1: B0 Field Spin Alignment
+      // ==========================================
+      let mriB0Demo;
+      
+      const mriB0Sketch = (p) => {
+        let spins = [];
+        let fieldStrength = 0;
+        let fieldOn = false;
+        const numSpins = 80;
+        
+        class Spin {
+          constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.angle = p.random(p.TWO_PI);
+            this.targetAngle = p.random() < 0.5 ? 0 : p.PI; // parallel or anti-parallel
+            this.isParallel = p.random() < 0.5;
+          }
+          
+          update(strength) {
+            if (strength > 0) {
+              // More likely to align parallel (lower energy state)
+              let parallelProbability = 0.5 + strength * 0.0005; // slight excess
+              if (this.isParallel) {
+                this.targetAngle = -p.PI/2; // pointing up
+              } else {
+                this.targetAngle = p.PI/2; // pointing down
+              }
+              this.angle = p.lerp(this.angle, this.targetAngle, 0.05 * strength / 100);
+            } else {
+              // Random thermal motion
+              this.angle += p.random(-0.3, 0.3);
+            }
+          }
+          
+          display() {
+            p.push();
+            p.translate(this.x, this.y);
+            p.rotate(this.angle);
+            
+            // Draw spin as arrow
+            if (fieldStrength > 0) {
+              if (this.isParallel) {
+                p.fill(50, 150, 255); // Blue for parallel
+              } else {
+                p.fill(255, 100, 100); // Red for anti-parallel
+              }
+            } else {
+              p.fill(150);
+            }
+            
+            p.noStroke();
+            p.triangle(-3, 5, 3, 5, 0, -8);
+            p.rect(-1, 0, 2, 5);
+            p.pop();
+          }
+        }
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(600, 400);
+          canvas.parent('mri-b0-demo');
+          
+          // Create grid of spins
+          for (let i = 0; i < numSpins; i++) {
+            let x = 50 + (i % 10) * 55;
+            let y = 80 + Math.floor(i / 10) * 40;
+            spins.push(new Spin(x, y));
+          }
+        };
+        
+        p.draw = function() {
+          p.background(240);
+          
+          // Draw B0 field indicator
+          if (fieldStrength > 0) {
+            p.fill(200, 220, 255, 100);
+            p.noStroke();
+            p.rect(0, 0, p.width, p.height);
+            
+            // Field lines
+            for (let i = 0; i < 5; i++) {
+              let x = 50 + i * 130;
+              p.stroke(100, 150, 255, 150);
+              p.strokeWeight(2);
+              p.line(x, 20, x, p.height - 20);
+              
+              // Arrow heads
+              p.fill(100, 150, 255);
+              p.noStroke();
+              p.triangle(x - 4, 25, x + 4, 25, x, 15);
+            }
+            
+            p.fill(0);
+            p.textSize(14);
+            p.text(`B₀ = ${(fieldStrength * 0.07).toFixed(2)} Tesla`, 10, 30);
+          } else {
+            p.fill(0);
+            p.textSize(14);
+            p.text('B₀ = 0 (No magnetic field)', 10, 30);
+          }
+          
+          // Update and draw spins
+          for (let spin of spins) {
+            spin.update(fieldStrength);
+            spin.display();
+          }
+          
+          // Count parallel vs anti-parallel
+          if (fieldStrength > 0) {
+            let parallelCount = spins.filter(s => s.isParallel).length;
+            let antiParallelCount = spins.length - parallelCount;
+            
+            p.fill(0);
+            p.textSize(12);
+            p.text(`Parallel (↑): ${parallelCount}`, 10, p.height - 40);
+            p.text(`Anti-parallel (↓): ${antiParallelCount}`, 10, p.height - 20);
+            p.text(`Net magnetization: ${parallelCount - antiParallelCount}`, 200, p.height - 30);
+          }
+        };
+        
+        window.toggleB0 = function() {
+          fieldOn = !fieldOn;
+          fieldStrength = fieldOn ? 100 : 0;
+          document.getElementById('field-strength').value = fieldStrength;
+          document.getElementById('field-value').textContent = fieldStrength + '%';
+        };
+        
+        window.setFieldStrength = function(value) {
+          fieldStrength = value;
+          fieldOn = value > 0;
+        };
+      };
+      
+      mriB0Demo = new p5(mriB0Sketch);
+      
+      document.getElementById('toggle-b0').addEventListener('click', () => {
+        window.toggleB0();
+      });
+      
+      document.getElementById('field-strength').addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        document.getElementById('field-value').textContent = value + '%';
+        window.setFieldStrength(value);
+      });
+
+      // ==========================================
+      // MRI Demo 2: RF Pulse and Relaxation
+      // ==========================================
+      let mriRFDemo;
+      
+      const mriRFSketch = (p) => {
+        let magnetization = {x: 0, y: 0, z: 100}; // Start aligned with B0 (z-axis)
+        let targetMag = {x: 0, y: 0, z: 100};
+        let transverseSignal = [];
+        let time = 0;
+        let T1 = 180; // frames
+        let T2 = 60;  // frames
+        const maxSignalPoints = 300;
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(600, 400);
+          canvas.parent('mri-rf-demo');
+        };
+        
+        p.draw = function() {
+          p.background(240);
+          time++;
+          
+          // Draw 3D axes
+          p.push();
+          p.translate(150, 200);
+          
+          // Z-axis (B0 direction) - vertical
+          p.stroke(100, 150, 255);
+          p.strokeWeight(2);
+          p.line(0, 80, 0, -120);
+          p.fill(100, 150, 255);
+          p.noStroke();
+          p.text('B₀ (z)', 10, -125);
+          p.triangle(-5, -120, 5, -120, 0, -130);
+          
+          // X-axis (transverse)
+          p.stroke(200, 100, 100);
+          p.strokeWeight(2);
+          p.line(-100, 0, 100, 0);
+          p.fill(200, 100, 100);
+          p.text('x', 105, 5);
+          
+          // Y-axis (transverse, into page - shown as perspective)
+          p.stroke(100, 200, 100);
+          p.line(0, 0, 50, 40);
+          p.fill(100, 200, 100);
+          p.text('y', 55, 45);
+          
+          // Draw magnetization vector
+          p.stroke(220, 50, 50);
+          p.strokeWeight(4);
+          p.line(0, 0, magnetization.x, -magnetization.z);
+          
+          // Arrow head
+          p.fill(220, 50, 50);
+          p.noStroke();
+          let angle = p.atan2(-magnetization.z, magnetization.x);
+          p.push();
+          p.translate(magnetization.x, -magnetization.z);
+          p.rotate(angle);
+          p.triangle(0, 0, -10, -5, -10, 5);
+          p.pop();
+          
+          p.pop();
+          
+          // Relaxation physics
+          magnetization.z += (targetMag.z - magnetization.z) * (1/T1);
+          magnetization.x += (targetMag.x - magnetization.x) * (1/T2);
+          
+          // Precession in transverse plane
+          if (Math.abs(magnetization.x) > 1) {
+            let precessionSpeed = 0.08;
+            let mag = Math.sqrt(magnetization.x * magnetization.x + magnetization.y * magnetization.y);
+            magnetization.x = mag * Math.cos(time * precessionSpeed);
+            magnetization.y = mag * Math.sin(time * precessionSpeed);
+          }
+          
+          // Record transverse signal
+          transverseSignal.push(Math.sqrt(magnetization.x * magnetization.x + magnetization.y * magnetization.y));
+          if (transverseSignal.length > maxSignalPoints) {
+            transverseSignal.shift();
+          }
+          
+          // Draw signal graph
+          p.push();
+          p.translate(350, 250);
+          
+          p.fill(0);
+          p.noStroke();
+          p.textSize(12);
+          p.text('Detected RF Signal', 0, -80);
+          
+          p.stroke(150);
+          p.strokeWeight(1);
+          p.line(0, 0, 230, 0);
+          p.line(0, -60, 0, 60);
+          p.text('Time →', 100, 15);
+          
+          // Plot signal
+          p.stroke(220, 50, 50);
+          p.strokeWeight(2);
+          p.noFill();
+          p.beginShape();
+          for (let i = 0; i < transverseSignal.length; i++) {
+            let x = (i / maxSignalPoints) * 220;
+            let y = -transverseSignal[i] * 0.5;
+            p.vertex(x, y);
+          }
+          p.endShape();
+          
+          p.pop();
+          
+          // Labels
+          p.fill(0);
+          p.textSize(13);
+          p.text(`Mz (longitudinal): ${magnetization.z.toFixed(0)}`, 10, 30);
+          p.text(`Mxy (transverse): ${Math.sqrt(magnetization.x**2 + magnetization.y**2).toFixed(0)}`, 10, 50);
+          p.text(`T1 recovery rate: ${(1/T1*1000).toFixed(1)} ms⁻¹`, 10, 370);
+          p.text(`T2 decay rate: ${(1/T2*1000).toFixed(1)} ms⁻¹`, 10, 390);
+        };
+        
+        window.fireRFPulse = function(angle) {
+          // Tip magnetization into transverse plane
+          if (angle === 90) {
+            magnetization.x = magnetization.z;
+            magnetization.z = 0;
+            targetMag.z = 100;
+            targetMag.x = 0;
+          } else if (angle === 180) {
+            magnetization.z = -magnetization.z;
+            targetMag.z = 100;
+          }
+          transverseSignal = [];
+          time = 0;
+        };
+      };
+      
+      mriRFDemo = new p5(mriRFSketch);
+      
+      document.getElementById('fire-rf-pulse').addEventListener('click', () => {
+        window.fireRFPulse(90);
+      });
+      
+      document.getElementById('fire-180-pulse').addEventListener('click', () => {
+        window.fireRFPulse(180);
+      });
+
+      // ==========================================
+      // MRI Demo 3: Gradient Field, k-Space & Reconstruction
+      // ==========================================
+      let mriGradientDemo;
+      
+      const mriGradientSketch = (p) => {
+        let gradientStrength = 80;
+        let gradientOn = true;
+        const gridSize = 16;
+        let phantom = []; // Spatial object to image
+        let rfSignal = []; // Collected signal over time
+        let kSpace = []; // Frequency domain
+        let reconstructedImage = []; // Inverse FFT result
+        let isAcquiring = false;
+        let acquisitionTime = 0;
+        let showReconstruction = false;
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(800, 450);
+          canvas.parent('mri-gradient-demo');
+          
+          // Create simple phantom (object to image)
+          // Three regions with different signal intensities
+          for (let i = 0; i < gridSize; i++) {
+            phantom[i] = 0;
+            if (i > 2 && i < 6) phantom[i] = 0.8; // Left bright region
+            if (i > 7 && i < 11) phantom[i] = 0.5; // Middle medium region
+            if (i > 12 && i < 15) phantom[i] = 1.0; // Right very bright region
+          }
+          
+          // Initialize arrays
+          for (let i = 0; i < gridSize; i++) {
+            kSpace[i] = {real: 0, imag: 0};
+            reconstructedImage[i] = 0;
+          }
+        };
+        
+        p.draw = function() {
+          p.background(245);
+          
+          // Layout: Top row shows spins, bottom row shows signal processing
+          
+          // ===== TOP SECTION: Spatial Domain with Gradient =====
+          p.push();
+          p.translate(20, 30);
+          
+          p.fill(0);
+          p.textSize(13);
+          p.textStyle(p.BOLD);
+          p.text('1. Spatial Domain (Object)', 0, -10);
+          
+          // Draw gradient background
+          if (gradientStrength > 0) {
+            for (let i = 0; i < gridSize; i++) {
+              let x = i * 45;
+              let alpha = p.map(i, 0, gridSize, 80, 200);
+              p.fill(100, 150, 255, alpha * 0.5);
+              p.noStroke();
+              p.rect(x, 0, 45, 80);
+            }
+          }
+          
+          // Draw phantom (object being imaged) and spins
+          for (let i = 0; i < gridSize; i++) {
+            let x = i * 45 + 22;
+            
+            // Show object intensity
+            p.fill(255, 100, 100, phantom[i] * 200);
+            p.noStroke();
+            p.rect(i * 45, 0, 45, 80);
+            
+            // Draw spinning magnetization
+            let frequency = 63.87 + (i - gridSize/2) * gradientStrength * 0.0008;
+            let angle = p.frameCount * frequency * 0.003;
+            let spinSize = phantom[i] * 30 + 5; // Size proportional to signal
+            
+            p.push();
+            p.translate(x, 40);
+            p.rotate(angle);
+            p.fill(50, 150, 255);
+            p.noStroke();
+            p.triangle(-3, 6, 3, 6, 0, -spinSize);
+            p.pop();
+            
+            // Frequency label
+            if (i % 4 === 0) {
+              p.fill(0);
+              p.textSize(8);
+              p.textAlign(p.CENTER);
+              p.text(frequency.toFixed(2) + ' MHz', x, 100);
+            }
+          }
+          
+          p.pop();
+          
+          // ===== RF COIL SIGNAL =====
+          p.push();
+          p.translate(20, 150);
+          
+          p.fill(0);
+          p.textSize(13);
+          p.textStyle(p.BOLD);
+          p.text('2. RF Coil Signal (Mixed Frequencies)', 0, -10);
+          
+          p.stroke(150);
+          p.strokeWeight(1);
+          p.line(0, 50, 700, 50);
+          p.line(0, 0, 0, 100);
+          
+          // Compute and display RF signal (sum of all frequencies)
+          if (isAcquiring || showReconstruction) {
+            p.stroke(220, 50, 50);
+            p.strokeWeight(2);
+            p.noFill();
+            p.beginShape();
+            for (let t = 0; t < 350; t++) {
+              let signal = 0;
+              for (let i = 0; i < gridSize; i++) {
+                let frequency = 63.87 + (i - gridSize/2) * gradientStrength * 0.0008;
+                let amplitude = phantom[i];
+                signal += amplitude * Math.cos(frequency * t * 0.05);
+              }
+              let x = t * 2;
+              let y = 50 - signal * 30;
+              p.vertex(x, y);
+            }
+            p.endShape();
+            
+            p.fill(100);
+            p.noStroke();
+            p.textSize(10);
+            p.text('Complex mixed signal contains all spatial information', 10, 110);
+          } else {
+            p.fill(100);
+            p.textSize(11);
+            p.text('Click "Acquire Signal" to measure...', 250, 55);
+          }
+          
+          p.pop();
+          
+          // ===== K-SPACE (Fourier Transform) =====
+          p.push();
+          p.translate(20, 280);
+          
+          p.fill(0);
+          p.textSize(13);
+          p.textStyle(p.BOLD);
+          p.text('3. k-Space (Frequency Domain - FFT of signal)', 0, -10);
+          
+          if (showReconstruction) {
+            // Perform simplified FFT
+            for (let k = 0; k < gridSize; k++) {
+              let real = 0;
+              let imag = 0;
+              for (let n = 0; n < gridSize; n++) {
+                let angle = -2 * Math.PI * k * n / gridSize;
+                real += phantom[n] * Math.cos(angle);
+                imag += phantom[n] * Math.sin(angle);
+              }
+              kSpace[k] = {real: real, imag: imag};
+            }
+            
+            // Draw k-space data
+            for (let k = 0; k < gridSize; k++) {
+              let magnitude = Math.sqrt(kSpace[k].real**2 + kSpace[k].imag**2);
+              let x = k * 45;
+              let h = magnitude * 3;
+              
+              p.fill(100, 200, 255);
+              p.noStroke();
+              p.rect(x, 60 - h, 40, h);
+              
+              p.fill(0);
+              p.textSize(8);
+              p.textAlign(p.CENTER);
+              if (k % 4 === 0) {
+                p.text(k, x + 20, 75);
+              }
+            }
+            
+            p.fill(100);
+            p.textSize(10);
+            p.text('← Low frequencies (coarse structure)', 10, 90);
+            p.text('High frequencies (fine detail) →', 500, 90);
+          } else {
+            p.fill(100);
+            p.textSize(11);
+            p.text('Awaiting acquisition...', 250, 35);
+          }
+          
+          p.pop();
+          
+          // ===== RECONSTRUCTED IMAGE (Inverse FFT) =====
+          p.push();
+          p.translate(20, 390);
+          
+          p.fill(0);
+          p.textSize(13);
+          p.textStyle(p.BOLD);
+          p.text('4. Reconstructed Image (Inverse FFT)', 0, -10);
+          
+          if (showReconstruction) {
+            // Perform inverse FFT
+            for (let n = 0; n < gridSize; n++) {
+              let intensity = 0;
+              for (let k = 0; k < gridSize; k++) {
+                let angle = 2 * Math.PI * k * n / gridSize;
+                intensity += (kSpace[k].real * Math.cos(angle) - kSpace[k].imag * Math.sin(angle)) / gridSize;
+              }
+              reconstructedImage[n] = intensity;
+            }
+            
+            // Draw reconstructed image
+            for (let i = 0; i < gridSize; i++) {
+              let x = i * 45;
+              let intensity = Math.abs(reconstructedImage[i]);
+              
+              p.fill(intensity * 200);
+              p.noStroke();
+              p.rect(x, 0, 45, 40);
+              
+              // Outline
+              p.noFill();
+              p.stroke(100);
+              p.strokeWeight(1);
+              p.rect(x, 0, 45, 40);
+            }
+            
+            p.fill(0);
+            p.textSize(10);
+            p.text('← Recovered spatial information matches original phantom! →', 180, 55);
+          } else {
+            p.fill(100);
+            p.textSize(11);
+            p.text('Awaiting reconstruction...', 250, 20);
+          }
+          
+          p.pop();
+          
+          // Acquisition animation
+          if (isAcquiring) {
+            acquisitionTime++;
+            if (acquisitionTime > 60) {
+              isAcquiring = false;
+              showReconstruction = true;
+              acquisitionTime = 0;
+            }
+          }
+        };
+        
+        window.toggleGradient = function() {
+          gradientOn = !gradientOn;
+          gradientStrength = gradientOn ? 80 : 0;
+          document.getElementById('gradient-strength').value = gradientStrength;
+          document.getElementById('gradient-value').textContent = gradientStrength + '%';
+        };
+        
+        window.setGradientStrength = function(value) {
+          gradientStrength = value;
+          gradientOn = value > 0;
+        };
+        
+        window.acquireSignal = function() {
+          isAcquiring = true;
+          showReconstruction = false;
+        };
+        
+        window.resetAcquisition = function() {
+          isAcquiring = false;
+          showReconstruction = false;
+          acquisitionTime = 0;
+        };
+      };
+      
+      mriGradientDemo = new p5(mriGradientSketch);
+      
+      document.getElementById('toggle-gradient').addEventListener('click', () => {
+        window.toggleGradient();
+      });
+      
+      document.getElementById('gradient-strength').addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        document.getElementById('gradient-value').textContent = value + '%';
+        window.setGradientStrength(value);
+      });
+      
+      document.getElementById('acquire-signal').addEventListener('click', () => {
+        window.acquireSignal();
+      });
+      
+      document.getElementById('reset-acquisition').addEventListener('click', () => {
+        window.resetAcquisition();
+      });
+
+      // ==========================================
+      // MRI Demo 3b: Slice Selection & 3D Volume
+      // ==========================================
+      let mriSliceDemo;
+      
+      const mriSliceSketch = (p) => {
+        let sliceThickness = 8;
+        let numSlices = 12;
+        let acquiredSlices = [];
+        let currentSlice = -1;
+        let isAcquiring = false;
+        let acquisitionDelay = 0;
+        let brain3D = []; // 3D phantom data
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(800, 400);
+          canvas.parent('mri-slice-demo');
+          
+          // Create 3D brain phantom with structure
+          for (let z = 0; z < numSlices; z++) {
+            brain3D[z] = [];
+            for (let y = 0; y < 16; y++) {
+              brain3D[z][y] = [];
+              for (let x = 0; x < 16; x++) {
+                // Create brain-like structure
+                let centerX = 8;
+                let centerY = 8;
+                let dist = p.dist(x, y, centerX, centerY);
+                
+                // Outer skull
+                if (dist > 6.5 && dist < 7.5) {
+                  brain3D[z][y][x] = 0.3;
+                }
+                // Brain tissue
+                else if (dist < 6.5) {
+                  brain3D[z][y][x] = 0.8 + p.noise(x * 0.3, y * 0.3, z * 0.3) * 0.2;
+                  
+                  // Add some internal structures
+                  if (Math.abs(x - centerX) < 2 && Math.abs(y - centerY) < 2) {
+                    brain3D[z][y][x] = 0.5; // Ventricles
+                  }
+                  if (z > 4 && z < 8 && y < 6) {
+                    brain3D[z][y][x] *= 1.1; // Cortex
+                  }
+                }
+                else {
+                  brain3D[z][y][x] = 0; // Air/background
+                }
+              }
+            }
+          }
+          
+          // Initialize acquired slices array
+          for (let i = 0; i < numSlices; i++) {
+            acquiredSlices[i] = null;
+          }
+        };
+        
+        p.draw = function() {
+          p.background(245);
+          
+          // ===== LEFT: 3D View with slice plane =====
+          p.push();
+          p.translate(100, 200);
+          
+          p.fill(0);
+          p.textSize(14);
+          p.textStyle(p.BOLD);
+          p.text('3D Object (Brain)', -80, -150);
+          
+          // Draw 3D brain volume (perspective view)
+          let sliceSpacing = 12;
+          
+          // Draw all slices in 3D
+          for (let z = 0; z < numSlices; z++) {
+            let offsetZ = z * sliceSpacing;
+            let offsetX = z * 3; // Perspective
+            let isCurrentSlice = (z === currentSlice);
+            
+            // Draw slice outline
+            p.push();
+            p.translate(offsetX, -offsetZ);
+            
+            if (isCurrentSlice) {
+              // Highlight current slice being acquired
+              p.fill(255, 200, 0, 150);
+              p.stroke(255, 200, 0);
+              p.strokeWeight(3);
+              p.rect(-60, -60, 120, 120);
+              
+              // "RF pulse" indicator
+              p.fill(255, 200, 0);
+              p.noStroke();
+              p.textSize(10);
+              p.textAlign(p.CENTER);
+              p.text('RF PULSE', 0, 80);
+            } else if (acquiredSlices[z]) {
+              // Show acquired slice
+              p.noStroke();
+              p.fill(100, 200, 255, 100);
+              p.rect(-60, -60, 120, 120);
+            } else {
+              // Not yet acquired
+              p.noFill();
+              p.stroke(150, 150, 150, 100);
+              p.strokeWeight(1);
+              p.rect(-60, -60, 120, 120);
+            }
+            p.pop();
+          }
+          
+          // Labels
+          p.fill(0);
+          p.noStroke();
+          p.textSize(11);
+          p.textAlign(p.LEFT);
+          p.text('← Head', -90, 0);
+          p.text('Feet →', 30, -numSlices * sliceSpacing - 10);
+          
+          if (isAcquiring) {
+            p.fill(255, 150, 0);
+            p.textSize(12);
+            p.text(`Acquiring slice ${currentSlice + 1}/${numSlices}`, -80, 80);
+          }
+          
+          p.pop();
+          
+          // ===== MIDDLE: Current slice being acquired =====
+          p.push();
+          p.translate(350, 80);
+          
+          p.fill(0);
+          p.textSize(14);
+          p.textStyle(p.BOLD);
+          p.text('Current Slice', 0, -20);
+          
+          if (currentSlice >= 0 && currentSlice < numSlices) {
+            // Draw the current slice image
+            let cellSize = 15;
+            for (let y = 0; y < 16; y++) {
+              for (let x = 0; x < 16; x++) {
+                let intensity = brain3D[currentSlice][y][x];
+                p.fill(intensity * 255);
+                p.noStroke();
+                p.rect(x * cellSize, y * cellSize, cellSize, cellSize);
+              }
+            }
+            
+            // Border
+            p.noFill();
+            p.stroke(255, 200, 0);
+            p.strokeWeight(3);
+            p.rect(0, 0, 16 * cellSize, 16 * cellSize);
+            
+            p.fill(0);
+            p.noStroke();
+            p.textSize(11);
+            p.textAlign(p.CENTER);
+            p.text(`Slice ${currentSlice + 1} (z = ${currentSlice * sliceThickness}mm)`, 120, 270);
+          } else {
+            p.fill(100);
+            p.textSize(12);
+            p.text('Click "Start Slice Acquisition"', 20, 120);
+          }
+          
+          p.pop();
+          
+          // ===== RIGHT: Reconstructed 3D Volume =====
+          p.push();
+          p.translate(620, 80);
+          
+          p.fill(0);
+          p.textSize(14);
+          p.textStyle(p.BOLD);
+          p.text('3D Volume', 0, -20);
+          
+          // Show stacked acquired slices
+          let numAcquired = acquiredSlices.filter(s => s !== null).length;
+          
+          if (numAcquired > 0) {
+            // Draw mini 3D view of acquired slices
+            let miniSize = 8;
+            let zSpacing = 3;
+            
+            for (let z = 0; z < numSlices; z++) {
+              if (acquiredSlices[z]) {
+                p.push();
+                p.translate(z * 1.5, -z * zSpacing);
+                
+                for (let y = 0; y < 16; y++) {
+                  for (let x = 0; x < 16; x++) {
+                    let intensity = brain3D[z][y][x];
+                    if (intensity > 0.2) {
+                      p.fill(intensity * 200, intensity * 200, intensity * 255);
+                      p.noStroke();
+                      p.rect(x * miniSize, y * miniSize, miniSize, miniSize);
+                    }
+                  }
+                }
+                p.pop();
+              }
+            }
+            
+            p.fill(0);
+            p.noStroke();
+            p.textSize(11);
+            p.text(`${numAcquired}/${numSlices} slices`, 20, 150);
+            
+            if (numAcquired === numSlices) {
+              p.fill(50, 200, 50);
+              p.textSize(13);
+              p.textStyle(p.BOLD);
+              p.text('✓ Complete!', 20, 170);
+            }
+          } else {
+            p.fill(100);
+            p.textSize(12);
+            p.text('No slices acquired yet', 10, 120);
+          }
+          
+          p.pop();
+          
+          // Acquisition logic
+          if (isAcquiring) {
+            acquisitionDelay++;
+            if (acquisitionDelay > 30) { // Delay between slices
+              acquiredSlices[currentSlice] = true;
+              currentSlice++;
+              acquisitionDelay = 0;
+              
+              if (currentSlice >= numSlices) {
+                isAcquiring = false;
+                currentSlice = -1;
+              }
+            }
+          }
+        };
+        
+        window.startSliceAcquisition = function() {
+          isAcquiring = true;
+          currentSlice = 0;
+          acquisitionDelay = 0;
+        };
+        
+        window.resetSliceAcquisition = function() {
+          isAcquiring = false;
+          currentSlice = -1;
+          acquisitionDelay = 0;
+          for (let i = 0; i < numSlices; i++) {
+            acquiredSlices[i] = null;
+          }
+        };
+        
+        window.setSliceThickness = function(value) {
+          sliceThickness = value;
+          // Adjust number of slices based on thickness
+          let totalHeight = 120; // mm
+          numSlices = Math.floor(totalHeight / sliceThickness);
+          
+          // Reinitialize arrays
+          acquiredSlices = [];
+          for (let i = 0; i < numSlices; i++) {
+            acquiredSlices[i] = null;
+          }
+        };
+      };
+      
+      mriSliceDemo = new p5(mriSliceSketch);
+      
+      document.getElementById('acquire-slices').addEventListener('click', () => {
+        window.startSliceAcquisition();
+      });
+      
+      document.getElementById('reset-slices').addEventListener('click', () => {
+        window.resetSliceAcquisition();
+      });
+      
+      document.getElementById('slice-thickness').addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        document.getElementById('thickness-value').textContent = value + 'mm';
+        window.setSliceThickness(value);
+      });
+
+      // ==========================================
+      // MRI Demo 4: BOLD Signal
+      // ==========================================
+      let mriBOLDDemo;
+      
+      const mriBOLDSketch = (p) => {
+        let activationLevel = 0;
+        let time = 0;
+        let neuralActivity = 0;
+        let oxyHb = 70; // percentage
+        let deoxyHb = 30;
+        let bloodFlow = 50;
+        let boldSignal = [];
+        const maxPoints = 400;
+        let stimulusTime = -100;
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(600, 400);
+          canvas.parent('mri-bold-demo');
+          
+          // Initialize baseline
+          for (let i = 0; i < 50; i++) {
+            boldSignal.push(0);
+          }
+        };
+        
+        p.draw = function() {
+          p.background(240);
+          time++;
+          
+          // Neural activity decays quickly
+          if (neuralActivity > 0) {
+            neuralActivity *= 0.95;
+          }
+          
+          // Hemodynamic response (slow)
+          let timeSinceStimulus = time - stimulusTime;
+          if (timeSinceStimulus > 0 && timeSinceStimulus < 300) {
+            // BOLD response curve
+            let t = timeSinceStimulus / 30.0; // scale to seconds
+            
+            // Initial dip (0-1s)
+            let initialDip = 0;
+            if (t < 1) {
+              initialDip = -2 * t;
+            }
+            
+            // Peak response (4-6s) - Gamma function
+            let peak = 0;
+            if (t > 1) {
+              peak = 5 * Math.pow(t - 1, 2) * Math.exp(-(t - 1) / 2);
+            }
+            
+            // Undershoot (after 12s)
+            let undershoot = 0;
+            if (t > 12) {
+              undershoot = -1.5 * Math.exp(-(t - 12) / 3);
+            }
+            
+            let response = initialDip + peak + undershoot;
+            oxyHb = 70 + response * (activationLevel / 100) * 3;
+            deoxyHb = 30 - response * (activationLevel / 100) * 3;
+            bloodFlow = 50 + response * (activationLevel / 100) * 2;
+          } else {
+            // Return to baseline
+            oxyHb += (70 - oxyHb) * 0.02;
+            deoxyHb += (30 - deoxyHb) * 0.02;
+            bloodFlow += (50 - bloodFlow) * 0.02;
+          }
+          
+          // BOLD signal proportional to oxy/deoxy ratio
+          let signal = (oxyHb - 70) / 10; // normalized
+          boldSignal.push(signal);
+          if (boldSignal.length > maxPoints) {
+            boldSignal.shift();
+          }
+          
+          // Draw hemoglobin visualization
+          p.push();
+          p.translate(100, 100);
+          
+          p.fill(0);
+          p.textSize(13);
+          p.text('Blood Vessel', 0, -20);
+          
+          // Vessel
+          p.fill(220, 180, 180);
+          p.rect(0, 0, 200, 80);
+          
+          // Oxy hemoglobin (red)
+          let oxyCount = Math.floor(oxyHb / 5);
+          for (let i = 0; i < oxyCount; i++) {
+            p.fill(220, 50, 50);
+            p.circle(10 + (i % 10) * 18, 15 + Math.floor(i / 10) * 18, 14);
+          }
+          
+          // Deoxy hemoglobin (blue)
+          let deoxyCount = Math.floor(deoxyHb / 5);
+          for (let i = 0; i < deoxyCount; i++) {
+            p.fill(50, 50, 150);
+            p.circle(10 + ((i + oxyCount) % 10) * 18, 15 + Math.floor((i + oxyCount) / 10) * 18, 14);
+          }
+          
+          p.pop();
+          
+          // Legend
+          p.fill(220, 50, 50);
+          p.circle(320, 100, 12);
+          p.fill(0);
+          p.text(`Oxy-Hb: ${oxyHb.toFixed(0)}%`, 340, 105);
+          
+          p.fill(50, 50, 150);
+          p.circle(320, 125, 12);
+          p.fill(0);
+          p.text(`Deoxy-Hb: ${deoxyHb.toFixed(0)}%`, 340, 130);
+          
+          p.text(`Blood Flow: ${bloodFlow.toFixed(0)}%`, 320, 155);
+          
+          // Draw BOLD signal graph
+          p.push();
+          p.translate(50, 250);
+          
+          p.fill(0);
+          p.textSize(13);
+          p.text('BOLD Signal (% change)', 0, -20);
+          
+          // Axes
+          p.stroke(100);
+          p.strokeWeight(1);
+          p.line(0, 0, 500, 0);
+          p.line(0, -60, 0, 60);
+          
+          // Time labels
+          p.fill(0);
+          p.textSize(10);
+          p.text('Time (s)', 450, 15);
+          for (let i = 0; i <= 20; i += 5) {
+            let x = i * 20;
+            p.text(i, x - 5, 15);
+            p.stroke(200);
+            p.line(x, -60, x, 60);
+          }
+          
+          // Zero line
+          p.stroke(150);
+          p.line(0, 0, 500, 0);
+          
+          // Stimulus marker
+          if (stimulusTime > 0) {
+            let stimX = (time - stimulusTime) * 1.25;
+            if (stimX < 500) {
+              p.stroke(255, 200, 0);
+              p.strokeWeight(2);
+              p.line(stimX, -65, stimX, 65);
+              p.fill(255, 200, 0);
+              p.noStroke();
+              p.text('Stimulus', stimX + 5, -50);
+            }
+          }
+          
+          // Plot BOLD signal
+          p.stroke(220, 50, 50);
+          p.strokeWeight(2);
+          p.noFill();
+          p.beginShape();
+          for (let i = 0; i < boldSignal.length; i++) {
+            let x = i * 1.25;
+            let y = -boldSignal[i] * 10;
+            p.vertex(x, y);
+          }
+          p.endShape();
+          
+          // Phase labels
+          if (stimulusTime > 0) {
+            let t = (time - stimulusTime) / 30;
+            p.fill(100);
+            p.textSize(9);
+            if (t < 2) p.text('Initial dip', 50, -50);
+            else if (t < 8) p.text('Peak response', 150, -50);
+            else if (t < 14) p.text('Return', 250, -50);
+            else p.text('Undershoot', 300, -50);
+          }
+          
+          p.pop();
+        };
+        
+        window.activateNeurons = function() {
+          neuralActivity = 100;
+          stimulusTime = time;
+          boldSignal = [];
+          for (let i = 0; i < 50; i++) {
+            boldSignal.push(0);
+          }
+        };
+        
+        window.setActivationLevel = function(value) {
+          activationLevel = value;
+        };
+      };
+      
+      mriBOLDDemo = new p5(mriBOLDSketch);
+      
+      document.getElementById('activate-neuron').addEventListener('click', () => {
+        window.activateNeurons();
+      });
+      
+      document.getElementById('activation-level').addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        document.getElementById('activation-value').textContent = value + '%';
+        window.setActivationLevel(value);
+      });
+    </script>
+  </body>
+</html>
+

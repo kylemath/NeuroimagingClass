@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interactive MRI/fMRI Viewer</title>
+    <meta name="description" content="Interactive browser-based viewer for exploring structural MRI and functional fMRI data">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Papaya - Reliable NIfTI viewer -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rii-mango/Papaya@master/release/current/standard/papaya.css">
+    <script src="https://cdn.jsdelivr.net/gh/rii-mango/Papaya@master/release/current/standard/papaya.js"></script>
+    
+    <style>
+      :root {
+        --bg: #f8f4f8;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --maxw: 1200px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 50%, #ebf2f0 100%);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      h1 {
+        font-family: Spectral, Georgia, serif;
+        font-size: clamp(24px, 4vw, 36px);
+        color: var(--text);
+        margin: 0;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 13px;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .tag:hover {
+        background: linear-gradient(45deg, rgba(214,51,132,0.25), rgba(32,201,151,0.25));
+      }
+
+      .viewer-container {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+      }
+
+      .papaya {
+        width: 100%;
+        height: 600px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      
+      .papaya canvas {
+        border-radius: 8px;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 16px 0;
+        padding: 16px;
+        background: rgba(32,201,151,0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(32,201,151,0.2);
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 200px;
+      }
+
+      label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      select, input[type="file"] {
+        padding: 8px 12px;
+        border: 2px solid rgba(214,51,132,0.3);
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        background: white;
+      }
+
+      button {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+        transition: transform 0.2s;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+      }
+
+      button:active {
+        transform: scale(0.95);
+      }
+
+      button.secondary {
+        background: linear-gradient(135deg, #6b5a6b, #8b7a8b);
+      }
+
+      .info-panel {
+        background: linear-gradient(135deg, rgba(32,201,151,0.1), rgba(214,51,132,0.05));
+        border: 1px solid rgba(32,201,151,0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .info-panel h2 {
+        font-family: Spectral, serif;
+        font-size: 22px;
+        margin-bottom: 12px;
+        color: var(--accent);
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .info-card {
+        background: white;
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 4px solid var(--accent-2);
+      }
+
+      .info-card h3 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+
+      .info-card p {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 4px 0;
+      }
+
+      .dataset-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+
+      .dataset-card {
+        background: white;
+        border: 2px solid rgba(214,51,132,0.2);
+        border-radius: 10px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .dataset-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(214,51,132,0.2);
+      }
+
+      .dataset-card.selected {
+        border-color: var(--accent);
+        background: linear-gradient(135deg, rgba(214,51,132,0.05), rgba(32,201,151,0.05));
+      }
+
+      .dataset-card h3 {
+        font-size: 16px;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+
+      .dataset-card p {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 4px 0;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      #imageInfo {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        background: #2d1b2d;
+        color: #f8f4f8;
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 12px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      @media (max-width: 768px) {
+        .controls {
+          flex-direction: column;
+        }
+        
+        .control-group {
+          width: 100%;
+        }
+      }
+
+      .warning {
+        background: rgba(245,158,11,0.1);
+        border: 1px solid rgba(245,158,11,0.4);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 12px 0;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🧠 Interactive MRI/fMRI Viewer</h1>
+        <div>
+          <a href="./index.html" class="tag">← Course Home</a>
+          <a href="./lecture5.html" class="tag">Lecture 5</a>
+        </div>
+      </header>
+
+      <div class="info-panel">
+        <h2>Explore Real Neuroimaging Data</h2>
+        <p>This interactive viewer allows you to explore actual MRI and fMRI brain data directly in your browser. Use the mouse to navigate through slices, and try loading different datasets to see how various imaging modalities reveal different aspects of brain structure and function.</p>
+        
+        <div class="warning">
+          <strong>⚠️ Note:</strong> This viewer loads actual neuroimaging data files (NIfTI format). Some files may be large and take time to download. All processing happens in your browser using WebGL.
+        </div>
+      </div>
+
+      <div class="viewer-container">
+        <h2 style="margin-bottom:16px;font-family:Spectral,serif;">MRI Viewer</h2>
+        
+        <div class="controls">
+          <div class="control-group">
+            <label for="viewMode">View Mode:</label>
+            <select id="viewMode">
+              <option value="multi">Multi-Slice (Axial, Sagittal, Coronal)</option>
+              <option value="3d">3D Render</option>
+              <option value="mosaic">Mosaic View</option>
+            </select>
+          </div>
+          
+          <div class="control-group">
+            <label for="colormap">Color Map:</label>
+            <select id="colormap">
+              <option value="gray">Grayscale</option>
+              <option value="red">Red (for overlays)</option>
+              <option value="hot">Hot</option>
+              <option value="winter">Winter</option>
+              <option value="plasma">Plasma</option>
+            </select>
+          </div>
+          
+          <button id="resetView">Reset View</button>
+          <button class="secondary" id="toggleOverlay" disabled>Toggle fMRI Overlay</button>
+        </div>
+
+        <!-- Papaya viewer container -->
+        <div class="papaya" id="papayaContainer"></div>
+        
+        <div id="imageInfo" style="margin-top:16px;padding:12px;background:#fff3cd;border:1px solid #ffc107;border-radius:6px;font-size:13px;">
+          <strong>👇 Getting Started:</strong><br>
+          1. Download a sample brain image: <a href="https://github.com/rii-mango/Papaya/raw/master/tests/data/test.nii.gz" download style="color:#d63384;font-weight:600;">test.nii.gz</a> (~500KB)<br>
+          2. Upload it using the "Structural MRI" upload button below<br>
+          3. Or use the Live Server / deploy this page to access online datasets
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <h2>Load Your Own Data</h2>
+        <p>Upload your own NIfTI (.nii or .nii.gz) files to explore:</p>
+        
+        <div class="controls">
+          <div class="control-group">
+            <label for="uploadStructural">Structural MRI (MPRAGE/T1):</label>
+            <input type="file" id="uploadStructural" accept=".nii,.nii.gz">
+          </div>
+          
+          <div class="control-group">
+            <label for="uploadFunctional">Functional MRI (optional overlay):</label>
+            <input type="file" id="uploadFunctional" accept=".nii,.nii.gz">
+          </div>
+          
+          <button id="clearData">Clear All</button>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <h2>Sample Datasets</h2>
+        <p>Click on a dataset below to load it (requires internet connection):</p>
+        
+        <div class="dataset-list">
+          <div class="dataset-card selected" data-url="https://niivue.github.io/niivue/images/mni152.nii.gz">
+            <h3>MNI152 Template Brain (Default)</h3>
+            <p><strong>Type:</strong> T1-weighted structural MRI</p>
+            <p><strong>Resolution:</strong> 1mm isotropic</p>
+            <p><strong>Description:</strong> Standard brain template averaged from 152 subjects. Widely used for registration and normalization in neuroimaging studies.</p>
+          </div>
+          
+          <div class="dataset-card" data-url="https://niivue.github.io/niivue/images/ct_AVM.nii.gz">
+            <h3>CT Scan</h3>
+            <p><strong>Type:</strong> Computed Tomography</p>
+            <p><strong>Use:</strong> Clinical imaging</p>
+            <p><strong>Description:</strong> CT scan showing brain structure with different contrast than MRI. Good for seeing bone and acute hemorrhage.</p>
+          </div>
+          
+          <div class="dataset-card" data-url="https://niivue.github.io/niivue/images/fmri.nii.gz">
+            <h3>fMRI Statistical Map</h3>
+            <p><strong>Type:</strong> Functional MRI</p>
+            <p><strong>Measures:</strong> Brain activation</p>
+            <p><strong>Description:</strong> Statistical activation map from functional MRI showing regions active during a task.</p>
+          </div>
+        </div>
+
+        <div class="warning" style="margin-top:16px;">
+          <strong>💡 Pro Tip:</strong> Use mouse wheel to scroll through slices, click and drag to adjust window/level (brightness/contrast), and right-click drag to pan.
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <h2>Understanding the Data</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>MPRAGE / T1-weighted</h3>
+            <p>Best for: Anatomical structure</p>
+            <p>Gray matter: Medium intensity</p>
+            <p>White matter: High intensity</p>
+            <p>CSF: Low intensity</p>
+            <p>Resolution: ~1mm³</p>
+          </div>
+          
+          <div class="info-card">
+            <h3>fMRI (BOLD)</h3>
+            <p>Measures: Neural activity (indirect)</p>
+            <p>Based on: Blood oxygenation</p>
+            <p>Temporal resolution: ~2 seconds</p>
+            <p>Spatial resolution: ~2-3mm³</p>
+            <p>Typically overlaid on structural</p>
+          </div>
+          
+          <div class="info-card">
+            <h3>Slice Orientations</h3>
+            <p><strong>Axial:</strong> Horizontal slices (top-down view)</p>
+            <p><strong>Sagittal:</strong> Side view (left-right slices)</p>
+            <p><strong>Coronal:</strong> Front view (front-back slices)</p>
+          </div>
+          
+          <div class="info-card">
+            <h3>File Format: NIfTI</h3>
+            <p>Extension: .nii or .nii.gz</p>
+            <p>Standard: Neuroimaging Informatics Technology Initiative</p>
+            <p>Contains: 3D/4D image data + metadata</p>
+            <p>Widely used in research</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <h2>Resources & Data Sources</h2>
+        <p><strong>Public Datasets:</strong></p>
+        <ul style="margin:12px 0 12px 24px;">
+          <li><a href="https://openneuro.org/" target="_blank" style="color:var(--accent);">OpenNeuro</a> - Large collection of neuroimaging datasets</li>
+          <li><a href="https://www.humanconnectome.org/" target="_blank" style="color:var(--accent);">Human Connectome Project</a> - High-quality structural and functional data</li>
+          <li><a href="https://neurovault.org/" target="_blank" style="color:var(--accent);">NeuroVault</a> - Statistical maps and atlases</li>
+          <li><a href="https://www.nitrc.org/" target="_blank" style="color:var(--accent);">NITRC</a> - Neuroimaging tools and resources</li>
+        </ul>
+        
+        <p style="margin-top:16px;"><strong>Viewer Technology:</strong></p>
+        <p style="margin-left:12px;font-size:13px;color:var(--muted);">This viewer uses <a href="https://github.com/rii-mango/Papaya" target="_blank" style="color:var(--accent);">Papaya</a>, a pure JavaScript medical image viewer. It runs entirely in your browser with no server-side processing and works reliably across all browsers.</p>
+      </div>
+
+    </div>
+
+    <script>
+      // Papaya viewer - simpler, more reliable
+      let viewerInitialized = false;
+      
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(setupPapayaControls, 100);
+      });
+
+      function setupPapayaControls() {
+        // File uploads
+        document.getElementById('uploadStructural').addEventListener('change', (e) => {
+          if (e.target.files.length > 0) {
+            loadLocalFile(e.target.files[0]);
+          }
+        });
+
+        // Reset view
+        document.getElementById('resetView').addEventListener('click', () => {
+          const containers = papaya.Container.papayaContainers;
+          if (containers && containers.length > 0) {
+            containers[0].viewer.resetViewer();
+          }
+        });
+
+        // Clear data
+        document.getElementById('clearData').addEventListener('click', () => {
+          location.reload();
+        });
+
+        // Sample dataset cards - only work when deployed, not from localhost
+        document.querySelectorAll('.dataset-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const url = card.getAttribute('data-url');
+            
+            // Check if we're on localhost
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              updateInfoMessage('⚠️ Online datasets require deploying to a web server. For local development, please download and upload files manually.', 'warning');
+              return;
+            }
+            
+            document.querySelectorAll('.dataset-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            loadNewImage(url);
+          });
+        });
+
+        // Disable some controls that need more complex integration
+        document.getElementById('viewMode').disabled = true;
+        document.getElementById('colormap').disabled = true;
+        document.getElementById('uploadFunctional').disabled = true;
+        
+        console.log('Papaya controls ready. Upload a file to begin.');
+      }
+
+      function initializePapaya(imageUrl) {
+        const container = document.getElementById('papayaContainer');
+        container.className = 'papaya';
+        container.setAttribute('data-params', JSON.stringify({
+          images: [imageUrl],
+          showControls: true,
+          kioskMode: false
+        }));
+        
+        // Force Papaya to rebuild
+        papaya.Container.resetViewer(0, {images: [imageUrl]});
+        viewerInitialized = true;
+      }
+
+      function loadNewImage(url) {
+        updateInfoMessage('Loading dataset...', 'info');
+        
+        if (!viewerInitialized) {
+          initializePapaya(url);
+        } else {
+          const containers = papaya.Container.papayaContainers;
+          if (containers && containers.length > 0) {
+            containers[0].viewer.loadImage(url, true, false);
+          }
+        }
+        
+        setTimeout(() => {
+          updateInfoMessage('✓ Image loaded! Use mouse to navigate slices.', 'success');
+        }, 2000);
+      }
+
+      function loadLocalFile(file) {
+        updateInfoMessage('Loading file...', 'info');
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const arrayBuffer = e.target.result;
+          const blob = new Blob([arrayBuffer], {type: 'application/gzip'});
+          const url = URL.createObjectURL(blob);
+          
+          if (!viewerInitialized) {
+            initializePapaya(url);
+            updateInfoMessage(`✓ Loaded: ${file.name}`, 'success');
+          } else {
+            const containers = papaya.Container.papayaContainers;
+            if (containers && containers.length > 0) {
+              containers[0].viewer.loadImage(url, true, false);
+              updateInfoMessage(`✓ Loaded: ${file.name}`, 'success');
+            }
+          }
+        };
+        
+        reader.onerror = function() {
+          updateInfoMessage('❌ Error reading file. Make sure it\'s a valid NIfTI (.nii or .nii.gz) file.', 'error');
+        };
+        
+        reader.readAsArrayBuffer(file);
+      }
+
+      function updateInfoMessage(msg, type = 'info') {
+        const info = document.getElementById('imageInfo');
+        info.innerHTML = msg;
+        info.style.display = 'block';
+        
+        // Update styling based on type
+        if (type === 'success') {
+          info.style.background = '#e8f5e9';
+          info.style.borderColor = '#4caf50';
+        } else if (type === 'error') {
+          info.style.background = '#ffebee';
+          info.style.borderColor = '#f44336';
+        } else if (type === 'warning') {
+          info.style.background = '#fff3cd';
+          info.style.borderColor = '#ffc107';
+        } else {
+          info.style.background = '#e3f2fd';
+          info.style.borderColor = '#2196f3';
+        }
+      }
+    </script>
+  </body>
+</html>
+
