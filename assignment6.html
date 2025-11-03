@@ -1,0 +1,1117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Assignment 6: Envisioning the Ideal Brain Imaging Technique — Neuroimaging and Neurostimulation</title>
+    <meta name="description" content="Research and writing assignment exploring ideal brain imaging technologies and future possibilities.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 880px;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+        position: relative;
+        z-index: 1;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3, h4 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+      h4 {
+        font-size: clamp(16px, 2.5vw, 20px);
+        color: #6b5a6b;
+        margin-top: 1.2em;
+      }
+
+      p { margin: 0.85em 0; }
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      .lead {
+        font-size: 18px;
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+
+      .callout {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .option-card {
+        background: linear-gradient(135deg, rgba(32,201,151,0.08), rgba(214,51,132,0.04));
+        border: 2px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 24px 0;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.15);
+        transition: all 0.3s ease;
+      }
+
+      .option-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(32,201,151,0.25);
+        border-color: var(--accent);
+      }
+
+      .option-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .option-label {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--accent);
+        font-family: Spectral, serif;
+      }
+
+      .option-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--accent);
+        margin: 0;
+      }
+
+      .warning {
+        background: linear-gradient(90deg, rgba(249,171,0,0.15), rgba(255,255,255,0.3));
+        border-left: 4px solid #F9AB00;
+        padding: 16px;
+        margin: 20px 0;
+        border-radius: 6px;
+      }
+
+      .requirements-list {
+        background: rgba(32,201,151,0.05);
+        border: 1px solid rgba(32,201,151,0.3);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+      }
+
+      .grading-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin: 16px 0;
+      }
+
+      .grading-item {
+        background: rgba(214,51,132,0.08);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(214,51,132,0.3);
+      }
+
+      .submit-button {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent-2), #17a085);
+        color: white;
+        padding: 16px 32px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 18px;
+        box-shadow: 0 6px 20px rgba(32,201,151,0.4);
+        transition: all 0.3s ease;
+        border: none;
+        text-align: center;
+      }
+
+      .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(32,201,151,0.5);
+      }
+
+      footer {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(214,51,132,0.25);
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      kbd {
+        background: rgba(0,0,0,0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">PSYCH 403A1 — Assignment 6</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./assignments.html" class="tag" style="text-transform:none">All Assignments</a>
+          <a href="./lecture6.html" class="tag" style="text-transform:none">Lecture 6</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>Assignment 6: Envisioning the Ideal Brain Imaging Technique</h1>
+        <p class="lead">A research and writing assignment exploring what the "ideal" brain imaging technology might look like, what it would measure, and what barriers stand between current technology and that future.</p>
+
+        <div style="background: linear-gradient(135deg, rgba(214,51,132,0.1), rgba(32,201,151,0.05)); padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid rgba(214,51,132,0.3);">
+          <p style="margin: 0;"><strong>Due Date:</strong> <span style="color: var(--accent); font-weight: 600;">Monday, November 10, 2025 at 11:59 PM</span></p>
+          <p style="margin: 8px 0 0 0;"><strong>Format:</strong> 3-5 page written report (PDF) • <strong>Choose ONE option (A, B, C, or D)</strong></p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>🎯 Assignment Overview</h2>
+
+        <p>Throughout this course, we've explored the strengths and limitations of various brain imaging techniques — from the millisecond precision of EEG but poor spatial resolution, to the excellent spatial detail of fMRI but slow hemodynamic responses, to the portability of fNIRS but limited depth penetration. Each method represents a compromise between competing priorities: <strong>temporal vs. spatial resolution, invasiveness vs. signal quality, cost vs. capability, portability vs. whole-brain coverage.</strong></p>
+
+        <p>In this assignment, you'll step beyond current constraints and envision what an "ideal" brain imaging technique might look like. What would it measure? What physical principles would it exploit? What would the data look like? What engineering challenges would need to be solved? And most importantly: <strong>what aspects of brain function could we finally understand if we had this technology?</strong></p>
+
+        <div class="callout">
+          <strong>🧠 Think Like a Neuroscientist-Engineer:</strong>
+          <p style="margin: 8px 0 0 0;">This isn't just a creative writing exercise — it's an exercise in <em>constrained innovation</em>. Your proposed technique must be grounded in real physics, real biology, and real engineering principles. But it can push beyond what's currently feasible with clever solutions, emerging technologies, and forward thinking.</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>📋 Choose ONE Option (A, B, C, or D)</h2>
+
+        <!-- OPTION A -->
+        <div class="option-card">
+          <div class="option-header">
+            <span class="option-label">A</span>
+            <h3 class="option-title">Design Your Ideal Brain Imaging Modality</h3>
+          </div>
+
+          <p><strong>The Challenge:</strong> Imagine you have unlimited research funding and access to cutting-edge technology from any field (photonics, quantum sensing, nanotechnology, machine learning, etc.). Design a brain imaging technique that solves problems current methods cannot.</p>
+
+          <h4 style="margin-top: 16px; color: var(--accent-2);">Your Report Should Address:</h4>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">1. What Would It Measure? (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What aspect of neural activity would your technique detect?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Action potentials? Dendritic currents? Neurotransmitter release?</li>
+                  <li>Blood flow? Metabolic activity? Oxygen consumption?</li>
+                  <li>Structural changes? Protein dynamics? Gene expression?</li>
+                  <li>Something completely new?</li>
+                </ul>
+              </li>
+              <li>Why is this measurement meaningful? What would it tell us about brain function that we can't currently see?</li>
+              <li>What is the biological/physical basis for this signal?</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">2. What Would the Equipment Look Like? (25%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What are the key hardware components?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Sensors/detectors (what type? where positioned?)</li>
+                  <li>Energy source if needed (lasers? magnetic fields? ultrasound?)</li>
+                  <li>Signal amplification/processing</li>
+                  <li>Computational requirements</li>
+                </ul>
+              </li>
+              <li>What physical principles does it exploit? (e.g., light scattering, magnetic resonance, acoustic propagation)</li>
+              <li>Is it invasive, minimally invasive, or completely non-invasive?</li>
+              <li>Is it portable/wearable or does it require a lab setup?</li>
+              <li>Estimated size, weight, power requirements?</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">3. What Would the Data Look Like? (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>Describe the raw signal — what comes out of the sensors?</li>
+              <li>What is the temporal resolution? (microseconds? milliseconds? seconds?)</li>
+              <li>What is the spatial resolution? (whole brain? regional? single neuron?)</li>
+              <li>How much data per second? (KB? MB? GB?)</li>
+              <li>What kind of signal processing would be needed?</li>
+              <li>What would a typical "brain image" or visualization look like?</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">4. What Are the Limitations & Challenges? (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What are the fundamental physical limitations?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Tissue scattering? Depth penetration? Signal-to-noise ratio?</li>
+                  <li>Speed of light/sound constraints?</li>
+                  <li>Quantum limits? Thermodynamic limits?</li>
+                </ul>
+              </li>
+              <li>What are the practical engineering challenges?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Cost? Size? Power consumption?</li>
+                  <li>Safety concerns? FDA approval barriers?</li>
+                  <li>Computational requirements? Real-time processing?</li>
+                </ul>
+              </li>
+              <li>What are the biological/medical constraints?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Does it require contrast agents? Genetic modification?</li>
+                  <li>Can it be used repeatedly? In diverse populations?</li>
+                  <li>Motion artifacts? Environmental interference?</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">5. What Would This Enable? (15%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What neuroscience questions could finally be answered?</li>
+              <li>What clinical applications would become possible?</li>
+              <li>What types of brain-computer interfaces could be built?</li>
+              <li>Give 2-3 concrete examples of research or applications that would be transformed</li>
+            </ul>
+          </div>
+
+          <div class="warning">
+            <strong>💡 Examples to Inspire You:</strong>
+            <ul style="margin: 8px 0 0 0; font-size: 14px;">
+              <li><strong>Quantum magnetometry:</strong> Detecting single-neuron magnetic fields using diamond quantum sensors</li>
+              <li><strong>Genetically-encoded voltage indicators:</strong> Fluorescent proteins that light up with action potentials</li>
+              <li><strong>Ultrasound neuromodulation + imaging:</strong> Focused ultrasound that both stimulates and records</li>
+              <li><strong>Photoacoustic tomography:</strong> Combining optical specificity with acoustic depth penetration</li>
+              <li><strong>Implantable neuropixels arrays:</strong> Thousands of electrodes on flexible, biocompatible substrates</li>
+              <li><strong>Thermal imaging:</strong> Detecting the minute temperature changes from neural metabolism</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- OPTION B -->
+        <div class="option-card">
+          <div class="option-header">
+            <span class="option-label">B</span>
+            <h3 class="option-title">The "Perfect" Hybrid System — Combining Existing Modalities</h3>
+          </div>
+
+          <p><strong>The Challenge:</strong> Instead of inventing something entirely new, design an <em>optimal combination</em> of 2-3 existing brain imaging techniques that complement each other's strengths and compensate for weaknesses. Explain how they would be integrated, what additional value the combination provides, and what engineering/analysis challenges arise from fusion.</p>
+
+          <h4 style="margin-top: 16px; color: var(--accent-2);">Your Report Should Address:</h4>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">1. Which Modalities and Why? (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>Choose 2-3 techniques from: EEG, MEG, fMRI, fNIRS, EROS, DCS, PET, OCT, two-photon microscopy, electrode arrays, etc.</li>
+              <li>Explain what each contributes to the hybrid system:
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>What information does each provide that the others don't?</li>
+                  <li>How do their temporal/spatial resolutions complement each other?</li>
+                  <li>What are their individual limitations?</li>
+                </ul>
+              </li>
+              <li>Justify your specific combination — why these techniques together? Why not others?</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">2. How Would They Be Integrated? (30%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li><strong>Physical integration:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Can the sensors/equipment physically coexist? (e.g., Can you do EEG inside an fMRI scanner?)</li>
+                  <li>Do they interfere with each other? (magnetic fields affecting electronics, optical signals contaminating each other)</li>
+                  <li>What engineering solutions would be needed to minimize interference?</li>
+                </ul>
+              </li>
+              <li><strong>Temporal integration:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Can they acquire data simultaneously? Or must they alternate?</li>
+                  <li>How do you synchronize measurements across different time scales?</li>
+                  <li>How do you align fast signals (EEG) with slow signals (fMRI)?</li>
+                </ul>
+              </li>
+              <li><strong>Spatial integration:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>How do you co-register the spatial coordinate systems?</li>
+                  <li>How do you fuse data at different spatial scales?</li>
+                  <li>What anatomical reference frames would you use?</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">3. What Does Multimodal Data Look Like? (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>Describe what a researcher would see — how would you visualize combined data?</li>
+              <li>What new metrics or features emerge from fusion that aren't in individual modalities?</li>
+              <li>How would you quantify the "added value" of the hybrid vs. individual techniques?</li>
+              <li>Give concrete examples: "When you see X in modality A and Y in modality B at the same time, that tells you Z about brain function"</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">4. Technical & Practical Challenges (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What are the computational challenges? (data processing, storage, real-time fusion)</li>
+              <li>What are the cost implications? (feasibility for research labs, clinical use)</li>
+              <li>What are the practical workflow challenges? (participant burden, scan time, data analysis complexity)</li>
+              <li>Are there safety concerns from combining techniques?</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">5. Real-World Applications (10%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What research questions require this multimodal approach?</li>
+              <li>What clinical scenarios would benefit from the hybrid system?</li>
+              <li>Give 2-3 specific examples where your hybrid would outperform individual modalities</li>
+            </ul>
+          </div>
+
+          <div class="warning">
+            <strong>💡 Existing Examples to Learn From:</strong>
+            <ul style="margin: 8px 0 0 0; font-size: 14px;">
+              <li><strong>EEG-fMRI:</strong> Used to localize epileptic seizures with both temporal precision (EEG) and spatial accuracy (fMRI)</li>
+              <li><strong>PET-MRI:</strong> Combines metabolic information (PET) with structural detail (MRI) in cancer imaging</li>
+              <li><strong>fNIRS-EEG:</strong> Portable combination tracking both hemodynamics and electrical activity</li>
+              <li><strong>OCT-Doppler:</strong> Combines structural imaging with blood flow measurement in retinal imaging</li>
+              <li><strong>Two-photon + electrophysiology:</strong> Optical imaging of neural activity combined with electrical recording</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- OPTION C -->
+        <div class="option-card">
+          <div class="option-header">
+            <span class="option-label">C</span>
+            <h3 class="option-title">The Wearable Brain Monitor — Engineering a Consumer-Ready Device</h3>
+          </div>
+
+          <p><strong>The Challenge:</strong> The "holy grail" of neurotechnology is a brain monitoring device as ubiquitous as a smartwatch — something you wear all day that tracks your cognitive states, mental health, and brain performance. Design a realistic, consumer-ready wearable brain monitor that balances scientific validity with practical constraints (cost, comfort, battery life, ease of use).</p>
+
+          <h4 style="margin-top: 16px; color: var(--accent-2);">Your Report Should Address:</h4>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">1. Core Technology & Measurements (25%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What sensing modality would you use?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Dry EEG electrodes? Optical (fNIRS/DCS)? Hybrid approach?</li>
+                  <li>How many sensors? Where positioned on the head?</li>
+                  <li>Why is this the best choice for a consumer device?</li>
+                </ul>
+              </li>
+              <li>What metrics would it report to users?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Focus/attention? Stress/relaxation? Sleep quality? Cognitive load?</li>
+                  <li>How would these metrics be derived from raw signals?</li>
+                  <li>What's the scientific evidence these metrics are valid?</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">2. Hardware Design & Form Factor (25%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li><strong>Physical design:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Headband? Earbuds? Eyeglasses? Behind-the-ear device? Other?</li>
+                  <li>Weight target? Materials? Adjustability for different head sizes?</li>
+                  <li>How comfortable for all-day wear?</li>
+                </ul>
+              </li>
+              <li><strong>Technical specifications:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Battery life target? (8 hours? 24 hours?)</li>
+                  <li>Wireless connectivity? (Bluetooth? WiFi?)</li>
+                  <li>Onboard processing vs. phone-based processing?</li>
+                  <li>Water resistance? Durability?</li>
+                </ul>
+              </li>
+              <li><strong>Signal quality vs. convenience tradeoffs:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>How do you ensure good signal despite hair, movement, sweat?</li>
+                  <li>What compromises in signal quality are acceptable for convenience?</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">3. User Experience & Software (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li><strong>Smartphone app interface:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>What does the user see? (real-time graphs? simple scores? visualizations?)</li>
+                  <li>How often do they get feedback? (continuous? hourly summaries? daily reports?)</li>
+                  <li>What insights/recommendations does the AI provide?</li>
+                </ul>
+              </li>
+              <li><strong>Use cases & scenarios:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Meditation/mindfulness training? Productivity optimization? Sleep tracking?</li>
+                  <li>Mental health monitoring? Cognitive decline detection?</li>
+                  <li>What is the "killer app" that makes people want to wear it every day?</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">4. Validation & Scientific Credibility (15%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>How would you validate that your metrics are meaningful?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>What studies would you run?</li>
+                  <li>What correlations with behavior/performance would you need to demonstrate?</li>
+                  <li>How do you avoid the "junk science" trap of existing consumer brain devices?</li>
+                </ul>
+              </li>
+              <li>What is your strategy for regulatory approval (if seeking medical claims)?</li>
+              <li>How do you communicate uncertainty and limitations to consumers?</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">5. Business & Market Reality (15%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li><strong>Cost analysis:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Estimated manufacturing cost? Retail price target?</li>
+                  <li>How do you reach the <$200 price point of smartwatches?</li>
+                </ul>
+              </li>
+              <li><strong>Market positioning:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Who is your target user? (wellness enthusiasts? productivity seekers? patients?)</li>
+                  <li>Who are your competitors? (Muse? Kernel? Neurosity? Others?)</li>
+                  <li>What makes your device better?</li>
+                </ul>
+              </li>
+              <li><strong>Privacy & ethics:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>How is brain data stored? Who has access?</li>
+                  <li>What are the ethical concerns with continuous brain monitoring?</li>
+                  <li>How do you prevent misuse (e.g., employers requiring brain monitoring)?</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div class="warning">
+            <strong>💡 Real Devices to Learn From:</strong>
+            <ul style="margin: 8px 0 0 0; font-size: 14px;">
+              <li><strong>Muse S (Gen 2):</strong> 4-channel EEG headband for meditation, ~$250, 10hr battery</li>
+              <li><strong>Muse S Athena (2025):</strong> First consumer EEG+fNIRS hybrid, tracks mental effort and blood flow</li>
+              <li><strong>Kernel Flow:</strong> Time-domain fNIRS, 52 channels, lab-quality data in wearable form</li>
+              <li><strong>Neurosity Crown:</strong> 8-channel EEG, focuses on productivity/focus monitoring</li>
+              <li><strong>NextMind (discontinued):</strong> Visual cortex monitor for controlling interfaces with attention</li>
+              <li><strong>OpenBCI:</strong> Open-source EEG, customizable but not consumer-friendly</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- OPTION D -->
+        <div class="option-card">
+          <div class="option-header">
+            <span class="option-label">D</span>
+            <h3 class="option-title">Portabilizing Lab Technology — Bringing Research Tools to the Real World</h3>
+          </div>
+
+          <p><strong>The Challenge:</strong> Many powerful neuroimaging techniques are confined to laboratories because they require large, expensive, power-hungry equipment. Choose one "lab-bound" technology and design a portable/wearable version that maintains scientific validity while becoming practical for real-world use.</p>
+
+          <h4 style="margin-top: 16px; color: var(--accent-2);">Choose a Technology to Portabilize:</h4>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 12px; border-radius: 8px; margin: 12px 0;">
+            <strong>Examples of lab-bound technologies:</strong>
+            <ul style="font-size: 14px; margin: 8px 0;">
+              <li><strong>MEG (Magnetoencephalography):</strong> Requires liquid helium cooling, magnetically shielded room, massive sensors</li>
+              <li><strong>High-density EEG:</strong> 128-256 channels with gel/saline, long setup time, tethered to amplifiers</li>
+              <li><strong>Two-photon microscopy:</strong> Requires large lasers, precise optics, head-fixed animals</li>
+              <li><strong>PET scanning:</strong> Radioactive tracers, massive detectors, medical facility required</li>
+              <li><strong>High-field fMRI:</strong> 3T-7T magnets, cannot move during scan, claustrophobic bore</li>
+              <li><strong>Transcranial magnetic stimulation (TMS):</strong> Heavy coil, precise positioning, tethered to power supply</li>
+              <li><strong>Patch-clamp electrophysiology:</strong> Single-cell recording requiring micropipettes and stable mounting</li>
+            </ul>
+          </div>
+
+          <h4 style="margin-top: 16px; color: var(--accent-2);">Your Report Should Address:</h4>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">1. Why This Technology Matters (15%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What does the lab version measure that's scientifically valuable?</li>
+              <li>What discoveries or applications has it enabled?</li>
+              <li>Why would a portable version be transformative?</li>
+              <li>What research or clinical applications currently can't happen because it's lab-bound?</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">2. What Makes It Lab-Bound? (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li><strong>Size/weight constraints:</strong> What components are large and heavy?</li>
+              <li><strong>Power requirements:</strong> How much power does it need? Why?</li>
+              <li><strong>Environmental requirements:</strong> Shielding? Temperature control? Vibration isolation?</li>
+              <li><strong>Setup complexity:</strong> How long does prep take? What expertise required?</li>
+              <li><strong>Cost barriers:</strong> What makes it expensive? ($10K? $100K? $1M+?)</li>
+              <li>Rank these barriers — which is the biggest obstacle to portability?</li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">3. Your Portable Design (30%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li><strong>Core innovation:</strong> What's your key insight for making it portable?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>New sensor technology? Miniaturized components? Different physics?</li>
+                  <li>Computational tricks to compensate for reduced hardware?</li>
+                  <li>Clever mechanical design?</li>
+                </ul>
+              </li>
+              <li><strong>Form factor:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Wearable? Portable cart? Briefcase-sized? Car-sized?</li>
+                  <li>Weight target? Power requirements (battery life)?</li>
+                  <li>Setup time: <5 min? <30 min?</li>
+                </ul>
+              </li>
+              <li><strong>Technical specifications:</strong>
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>What signal quality metrics are maintained vs. compromised?</li>
+                  <li>Quantify the tradeoffs (e.g., "75% of lab sensitivity but 1/100th the size")</li>
+                  <li>What's "good enough" for real-world use?</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">4. Engineering Challenges & Solutions (20%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li>What are the 3 biggest technical challenges in your design?</li>
+              <li>For each challenge, propose a specific solution (even if speculative)</li>
+              <li>What recent technological advances make your design feasible now (or soon)?
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>New materials? Better batteries? Cheaper sensors?</li>
+                  <li>AI/ML to compensate for hardware limitations?</li>
+                  <li>Manufacturing techniques? (3D printing, flexible electronics, etc.)</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <h4 style="margin-top: 0;">5. Impact & Feasibility (15%)</h4>
+            <ul style="font-size: 15px; line-height: 1.6;">
+              <li><strong>New applications enabled:</strong> What can researchers/clinicians now do that they couldn't before?</li>
+              <li><strong>Timeline to reality:</strong> Is this feasible in 2 years? 5 years? 10 years? Why?</li>
+              <li><strong>Cost projection:</strong> Estimated cost for portable version vs. lab version?</li>
+              <li><strong>Market size:</strong> Who would buy/use this? (research labs? hospitals? consumers?)</li>
+              <li><strong>Validation strategy:</strong> How would you prove the portable version gives equivalent data to lab version?</li>
+            </ul>
+          </div>
+
+          <div class="warning">
+            <strong>💡 Real-World Examples of Successful Portabilization:</strong>
+            <ul style="margin: 8px 0 0 0; font-size: 14px;">
+              <li><strong>MEG → OPM-MEG:</strong> Optically-pumped magnetometers replace SQUIDs, eliminating liquid helium and enabling wearable MEG</li>
+              <li><strong>Lab fNIRS → Wearable fNIRS:</strong> LEDs replace fiber-coupled lasers, making <$5K systems vs. $100K+ lab systems</li>
+              <li><strong>Bench EEG → Dry EEG:</strong> Dry electrodes eliminate gel prep, enabling consumer headbands</li>
+              <li><strong>Hospital ultrasound → Butterfly iQ:</strong> Chip-based ultrasound (not piezo crystals) creates phone-sized device</li>
+              <li><strong>Lab microscopes → Foldscope:</strong> Origami paper microscope costs <$1, used for field diagnostics</li>
+              <li><strong>CT scanner → Portable CT:</strong> Reduced to suitcase-sized for military/emergency use</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>🤖 Using AI Tools for This Assignment</h2>
+
+        <div style="background: linear-gradient(135deg, rgba(249,171,0,0.15), rgba(32,201,151,0.08)); border: 2px solid rgba(249,171,0,0.4); border-radius: 12px; padding: 24px; margin: 24px 0;">
+          <h3 style="margin-top: 0; color: #F9AB00;">✨ AI is Encouraged! (But You're Responsible for Accuracy)</h3>
+          
+          <p style="font-size: 16px; margin: 12px 0;">You are <strong>encouraged to use AI tools</strong> (ChatGPT, Claude, Perplexity, Gemini, etc.) for research, brainstorming, writing organization, and image generation. However, <strong>you are fully responsible</strong> for the accuracy and quality of your final submission.</p>
+
+          <h4 style="color: var(--accent); margin-top: 20px;">✅ Great Ways to Use AI:</h4>
+          <div style="background: rgba(255,255,255,0.6); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <ul style="font-size: 15px; line-height: 1.7; margin: 8px 0;">
+              <li><strong>Research starting points:</strong> "What are the main challenges in making MEG portable?" or "Summarize recent advances in optically-pumped magnetometers"</li>
+              <li><strong>Brainstorming:</strong> "Generate 5 creative ideas for miniaturizing PET scanners" or "What physics principles could enable portable two-photon imaging?"</li>
+              <li><strong>Outline generation:</strong> "Create an outline for a report on designing a wearable fMRI system"</li>
+              <li><strong>Technical explanations:</strong> "Explain the physics of SQUID magnetometers in simple terms"</li>
+              <li><strong>Writing drafts:</strong> Use AI to draft sections, then heavily edit for accuracy and voice</li>
+              <li><strong>Citation formatting:</strong> "Convert this reference to APA format"</li>
+              <li><strong>Proofreading:</strong> "Check this paragraph for clarity and grammar"</li>
+            </ul>
+          </div>
+
+          <h4 style="color: var(--accent); margin-top: 20px;">⚠️ Critical: Verify Everything!</h4>
+          <div style="background: rgba(214,51,132,0.1); padding: 16px; border-radius: 8px; margin: 12px 0; border: 2px solid rgba(214,51,132,0.4);">
+            <p style="margin: 0 0 12px 0; font-weight: 600; color: var(--accent);">AI tools frequently "hallucinate" — they make up facts, citations, and links that sound real but aren't!</p>
+            <ul style="font-size: 15px; line-height: 1.7; margin: 8px 0;">
+              <li><strong>Check every citation:</strong> AI often invents paper titles, authors, and DOIs that don't exist
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Use <a href="https://scholar.google.com/" target="_blank" style="color: var(--accent);">Google Scholar</a> or <a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" style="color: var(--accent);">PubMed</a> to verify papers actually exist</li>
+                  <li>Actually read (or at least skim) the papers you cite</li>
+                  <li>Click every link to ensure it works</li>
+                </ul>
+              </li>
+              <li><strong>Verify technical claims:</strong> AI confidently states incorrect physics or biology
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Cross-reference important facts with reliable sources (Wikipedia, textbooks, review articles)</li>
+                  <li>If something seems too good to be true, it probably is</li>
+                </ul>
+              </li>
+              <li><strong>Check numbers:</strong> AI makes up statistics, costs, and specifications
+                <ul style="font-size: 14px; margin-top: 4px;">
+                  <li>Find actual specifications from manufacturer websites or papers</li>
+                  <li>Sanity-check: Does "1000x improvement" really make sense?</li>
+                </ul>
+              </li>
+              <li><strong>Ensure coherence:</strong> AI sometimes contradicts itself within the same document</li>
+            </ul>
+          </div>
+
+          <h4 style="color: var(--accent); margin-top: 20px;">🎨 AI-Generated Images (Strongly Encouraged!)</h4>
+          <div style="background: rgba(32,201,151,0.1); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <p style="margin: 0 0 12px 0; font-weight: 600;">Use AI image generators to visualize your device or system! This is a great way to communicate your design.</p>
+            
+            <h4 style="margin: 16px 0 8px 0; font-size: 16px; color: var(--accent-2);">Recommended AI Image Tools:</h4>
+            <ul style="font-size: 14px; margin: 8px 0;">
+              <li><strong><a href="https://openai.com/dall-e-3" target="_blank" style="color: var(--accent);">DALL-E 3</a></strong> (via ChatGPT Plus) — Best for technical diagrams and devices</li>
+              <li><strong><a href="https://www.midjourney.com/" target="_blank" style="color: var(--accent);">Midjourney</a></strong> — Excellent artistic quality, good for concept art</li>
+              <li><strong><a href="https://stability.ai/" target="_blank" style="color: var(--accent);">Stable Diffusion</a></strong> — Free and open source</li>
+              <li><strong><a href="https://www.adobe.com/products/firefly.html" target="_blank" style="color: var(--accent);">Adobe Firefly</a></strong> — Good for professional polish</li>
+              <li><strong><a href="https://ideogram.ai/" target="_blank" style="color: var(--accent);">Ideogram</a></strong> — Great for text in images</li>
+            </ul>
+
+            <h4 style="margin: 16px 0 8px 0; font-size: 16px; color: var(--accent-2);">Example Prompts for Your Device Images:</h4>
+            <div style="background: rgba(0,0,0,0.05); padding: 12px; border-radius: 6px; margin: 8px 0; font-family: monospace; font-size: 13px;">
+              <strong>For a wearable MEG system:</strong><br>
+              <em>"A sleek, lightweight headset with an array of small optical sensors, worn by a person in a modern neuroscience lab. Technical diagram style with labels pointing to key components. Clean white background, professional medical device aesthetic. Include cross-section showing sensor placement near scalp."</em>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.05); padding: 12px; border-radius: 6px; margin: 8px 0; font-family: monospace; font-size: 13px;">
+              <strong>For a portable fMRI cart:</strong><br>
+              <em>"A compact mobile MRI system on a wheeled cart about the size of a hospital medication cart. Modern sci-fi aesthetic with glowing blue accents. Person lying on adjustable scanning bed. Show magnetic field visualization as translucent overlays. Hospital room setting. Technical blueprint style."</em>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.05); padding: 12px; border-radius: 6px; margin: 8px 0; font-family: monospace; font-size: 13px;">
+              <strong>For a hybrid EEG-fNIRS cap:</strong><br>
+              <em>"A comfortable fabric cap with embedded LED lights and photodetectors in geometric pattern, combined with metallic EEG electrodes. Person wearing it while using a laptop. Transparent overlays showing light paths through skull to brain. Exploded view diagram showing layers: fabric, sensors, circuit board. Product photography style, soft lighting."</em>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.05); padding: 12px; border-radius: 6px; margin: 8px 0; font-family: monospace; font-size: 13px;">
+              <strong>For a system diagram:</strong><br>
+              <em>"Technical schematic showing data flow from brain sensors through wireless transmitter to smartphone to cloud computing, then back to user feedback on phone screen. Clean infographic style with icons and arrows. Isometric view. Colors: blue for data flow, green for processing, orange for output."</em>
+            </div>
+
+            <h4 style="margin: 16px 0 8px 0; font-size: 16px; color: var(--accent-2);">Tips for Better AI Image Generation:</h4>
+            <ul style="font-size: 14px; line-height: 1.6; margin: 8px 0;">
+              <li><strong>Be specific:</strong> "Lightweight headband with 8 optical sensors" beats "brain device"</li>
+              <li><strong>Specify style:</strong> "Technical diagram," "Product photography," "Medical illustration," "Blueprint style"</li>
+              <li><strong>Iterate:</strong> Generate 4-8 variations, pick the best, refine the prompt</li>
+              <li><strong>Add labels in post:</strong> Use PowerPoint/Keynote/Google Slides to add text labels and arrows</li>
+              <li><strong>Multiple images:</strong> Generate separate images for: device overview, close-up details, usage scenario, system diagram</li>
+              <li><strong>Acknowledge in caption:</strong> Write "Figure 1: AI-generated concept rendering of portable MEG system (DALL-E 3)"</li>
+            </ul>
+
+            <p style="margin: 16px 0 0 0; font-size: 14px; background: rgba(249,171,0,0.15); padding: 10px; border-radius: 6px; border: 1px solid rgba(249,171,0,0.4);">
+              <strong>💡 Pro tip:</strong> Generate images early in your process! They help you think through the design and often reveal problems or opportunities you hadn't considered. An image is worth a thousand words — especially for describing physical devices.
+            </p>
+          </div>
+
+          <h4 style="color: var(--accent); margin-top: 20px;">🎓 Academic Integrity Statement</h4>
+          <div style="background: rgba(255,255,255,0.6); padding: 16px; border-radius: 8px; margin: 12px 0;">
+            <p style="margin: 0; font-size: 15px; line-height: 1.7;">Using AI tools is <strong>not cheating</strong> — it's good engineering practice! In professional research and industry, everyone uses AI assistants. However:</p>
+            <ul style="font-size: 14px; line-height: 1.6; margin: 8px 0;">
+              <li>You must understand everything you submit (if I ask you to explain a section, you should be able to)</li>
+              <li>You are responsible for accuracy — "the AI told me" is not an excuse for wrong information</li>
+              <li>Your writing should reflect your voice and thinking, not be pure AI output</li>
+              <li>You must verify all citations and references</li>
+            </ul>
+            <p style="margin: 12px 0 0 0; font-size: 14px; font-style: italic;">Think of AI as a very smart but unreliable intern: great for drafts and ideas, but needs supervision and fact-checking.</p>
+          </div>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>📝 General Requirements (All Options)</h2>
+
+        <div class="requirements-list">
+          <h3 style="margin-top: 0; color: var(--accent-2);">Your Report Must Include:</h3>
+
+          <ul style="font-size: 15px; line-height: 1.7;">
+            <li><strong>Length:</strong> 3-5 pages (single-spaced, 12pt font, 1-inch margins)
+              <ul style="font-size: 14px; margin-top: 4px;">
+                <li>Figures/diagrams do NOT count toward page limit — use them liberally!</li>
+                <li>References do NOT count toward page limit</li>
+              </ul>
+            </li>
+            <li><strong>Citations:</strong> Minimum 8 academic sources
+              <ul style="font-size: 14px; margin-top: 4px;">
+                <li>Must include peer-reviewed journal articles, not just Wikipedia</li>
+                <li>Use any citation format (APA, IEEE, Nature, etc.) — just be consistent</li>
+                <li>Cite the physics/biology you're basing your design on</li>
+              </ul>
+            </li>
+            <li><strong>Figures/Diagrams:</strong> At least 2 original figures
+              <ul style="font-size: 14px; margin-top: 4px;">
+                <li>Could be: system diagram, data visualization mockup, timeline, comparison table</li>
+                <li>Hand-drawn and scanned is fine! (Doesn't need to be fancy)</li>
+                <li>If using images from papers, cite them properly</li>
+              </ul>
+            </li>
+            <li><strong>Technical Depth:</strong> Ground your proposals in real science
+              <ul style="font-size: 14px; margin-top: 4px;">
+                <li>Reference actual physics (photon scattering, magnetic field propagation, acoustic impedance, etc.)</li>
+                <li>Reference actual neurobiology (action potentials, hemodynamics, metabolic processes, etc.)</li>
+                <li>Provide quantitative estimates where possible (spatial resolution in mm, temporal resolution in ms, cost in $, etc.)</li>
+              </ul>
+            </li>
+            <li><strong>Critical Thinking:</strong> Acknowledge limitations honestly
+              <ul style="font-size: 14px; margin-top: 4px;">
+                <li>Don't just describe an ideal scenario — explain what barriers exist</li>
+                <li>Show you understand the tradeoffs and compromises</li>
+                <li>Demonstrate why this is hard (otherwise someone would have done it already!)</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>📊 Grading Rubric</h2>
+
+        <div class="grading-grid">
+          <div class="grading-item">
+            <strong style="color: var(--accent);">Technical Accuracy</strong>
+            <p style="margin: 8px 0 0 0; font-size: 14px;">30% — Physics, biology, and engineering are sound; realistic constraints acknowledged</p>
+          </div>
+          <div class="grading-item">
+            <strong style="color: var(--accent);">Depth of Analysis</strong>
+            <p style="margin: 8px 0 0 0; font-size: 14px;">25% — Thorough exploration of all required components; quantitative where possible</p>
+          </div>
+          <div class="grading-item">
+            <strong style="color: var(--accent);">Creativity & Vision</strong>
+            <p style="margin: 8px 0 0 0; font-size: 14px;">20% — Original thinking; goes beyond obvious solutions; compelling vision</p>
+          </div>
+          <div class="grading-item">
+            <strong style="color: var(--accent);">Research & Citations</strong>
+            <p style="margin: 8px 0 0 0; font-size: 14px;">15% — Quality sources; proper integration of literature; accurate citations</p>
+          </div>
+          <div class="grading-item">
+            <strong style="color: var(--accent);">Writing Quality</strong>
+            <p style="margin: 8px 0 0 0; font-size: 14px;">10% — Clear, organized, professional; effective use of figures; proper formatting</p>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top: 24px;">
+          <strong>🌟 What Makes an "A" Report?</strong>
+          <ul style="margin: 8px 0 0 0; font-size: 15px; line-height: 1.7;">
+            <li><strong>Goes beyond the obvious:</strong> Doesn't just describe "EEG but better" — identifies genuinely novel approaches</li>
+            <li><strong>Shows deep understanding:</strong> Demonstrates mastery of course concepts applied to new contexts</li>
+            <li><strong>Balances vision and reality:</strong> Ambitious but grounded; acknowledges tradeoffs thoughtfully</li>
+            <li><strong>Well-researched:</strong> Engages with recent literature; cites cutting-edge technologies and methods</li>
+            <li><strong>Technically rigorous:</strong> Provides quantitative estimates; references specific physical/biological mechanisms</li>
+            <li><strong>Clearly communicated:</strong> Easy to follow; effective figures; compelling narrative</li>
+          </ul>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>💡 Tips for Success</h2>
+
+        <div style="display: grid; gap: 16px; margin: 24px 0;">
+          <div style="background: rgba(32,201,151,0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-2);">
+            <strong style="color: var(--accent-2);">Start with Research</strong>
+            <p style="margin: 8px 0 0 0; font-size: 15px;">Before designing, read about current limitations and emerging technologies. Look at recent papers (2020-2025) in journals like Nature Neuroscience, NeuroImage, Journal of Neural Engineering.</p>
+          </div>
+
+          <div style="background: rgba(32,201,151,0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-2);">
+            <strong style="color: var(--accent-2);">Be Specific and Quantitative</strong>
+            <p style="margin: 8px 0 0 0; font-size: 15px;">Don't just say "high resolution" — say "1mm spatial resolution." Don't say "fast" — say "1ms temporal resolution." Numbers force you to think concretely.</p>
+          </div>
+
+          <div style="background: rgba(32,201,151,0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-2);">
+            <strong style="color: var(--accent-2);">Use the Course Interactive Tools</strong>
+            <p style="margin: 8px 0 0 0; font-size: 15px;">Revisit the imaging modality comparison tool in Lecture 6. Use the EROS demo to understand temporal dynamics. Review previous lectures for concepts to build on.</p>
+          </div>
+
+          <div style="background: rgba(32,201,151,0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-2);">
+            <strong style="color: var(--accent-2);">Think About Tradeoffs</strong>
+            <p style="margin: 8px 0 0 0; font-size: 15px;">Every design involves compromises. If you improve one dimension, what gets worse? Acknowledging these tradeoffs shows sophisticated thinking.</p>
+          </div>
+
+          <div style="background: rgba(32,201,151,0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-2);">
+            <strong style="color: var(--accent-2);">Draw Pictures!</strong>
+            <p style="margin: 8px 0 0 0; font-size: 15px;">A simple diagram can communicate what takes paragraphs to write. Sketch your setup, draw example data, make comparison tables. Don't worry about artistic quality — clarity matters.</p>
+          </div>
+
+          <div style="background: rgba(249,171,0,0.08); padding: 16px; border-radius: 8px; border-left: 4px solid #F9AB00;">
+            <strong style="color: #F9AB00;">Office Hours & Discussion</strong>
+            <p style="margin: 8px 0 0 0; font-size: 15px;">Come to office hours with a draft concept! We can discuss feasibility, suggest relevant papers, and help refine your ideas. This is meant to be a thought-provoking assignment, not a test of what you already know.</p>
+          </div>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>📚 Recommended Resources</h2>
+
+        <div style="background: rgba(255,255,255,0.6); padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: var(--accent);">Recent Review Articles</h3>
+          <ul style="font-size: 15px; line-height: 1.7;">
+            <li><strong>Portable Neuroimaging:</strong> <a href="https://www.nature.com/articles/s41598-021-89849-2" target="_blank">Advances in wearable brain imaging (Nature, 2021)</a></li>
+            <li><strong>Multimodal Imaging:</strong> <a href="https://www.nature.com/articles/s41593-020-0641-7" target="_blank">Integrating neuroimaging modalities (Nature Neuroscience, 2020)</a></li>
+            <li><strong>Future of BCIs:</strong> <a href="https://www.nature.com/articles/s41551-021-00747-4" target="_blank">Next-generation brain-computer interfaces (Nature Biomedical Engineering, 2021)</a></li>
+            <li><strong>Optical Neuroimaging:</strong> <a href="https://www.nature.com/articles/s41592-019-0435-6" target="_blank">Emerging optical techniques (Nature Methods, 2019)</a></li>
+          </ul>
+
+          <h3 style="color: var(--accent); margin-top: 24px;">Companies Pushing Boundaries</h3>
+          <ul style="font-size: 15px; line-height: 1.7;">
+            <li><strong><a href="https://www.kernel.com/" target="_blank">Kernel</a>:</strong> Time-domain fNIRS at scale</li>
+            <li><strong><a href="https://choosemuse.com/" target="_blank">Interaxon (Muse)</a>:</strong> Consumer EEG and EEG+fNIRS</li>
+            <li><strong><a href="https://neurosity.co/" target="_blank">Neurosity</a>:</strong> Developer-focused brain-computer interfaces</li>
+            <li><strong><a href="https://www.artinis.com/" target="_blank">Artinis</a>:</strong> Research-grade portable fNIRS</li>
+            <li><strong><a href="https://nirx.net/" target="_blank">NIRx</a>:</strong> High-density neuroimaging systems</li>
+            <li><strong><a href="https://www.paradromics.com/" target="_blank">Paradromics</a>:</strong> High-bandwidth neural interfaces</li>
+          </ul>
+
+          <h3 style="color: var(--accent); margin-top: 24px;">Course Materials</h3>
+          <ul style="font-size: 15px; line-height: 1.7;">
+            <li><a href="./lecture6.html">Lecture 6: The Future of Optical Neuroimaging</a></li>
+            <li><a href="./lecture5.html">Lecture 5: Optical Imaging Techniques</a></li>
+            <li><a href="./lecture4.html">Lecture 4: Magnetic Resonance Imaging</a></li>
+            <li><a href="./lecture1.html">Lecture 1: Introduction to Neuroimaging</a></li>
+          </ul>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>📤 Submission Instructions</h2>
+
+        <div style="background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08)); border: 2px solid rgba(32,201,151,0.4); border-radius: 12px; padding: 24px; margin: 24px 0;">
+          <h3 style="margin-top: 0; color: var(--accent-2);">How to Submit Your Assignment</h3>
+          
+          <p style="font-size: 16px; margin: 12px 0;">Submit your completed report using the <strong>same Google Form</strong> you've been using for all course assignments. This system has been working well all semester!</p>
+
+          <div style="background: rgba(255,255,255,0.6); padding: 16px; border-radius: 8px; margin: 16px 0;">
+            <h4 style="margin-top: 0; color: var(--accent);">📄 Accepted File Formats</h4>
+            <p style="margin: 8px 0;">You can submit your report in <strong>any of the following formats</strong> (all work with the Google Form):</p>
+            <ul style="margin: 8px 0; font-size: 15px; line-height: 1.7;">
+              <li><strong>PDF</strong> (.pdf) — <span style="color: #20c997; font-weight: 600;">✨ RECOMMENDED</span> — Best for preserving formatting, images, and layout across all devices</li>
+              <li><strong>Word Document</strong> (.doc, .docx) — Good if you want the instructor to see tracked changes or comments</li>
+              <li><strong>Plain Text</strong> (.txt) — Simple and universal, but loses formatting and image embedding</li>
+              <li><strong>Markdown</strong> (.md) — Great for technical writing, but images must be linked/referenced separately</li>
+              <li><strong>Google Docs</strong> (share link in form) — Make sure sharing permissions are set to "Anyone with the link can view"</li>
+            </ul>
+            
+            <div style="background: rgba(32,201,151,0.1); padding: 12px; border-radius: 6px; margin: 12px 0; border: 1px solid rgba(32,201,151,0.3);">
+              <p style="margin: 0; font-size: 14px;"><strong>💡 Pro Tip:</strong> <strong>PDF is strongly recommended</strong> because it preserves your formatting, embedded images, and citations exactly as you designed them. It works perfectly on all devices and won't have compatibility issues.</p>
+            </div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.6); padding: 16px; border-radius: 8px; margin: 16px 0;">
+            <h4 style="margin-top: 0; color: var(--accent);">🖼️ What About Images?</h4>
+            <p style="margin: 8px 0; font-size: 15px;">Your figures/diagrams should be <strong>embedded directly in your document</strong> (not submitted as separate files). All word processors and markdown editors support image embedding:</p>
+            <ul style="margin: 8px 0; font-size: 14px;">
+              <li><strong>Word/Pages/Google Docs:</strong> Insert → Image → From File</li>
+              <li><strong>Markdown:</strong> Use <code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px;">![caption](image.png)</code> syntax</li>
+              <li><strong>LaTeX/Overleaf:</strong> Use <code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px;">\includegraphics{}</code></li>
+            </ul>
+            <p style="margin: 8px 0; font-size: 14px; color: var(--muted);"><em>Note: If you submit .txt or .md without embedded images, include image URLs or describe where images should go.</em></p>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.6); padding: 16px; border-radius: 8px; margin: 16px 0;">
+            <h4 style="margin-top: 0; color: var(--accent);">📝 What to Include in the Google Form</h4>
+            <ol style="margin: 8px 0; font-size: 15px; line-height: 1.7;">
+              <li><strong>Your Name:</strong> As it appears on official university records</li>
+              <li><strong>Student ID:</strong> Your university student number</li>
+              <li><strong>Assignment Number:</strong> Select "Assignment 6" from dropdown</li>
+              <li><strong>Which Option:</strong> Specify whether you chose Option A, B, C, or D</li>
+              <li><strong>File Upload:</strong> Attach your completed report (any format listed above)</li>
+              <li><strong>Optional Comments:</strong> Any notes for the instructor (e.g., "used DALL-E 3 for all images" or "focused on MEG portabilization")</li>
+            </ol>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <p style="font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--accent);">Submit using the course Google Form:</p>
+          
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdkZyzDGpeOv8PTrNUDTYWPArQUwqzoZbiAdmgntMpt59f2tg/viewform?usp=dialog" 
+             target="_blank"
+             class="submit-button">
+            🚀 Submit Assignment 6
+          </a>
+
+          <p style="font-size: 13px; color: var(--muted); margin-top: 12px;">Same form you've been using all semester — it works great! 🎉</p>
+
+          <div style="background: rgba(249,171,0,0.1); padding: 16px; border-radius: 8px; margin: 24px auto; max-width: 600px; border: 1px solid rgba(249,171,0,0.3);">
+            <p style="margin: 0; font-size: 14px;">
+              <strong>📧 Backup Option:</strong> If the form doesn't work (very rare), email your file to <a href="mailto:kylemath@gmail.com" style="color: var(--accent); font-weight: 600;">kylemath@gmail.com</a> with subject line "PSYCH 403A1 Assignment 6 - [Your Name] - [Option A/B/C/D]"
+            </p>
+          </div>
+
+          <div style="background: rgba(32,201,151,0.08); padding: 16px; border-radius: 8px; margin: 24px auto; max-width: 600px;">
+            <strong>✅ Pre-Submission Checklist:</strong>
+            <ul style="text-align: left; margin: 8px 0 0 0; font-size: 14px; line-height: 1.7;">
+              <li>✓ Document is in PDF, Word, TXT, MD, or Google Docs format</li>
+              <li>✓ Name, student ID, and option (A/B/C/D) clearly labeled at the top of report</li>
+              <li>✓ 3-5 pages of text (excluding figures and references)</li>
+              <li>✓ At least 2 original figures/diagrams embedded in document</li>
+              <li>✓ At least 8 academic citations with working links verified</li>
+              <li>✓ All AI-generated images acknowledged in figure captions</li>
+              <li>✓ References section formatted consistently</li>
+              <li>✓ Proofread for clarity, coherence, and typos</li>
+              <li>✓ File name is descriptive (e.g., "Assignment6_Smith_OptionA.pdf")</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="warning">
+          <strong>⏰ Time Management Tip:</strong>
+          <p style="margin: 8px 0 0 0;">This assignment requires research, thinking, writing, and revision. Don't start the night before! Recommended timeline:</p>
+          <ul style="margin: 8px 0 0 0; font-size: 14px;">
+            <li><strong>Days 1-2:</strong> Choose your option, read background papers, brainstorm ideas</li>
+            <li><strong>Days 3-4:</strong> Create outline, sketch figures, gather citations</li>
+            <li><strong>Days 5-6:</strong> Write first draft</li>
+            <li><strong>Day 7:</strong> Revise, polish, proofread, submit</li>
+          </ul>
+        </div>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">Research & Writing</span>
+          <span class="tag">Future Technologies</span>
+          <span class="tag">Critical Thinking</span>
+          <span class="tag">Technical Design</span>
+        </div>
+        <div>© <span id="year"></span> Kyle Mathewson</div>
+      </footer>
+    </div>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
+

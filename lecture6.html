@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="20251103-v1">
+    <title>Lecture 6: Advanced Optical Neuroimaging - fNIRS & EROS</title>
+    <meta name="description" content="Sixth lecture for PSYCH 403A1: Deep dive into fNIRS and EROS optical imaging techniques, with comprehensive comparison of brain imaging modalities">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap&v=20251103" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <style>
+      /* Cache-busted styles - v20251103 */
+      :root {
+        --bg: #f8f4f8;
+        --bg-2: #ede8ed;
+        --text: #2d1b2d;
+        --muted: #6b5a6b;
+        --accent: #d63384;
+        --accent-2: #20c997;
+        --glow: rgba(214, 51, 132, 0.3);
+        --neural: rgba(32, 201, 151, 0.2);
+        --maxw: 1100px;
+        --warning: #f59e0b;
+        --hemoglobin: #dc2626;
+        --oxygen: #3b82f6;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+        line-height: 1.65;
+        letter-spacing: 0.1px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .neural-grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+          radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+          radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+          radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%),
+          radial-gradient(1px 1px at 25% 75%, var(--neural) 0, transparent 50%);
+        opacity: 0.4;
+        animation: pulse-grid 8s ease-in-out infinite;
+      }
+      @keyframes pulse-grid { 
+        0%, 100% { opacity: 0.4; transform: scale(1); } 
+        50% { opacity: 0.6; transform: scale(1.02); } 
+      }
+
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1, h2, h3, h4 {
+        font-family: Spectral, Georgia, "Times New Roman", serif;
+        line-height: 1.2;
+        margin: 0.2em 0 0.45em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-shadow: 0 0 12px var(--glow);
+      }
+      h2 {
+        font-size: clamp(22px, 3.5vw, 30px);
+        color: #4a2d4a;
+        margin-top: 2.2em;
+      }
+      h3 {
+        font-size: clamp(18px, 2.8vw, 24px);
+        color: var(--accent);
+        margin-top: 1.5em;
+      }
+      h4 {
+        font-size: clamp(16px, 2.2vw, 20px);
+        color: var(--accent-2);
+        margin-top: 1.2em;
+      }
+
+      p { margin: 0.85em 0; }
+      p.lead {
+        font-size: clamp(18px, 2.4vw, 21px);
+        color: #4a2d4a;
+      }
+
+      .stage {
+        font-style: italic;
+        color: var(--muted);
+        background: linear-gradient(90deg, rgba(214,51,132,0.08), rgba(255,255,255,0.3));
+        border-left: 3px solid var(--accent);
+        padding: 10px 12px 10px 14px;
+        margin: 18px 0;
+        border-radius: 6px;
+      }
+
+      .beat {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent), transparent);
+        box-shadow: 0 0 20px var(--glow);
+        margin: 26px 0;
+        position: relative;
+        border-radius: 2px;
+      }
+      .beat::after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--accent) 30%, var(--accent-2) 70%);
+        box-shadow: 0 0 20px var(--glow), 0 0 40px rgba(255,107,157,0.3);
+        animation: neural-pulse 3s ease-in-out infinite;
+      }
+      @keyframes neural-pulse {
+        0%   { left: 0%; opacity: 1; transform: scale(1); }
+        25%  { left: 25%; opacity: 0.7; transform: scale(1.2); }
+        50%  { left: 50%; opacity: 0.4; transform: scale(0.8); }
+        75%  { left: 75%; opacity: 0.7; transform: scale(1.2); }
+        100% { left: 100%; opacity: 1; transform: scale(1); }
+      }
+
+      ul { padding-left: 1.1em; }
+      li { margin: 0.4em 0; }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .callout {
+        background: linear-gradient(135deg, rgba(32,201,151,0.12), rgba(214,51,132,0.08));
+        border: 1px solid rgba(32,201,151,0.4);
+        border-radius: 12px;
+        padding: 16px 16px 18px;
+        color: var(--text);
+        margin: 18px 0 8px;
+        box-shadow: 0 4px 16px rgba(32,201,151,0.1);
+      }
+
+      .warning {
+        background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(239,68,68,0.08));
+        border: 1px solid rgba(245,158,11,0.4);
+        border-radius: 12px;
+        padding: 16px 16px 18px;
+        color: var(--text);
+        margin: 18px 0 8px;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        background: linear-gradient(45deg, rgba(214,51,132,0.15), rgba(32,201,151,0.15));
+        border: 1px solid rgba(214,51,132,0.4);
+        color: var(--text);
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        box-shadow: 0 2px 8px rgba(214,51,132,0.2);
+      }
+
+      .demo-container {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin: 24px 0;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        border: 2px solid rgba(32,201,151,0.3);
+      }
+
+      .demo-title {
+        font-family: Spectral, serif;
+        font-size: 22px;
+        color: var(--accent);
+        margin: 0 0 16px 0;
+      }
+
+      canvas {
+        display: block;
+        margin: 16px auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 16px 0;
+        align-items: center;
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      label {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      input[type="range"] {
+        width: 200px;
+      }
+
+      button {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        font-size: 14px;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+      }
+
+      button:active {
+        transform: scale(0.95);
+      }
+
+      .radio-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin: 16px 0;
+        padding: 16px;
+        background: rgba(32,201,151,0.05);
+        border-radius: 8px;
+      }
+
+      .radio-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .radio-item input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      .radio-item label {
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .technique-info {
+        background: rgba(214,51,132,0.08);
+        border-left: 4px solid var(--accent);
+        padding: 16px;
+        margin: 16px 0;
+        border-radius: 8px;
+      }
+
+      .technique-info h4 {
+        margin-top: 0;
+        color: var(--accent);
+      }
+
+      @media (max-width: 768px) {
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        input[type="range"] {
+          width: 100%;
+        }
+        .radio-group {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    <div class="container">
+      <header>
+        <div class="brand">Lecture 6 — Nov 3, 2025</div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="./index.html" class="tag" style="text-transform:none">← Course Home</a>
+          <a href="./brainimation.html" class="tag" style="text-transform:none;background:linear-gradient(45deg,rgba(32,201,151,0.25),rgba(32,201,151,0.2));border-color:#20c997;">BrainImation</a>
+        </div>
+      </header>
+
+      <main>
+        <h1>Lecture 6: The Future of Optical Neuroimaging</h1>
+        <p class="lead">From millisecond neural dynamics to next-generation brain-computer interfaces: exploring cutting-edge optical technologies that push the limits of what we can measure</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 1: The EROS Revolution — Measuring Neural Activity in Real-Time</h2>
+
+        <h3>Why EROS Changes Everything</h3>
+        <p>While traditional neuroimaging (fMRI, fNIRS) measures slow hemodynamic responses (seconds), <strong>Event-Related Optical Signal (EROS)</strong> captures neural activity directly with millisecond precision — fast enough to track individual action potentials and network dynamics.</p>
+
+        <div class="warning">
+          <strong>🚀 Paradigm Shift:</strong> EROS doesn't measure blood flow — it measures <em>physical changes in neural tissue</em> as neurons fire. This opens up entirely new possibilities: real-time brain-computer interfaces, tracking neural oscillations, and understanding fast neural dynamics that were previously invisible.
+        </div>
+
+        <h3>The Physics of Fast Scattering Changes</h3>
+        <p>EROS exploits a remarkable property: when neurons undergo <a href="https://en.wikipedia.org/wiki/Action_potential" target="_blank">action potentials</a>, they physically change shape in just 10-100 milliseconds. These rapid structural changes alter how light scatters through tissue, creating detectable optical signals that directly correlate with neural activity. The mechanism involves several interconnected biophysical processes that occur on timescales much faster than hemodynamic responses.</p>
+
+        <div class="callout">
+          <strong>🔬 The Mechanism:</strong>
+          <p>During neural activation, <a href="https://www.nature.com/articles/nrn755" target="_blank">neurons and glial cells swell</a> by approximately 1-2% as ion channels open and ions rush across the cell membrane. This <a href="https://en.wikipedia.org/wiki/Cell_volume_regulation" target="_blank">cell swelling</a> is accompanied by membrane reorganization — the opening and closing of voltage-gated ion channels physically changes membrane curvature and local tissue structure. Simultaneously, intracellular organelles like <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6028098/" target="_blank">mitochondria shift position</a> in response to calcium signaling, and rapid water movement follows the ionic fluxes, changing local tissue density.</p>
+          
+          <p>The cumulative effect of these changes is profound: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4883574/" target="_blank">photon paths become more direct</a> through the activated tissue, leading to faster transit times and earlier photon detection. This creates a measurable phase shift in time-resolved optical systems, providing a window into neural dynamics at millisecond timescales.</p>
+        </div>
+
+        <h4>Time-Resolved Detection</h4>
+        <p>Modern EROS systems use <strong>time-resolved spectroscopy</strong> to measure photon arrival times. When cells swell and become more organized, photons travel straighter paths and arrive earlier — creating a measurable phase shift or time-of-flight change:</p>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 1: EROS Time-of-Flight Detection</h3>
+          <p>This simulation shows how neural activation changes photon transit times. When neurons activate, cells swell and organize, creating straighter photon paths and faster detection. Watch how activation modulates the photon paths and detection time distribution.</p>
+          <div id="eros-scattering-demo"></div>
+          <div class="controls">
+            <button id="activate-neurons-eros">Activate Neurons</button>
+            <div class="control-group">
+              <label for="scattering-sensitivity">Scattering Sensitivity:</label>
+              <input type="range" id="scattering-sensitivity" min="0" max="100" step="5" value="50">
+              <span id="sensitivity-value">50%</span>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>Key Observations:</strong>
+            <ul style="margin:8px 0 0 0;">
+              <li><strong>Green paths:</strong> Photons that successfully reached the detector</li>
+              <li><strong>Time distribution graph:</strong> Shows how activation reduces mean transit time</li>
+              <li><strong>Modulation:</strong> Photons pulse/brighten with activation (mimics modulated light source)</li>
+              <li><strong>Phase shift:</strong> Earlier photon arrival creates measurable phase delay vs. input modulation</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Why This Matters: Real-Time Brain-Computer Interfaces</h3>
+        <p>EROS's millisecond temporal resolution makes it ideal for next-generation BCIs that need to track rapid neural state changes:</p>
+
+        <div class="callout">
+          <strong>🎮 Future Applications:</strong>
+          <ul>
+            <li><strong>Gaming & VR:</strong> Track attention, mental fatigue, and cognitive load in real-time</li>
+            <li><strong>Neurofeedback Training:</strong> Immediate feedback on neural oscillations (alpha, beta, gamma bands)</li>
+            <li><strong>Motor Imagery BCIs:</strong> Detect motor cortex activity before movement occurs</li>
+            <li><strong>Language Processing:</strong> Track word recognition and semantic processing at natural speech rates</li>
+            <li><strong>Clinical Monitoring:</strong> Real-time detection of seizures, stroke, or cognitive impairment</li>
+          </ul>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 2: Next-Generation Optical Technologies</h2>
+
+        <h3>Time-Resolved NIRS (TR-NIRS)</h3>
+        <p>While standard fNIRS measures average light intensity, <a href="https://www.nature.com/articles/s41598-020-67563-3" target="_blank">time-resolved near-infrared spectroscopy (TR-NIRS)</a> represents a significant technological leap forward. These systems use pulsed picosecond lasers and single-photon-sensitive detectors to measure individual photon arrival times with nanosecond precision. This temporal resolution enables sophisticated depth discrimination — photons that travel through deeper brain tissue take longer to return than those scattered by superficial scalp and skull. By analyzing the <a href="https://en.wikipedia.org/wiki/Photon_time-of-flight" target="_blank">temporal point spread function</a>, researchers can separate signals from different tissue depths and measure absolute hemoglobin concentrations rather than just relative changes. This dramatically improves signal quality by automatically filtering out superficial contamination from scalp blood flow.</p>
+
+        <h3>Diffuse Correlation Spectroscopy (DCS)</h3>
+        <p><a href="https://opg.optica.org/boe/fulltext.cfm?uri=boe-11-10-5679&id=439935" target="_blank">Diffuse Correlation Spectroscopy</a> represents a paradigm shift in optical brain monitoring by measuring blood flow directly rather than inferring it from oxygenation changes. The technique exploits the <a href="https://en.wikipedia.org/wiki/Dynamic_light_scattering" target="_blank">dynamic light scattering</a> properties of moving red blood cells: when coherent laser light scatters off moving particles, it undergoes subtle intensity fluctuations that encode information about particle velocity. By analyzing these temporal fluctuations using sophisticated autocorrelation algorithms, DCS can quantify cerebral blood flow with spatial resolution approaching 1 centimeter. Recent advances are pushing toward <a href="https://www.nature.com/articles/s41598-021-89849-2" target="_blank">high-density DCS arrays</a> that could provide whole-brain blood flow mapping, and when combined with fNIRS measurements of oxygenation, create a complete picture of cerebrovascular physiology.</p>
+
+        <h3>Optical Coherence Tomography (OCT) for Brain Imaging</h3>
+        <p><a href="https://en.wikipedia.org/wiki/Optical_coherence_tomography" target="_blank">Optical Coherence Tomography</a>, primarily known for its revolutionary impact on ophthalmology, is now being adapted for neuroscience applications. Using principles of <a href="https://en.wikipedia.org/wiki/Low-coherence_interferometry" target="_blank">low-coherence interferometry</a>, OCT can achieve micrometer-scale resolution — sufficient to image individual neurons and capillaries in exposed cortex. Modern systems provide <a href="https://www.nature.com/articles/s41377-021-00586-7" target="_blank">real-time 3D imaging</a> of both neural structure and blood flow dynamics at video rates. The most exciting frontier is combining OCT with optogenetics: researchers can now simultaneously image neural circuits while optically stimulating specific cell types, enabling closed-loop experiments that were impossible with previous technologies. Future developments include miniaturized OCT probes for deep brain imaging through implanted optical fibers or gradient-index lenses.</p>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Demo 2: EROS Scattering Mechanism</h3>
+          <p>Watch how neural activation (cell swelling) changes photon paths and detected signal intensity.</p>
+          <div id="eros-scattering-demo"></div>
+          <div class="controls">
+            <button id="activate-neurons-eros">Activate Neurons</button>
+            <div class="control-group">
+              <label for="scattering-sensitivity">Scattering Sensitivity:</label>
+              <input type="range" id="scattering-sensitivity" min="0" max="100" step="5" value="50">
+              <span id="sensitivity-value">50%</span>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">
+            <strong>EROS Characteristics:</strong>
+            <ul style="margin:8px 0 0 0;">
+              <li><strong>Temporal Resolution:</strong> ~100ms (much faster than fNIRS/fMRI's ~1-2s)</li>
+              <li><strong>Signal Size:</strong> Very small (~0.01-0.1% change) - requires sensitive detectors</li>
+              <li><strong>Source:</strong> Direct neural activity, not blood flow</li>
+              <li><strong>Combination:</strong> Often measured simultaneously with fNIRS to get both fast (EROS) and slow (fNIRS) signals!</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Combining EROS with Other Modalities</h3>
+        <p>The future of optical neuroimaging lies in multi-modal systems that combine different techniques:</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0;">
+          <div style="background:rgba(32,201,151,0.1);padding:16px;border-radius:8px;">
+            <h4 style="color:var(--accent-2);margin-top:0;">EROS + fNIRS</h4>
+            <ul style="margin:0;">
+              <li>Fast neural activity (EROS) + Blood flow (fNIRS)</li>
+              <li>Complete picture: What neurons do AND metabolic response</li>
+              <li>Future: Simultaneous measurement in single headset</li>
+              <li>Application: Understanding neurovascular coupling in real-time</li>
+            </ul>
+          </div>
+          <div style="background:rgba(214,51,132,0.1);padding:16px;border-radius:8px;">
+            <h4 style="color:var(--accent);margin-top:0;">EROS + EEG</h4>
+            <ul style="margin:0;">
+              <li>Fast scattering (EROS) + Electrical activity (EEG)</li>
+              <li>Better spatial resolution than EEG alone</li>
+              <li>Complementary information: Structure + function</li>
+              <li>Application: Real-time source localization for BCIs</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 3: The Future Landscape — Where Is Optical Imaging Heading?</h2>
+
+        <h3>2025-2030: What's Coming Next</h3>
+        <p>Optical neuroimaging is rapidly evolving. Here's where the field is heading:</p>
+
+        <h4>Wearable High-Density Arrays</h4>
+        <ul>
+          <li><strong>100+ channels:</strong> Current systems have ~20-30 channels; next-gen will have 100+</li>
+          <li><strong>Flexible electronics:</strong> Conformable arrays that adapt to head shape</li>
+          <li><strong>Wireless systems:</strong> Battery-powered, real-time streaming to phones/tablets</li>
+          <li><strong>Multi-modal integration:</strong> Combined fNIRS + EEG + EROS in single headset</li>
+        </ul>
+
+        <h4>Machine Learning & Signal Processing</h4>
+        <ul>
+          <li><strong>Deep learning source localization:</strong> AI reconstructs brain activation from optical signals</li>
+          <li><strong>Real-time artifact removal:</strong> Adaptive filtering that learns individual noise patterns</li>
+          <li><strong>Predictive modeling:</strong> Forecast cognitive states and performance</li>
+          <li><strong>Personalized calibration:</strong> Systems that adapt to individual anatomy</li>
+        </ul>
+
+        <h4>Biophotonics & Quantum Sensing</h4>
+        <ul>
+          <li><strong>Single-photon detectors:</strong> Ultra-sensitive detection of ultra-weak signals</li>
+          <li><strong>Quantum-entangled photons:</strong> Possible breakthrough for deeper penetration</li>
+          <li><strong>Biophoton detection:</strong> Measuring photons emitted by biological tissue itself</li>
+          <li><strong>Super-resolution imaging:</strong> Breaking the diffraction limit with optical tricks</li>
+        </ul>
+
+        <h3>The Big Picture: Comparing All Brain Imaging Modalities</h3>
+        <p>Where does optical imaging fit in the broader landscape of brain measurement technologies? Let's compare across key dimensions:</p>
+
+        <div class="demo-container">
+          <h3 class="demo-title">Interactive Imaging Modality Comparison</h3>
+          <p>Select different imaging techniques to see where they fall on the portability vs. spatial resolution graph, and whether they provide whole-brain or local imaging capabilities.</p>
+          
+          <div class="radio-group">
+            <div class="radio-item">
+              <input type="radio" id="all-tech" name="technique" value="all" checked>
+              <label for="all-tech">Show All Techniques</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="pet" name="technique" value="pet">
+              <label for="pet">PET</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="fmri" name="technique" value="fmri">
+              <label for="fmri">fMRI</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="eeg" name="technique" value="eeg">
+              <label for="eeg">Surface EEG</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="meg" name="technique" value="meg">
+              <label for="meg">MEG</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="fnirs" name="technique" value="fnirs">
+              <label for="fnirs">fNIRS</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="ultrasound" name="technique" value="ultrasound">
+              <label for="ultrasound">Functional Ultrasound</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="optical" name="technique" value="optical">
+              <label for="optical">Optical Imaging</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="implanted" name="technique" value="implanted">
+              <label for="implanted">Implanted EEG</label>
+            </div>
+          </div>
+
+          <div id="imaging-comparison-demo"></div>
+
+          <div id="technique-details" class="technique-info" style="display:none;">
+            <h4 id="tech-name"></h4>
+            <p id="tech-description"></p>
+            <ul id="tech-specs"></ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Key Trade-offs in Brain Imaging:</strong>
+          <ul>
+            <li><strong>Portability ↔ Spatial Resolution:</strong> Portable techniques (EEG, MEG, fNIRS) typically sacrifice spatial precision</li>
+            <li><strong>Whole Brain ↔ Local Precision:</strong> Techniques that cover the whole brain (fMRI, PET, EEG) often have lower local resolution than targeted methods</li>
+            <li><strong>Temporal Resolution:</strong> Fast techniques (EEG, MEG, EROS) measure neural activity directly; slow ones (fMRI, fNIRS) measure hemodynamic responses</li>
+            <li><strong>Invasiveness:</strong> Implanted methods offer the best spatial resolution but require surgery</li>
+          </ul>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 4: The Road to Consumer Adoption — Miniaturization and Portability</h2>
+
+        <h3>From Lab Instruments to Wearable Devices</h3>
+        <p>The journey from bulky laboratory fNIRS systems to truly wearable brain monitors represents one of the most exciting engineering challenges in neurotechnology. Early optical brain imaging systems required racks of equipment: laser sources, lock-in amplifiers, optical switches, and desktop computers for data acquisition. Modern systems fit in a headband or baseball cap. How did we get here, and what engineering breakthroughs made this possible?</p>
+
+        <h3>The Critical Technologies: Fiber Optics and Photonics</h3>
+        
+        <h4>Bent Optical Fibers: The Flexibility Revolution</h4>
+        <p>Traditional <a href="https://en.wikipedia.org/wiki/Optical_fiber" target="_blank">optical fibers</a> used in early fNIRS systems were rigid and fragile, making it nearly impossible to create comfortable, conformable headsets. The breakthrough came with advances in <a href="https://www.nature.com/articles/s41598-019-43237-2" target="_blank">flexible fiber optics</a> — specially designed fibers that can bend around the contours of the head without signal loss or breakage. These bent optical fibers use <a href="https://en.wikipedia.org/wiki/Total_internal_reflection" target="_blank">total internal reflection</a> even at small bend radii, maintaining signal integrity while conforming to individual head shapes. Modern wearable fNIRS systems use fiber bundles that can withstand thousands of flex cycles, crucial for daily use applications. The engineering challenge was optimizing the refractive index profile and cladding materials to minimize losses during repeated bending — a problem that took years to solve but now enables truly wearable designs.</p>
+
+        <h4>Miniaturized Light Sources and Detectors</h4>
+        <p>The second breakthrough was shrinking the photonics components themselves. Early systems used bulky laser diodes and photomultiplier tubes. Modern devices leverage <a href="https://en.wikipedia.org/wiki/Vertical-cavity_surface-emitting_laser" target="_blank">vertical-cavity surface-emitting lasers (VCSELs)</a> — the same technology used in smartphone Face ID systems — which are smaller than a grain of rice yet powerful enough for brain imaging. On the detection side, <a href="https://www.nature.com/articles/s41566-020-0644-7" target="_blank">silicon photomultipliers (SiPMs)</a> provide single-photon sensitivity in packages smaller than a pencil eraser, running on milliwatts of power rather than the kilowatts required by old photomultiplier tubes.</p>
+
+        <h3>Companies Leading the Portable Revolution</h3>
+
+        <h4>BlueberryX: Consumer-Grade Brain Monitoring</h4>
+        <p><a href="https://blueberryx.com/" target="_blank">BlueberryX</a> represents the cutting edge of portable optical neuroimaging, developing compact fNIRS systems designed for everyday use rather than laboratory research. Their approach focuses on making brain monitoring as accessible as heart rate monitoring — small, wireless devices that stream data to smartphones in real-time. The engineering challenges are formidable: maintaining signal quality while minimizing size and power consumption, developing algorithms that work reliably across different hair types and skin tones, and creating user interfaces intuitive enough for non-experts. BlueberryX's work demonstrates that consumer brain monitoring is not science fiction but an engineering problem being solved today, with applications ranging from meditation feedback to cognitive performance tracking.</p>
+
+        <h4>Kernel: Time-Domain Optical Imaging at Scale</h4>
+        <p><a href="https://www.kernel.com/" target="_blank">Kernel</a>, founded by entrepreneur <a href="https://en.wikipedia.org/wiki/Bryan_Johnson_(entrepreneur)" target="_blank">Bryan Johnson</a>, has pioneered <a href="https://www.biorxiv.org/content/10.1101/2020.10.15.333963v1" target="_blank">time-domain functional near-infrared spectroscopy (TD-fNIRS)</a> in a form factor approaching consumer wearability. Their Kernel Flow system represents a remarkable feat of photonics engineering: it delivers picosecond laser pulses, measures photon time-of-flight with sub-nanosecond resolution, and does this across hundreds of channels simultaneously — all in a headset light enough to wear comfortably. The system measures not just hemodynamic responses but the actual path lengths photons travel through brain tissue, enabling unprecedented depth discrimination and signal quality. Johnson's vision is ambitious: making brain recording as commonplace as genome sequencing, democratizing access to neurotechnology that was previously confined to elite research laboratories.</p>
+
+        <div class="callout">
+          <strong>💡 Why Time-Domain Matters:</strong>
+          <p>Time-domain optical systems like Kernel Flow measure when photons arrive, not just how many. This temporal information is crucial because photons that take longer paths (going deeper into brain tissue) arrive later than those scattered by superficial scalp and skull. By analyzing the temporal distribution of photon arrivals, time-domain systems can effectively "see through" confounding signals from scalp blood flow — the biggest challenge in traditional fNIRS. This is why Bryan Johnson invested in time-domain technology: it's the key to robust, reliable brain monitoring outside controlled laboratory conditions.</p>
+        </div>
+
+        <h3>2024-2025: The Consumer Revolution Arrives</h3>
+
+        <h4>Muse S Athena: Dual-Modal Brain Monitoring</h4>
+        <p>In March 2025, <a href="https://choosemuse.com/" target="_blank">Interaxon</a> launched the <strong>Muse S Athena</strong>, marking a watershed moment in consumer neurotechnology. This device is the <em>first consumer wearable</em> to combine EEG and fNIRS in a single, comfortable headband that users can wear all day. The Athena features SmartSense EEG technology to detect brainwave activity alongside fNIRS sensors that track cerebral blood oxygenation in real-time. The device offers up to 10 hours of battery life and uses an ultra-light, breathable band design that makes extended wear practical — whether during meditation sessions, work hours, or sleep.</p>
+
+        <p>What makes the Athena significant is not just the technical achievement but the <strong>integration philosophy</strong>: by combining fast electrical signals (EEG) with slower hemodynamic responses (fNIRS), the system provides complementary views of brain function. The accompanying app translates these measurements into personalized cognitive training, mental endurance metrics, and insights into focus and resilience. This dual-modal approach bridges the gap between laboratory research and everyday cognitive fitness, making brain monitoring accessible to millions of users who already use meditation apps and fitness trackers.</p>
+
+        <h4>Research-Grade Portable Systems</h4>
+        <p>The research community has also seen remarkable advances in portable fNIRS technology. <a href="https://nirx.net/" target="_blank">NIRx's NIRSport 2</a> represents the current state-of-the-art in whole-head, high-density portable fNIRS. This system maintains laboratory-grade signal quality while being light enough to wear during naturalistic activities. With support for up to 40 sources and 40 detectors, it enables true whole-head coverage with spatial resolution approaching fMRI — all in a package that can be used in schools, workplaces, and sports facilities.</p>
+
+        <p><a href="https://www.artinis.com/" target="_blank">Artinis Medical Systems</a> has developed complementary approaches with their <strong>Brite MKII</strong> and <strong>PortaLite</strong> systems. These devices use dual-wavelength LEDs and multiple detectors to measure hemoglobin changes across specific brain regions, particularly motor cortex during movement studies. The <a href="https://www.excli.de/excli/article/view/7151/4953" target="_blank">Brite system</a> has been validated in studies measuring cortical activity in bilateral motor regions, enabling research in real-world sports environments and rehabilitation settings that would be impossible with traditional neuroimaging.</p>
+
+        <h4>Open-Source Innovation: OpenNIRScap</h4>
+        <p>Perhaps most exciting for the democratization of neurotechnology is the <a href="https://arxiv.org/abs/2505.20509" target="_blank">OpenNIRScap</a>, an open-source, low-cost wearable fNIRS cap developed to make brain monitoring accessible to researchers with limited budgets. This system features 24 custom-designed sensor boards with dual-wavelength light emitters and photodiode detectors, along with a real-time data processing pipeline — all with designs and software freely available online. By dramatically reducing the cost barrier (potentially to under $1,000 for a complete system), OpenNIRScap enables smaller research groups, educational institutions, and citizen scientists to conduct legitimate cognitive neuroscience research. The open-source nature also accelerates innovation, as improvements developed by one lab immediately benefit the entire community.</p>
+
+        <div class="callout">
+          <strong>🌍 Global Accessibility:</strong>
+          <p>These 2024-2025 developments represent a crucial shift toward global accessibility in neurotechnology. While earlier systems were confined to wealthy research institutions in developed countries, devices like OpenNIRScap and consumer products like Muse S Athena are bringing brain monitoring to diverse populations worldwide. This matters not just for equity, but for science — establishing population norms for brain function requires data from diverse ethnicities, ages, and socioeconomic backgrounds. The portability revolution is making that possible.</p>
+        </div>
+
+        <h3>What's Needed for Ubiquitous Adoption: The Smartwatch Analogy</h3>
+        <p>To understand what it will take for optical brain monitoring to become as common as <a href="https://en.wikipedia.org/wiki/Apple_Watch" target="_blank">smartwatches</a>, we can learn from the wearables revolution. In 2010, continuous heart rate monitoring required medical equipment; by 2015, it was in millions of wrists worldwide. What changed?</p>
+
+        <h4>1. Sensor Miniaturization and Integration</h4>
+        <p>The <a href="https://en.wikipedia.org/wiki/Photoplethysmogram" target="_blank">photoplethysmography (PPG)</a> sensors in smartwatches required years of miniaturization before they could fit in a watch case. Similarly, optical brain sensors need to shrink further — from current headband-sized systems to something that could fit in eyeglass temples, headphones, or even ear buds. Companies are developing <a href="https://www.nature.com/articles/s41598-021-98472-y" target="_blank">in-ear EEG and optical sensors</a> that could enable brain monitoring through everyday audio devices. The challenge is maintaining signal quality while shrinking aperture sizes and reducing the number of optodes.</p>
+
+        <h4>2. Signal Processing and Machine Learning</h4>
+        <p>Smartwatches work because sophisticated algorithms extract meaningful information from noisy signals automatically. Brain monitoring needs the same: <a href="https://www.nature.com/articles/s42256-020-0218-x" target="_blank">machine learning models</a> that can distinguish true brain signals from motion artifacts, ambient light contamination, and physiological noise without requiring expert interpretation. Recent advances in <a href="https://en.wikipedia.org/wiki/Deep_learning" target="_blank">deep learning</a> are making this possible — neural networks trained on thousands of hours of optical brain data can now automatically detect cognitive states, mental fatigue, and attention levels with accuracy approaching expert human analysis.</p>
+
+        <h4>3. Compelling Use Cases and User Experience</h4>
+        <p>Smartwatches succeeded because they provided immediate, understandable value: step counting, heart rate trends, workout tracking. Brain monitors need similarly intuitive applications. Early adopters are finding value in meditation feedback (seeing your prefrontal cortex activity calm in real-time), cognitive performance tracking (measuring mental fatigue during work), and sleep optimization (monitoring brain oxygenation through the night). But the "killer app" for consumer brain monitoring hasn't emerged yet. Will it be gaming and VR control? Productivity optimization? Mental health monitoring? The technology is ready; the market is still discovering what it wants.</p>
+
+        <h4>4. Cost Reduction Through Volume Manufacturing</h4>
+        <p>Current research-grade fNIRS systems cost $50,000-$200,000. Kernel Flow targets ~$50,000. Consumer adoption requires prices under $500 — a 100x reduction. This only happens through manufacturing at scale: injection-molded plastic optode housings instead of precision machined metal, automotive-grade photodiodes instead of laboratory spectrometers, and smartphone-class processors instead of dedicated computers. The <a href="https://en.wikipedia.org/wiki/Learning_curve" target="_blank">learning curve effect</a> suggests that doubling production volume reduces costs by 20-30%. Getting from thousands of units to millions will drive prices down to consumer levels, but requires venture capital willing to fund that scale-up before the market is proven.</p>
+
+        <h4>5. Standardization and Validation</h4>
+        <p>Smartwatches benefited from decades of heart rate monitoring research establishing what "normal" looks like. Brain monitoring needs similar standards: validated metrics, population norms, and clinical benchmarks that give meaning to the numbers. Organizations like the <a href="https://www.nitrc.org/projects/fnirs" target="_blank">fNIRS community</a> and the <a href="https://www.ieee.org/" target="_blank">IEEE</a> are working on standardization, but progress is slow. Regulatory pathways are also unclear — does a consumer brain monitor require FDA approval? What claims can manufacturers make about mental state detection? These questions need answers before mass-market products can launch.</p>
+
+        <div class="warning">
+          <strong>🚧 Engineering Challenges Ahead:</strong>
+          <p>Despite rapid progress, significant obstacles remain. Hair interference is a major issue — dark, thick hair blocks and absorbs light, making measurements difficult in many populations. Power consumption is another barrier: time-domain systems require high-power pulsed lasers that drain batteries quickly. Form factor is challenging: unlike heart rate sensors that work on the wrist, brain monitors need skull contact, limiting design options. And perhaps most importantly, the signal-to-noise ratio in real-world conditions (moving, sweating, in sunlight) is still marginal. Solving these problems requires continued innovation in photonics, materials science, and signal processing. But the trajectory is clear: portable brain monitoring is moving from "if" to "when."</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Part 5: Beyond Traditional Optical Imaging — Novel Modalities</h2>
+
+        <h3>Photoacoustic Imaging</h3>
+        <p><a href="https://en.wikipedia.org/wiki/Photoacoustic_imaging_in_biomedicine" target="_blank">Photoacoustic imaging</a> represents an elegant fusion of optical and acoustic physics. The technique works by delivering nanosecond laser pulses into tissue, which causes localized <a href="https://www.nature.com/articles/lsa201771" target="_blank">thermoelastic expansion</a> — essentially converting absorbed light energy into ultrasound waves. These acoustic signals can be detected at the surface and computationally reconstructed into high-resolution images. The beauty of this hybrid approach is that it combines the molecular specificity of optical imaging (different wavelengths are absorbed by different chromophores like oxy- and deoxy-hemoglobin) with the deep penetration and high spatial resolution of ultrasound. Recent advances have achieved penetration depths exceeding 7 centimeters while maintaining sub-millimeter resolution, making <a href="https://www.nature.com/articles/s41551-021-00735-8" target="_blank">whole-brain functional imaging</a> in rodents — and potentially humans — within reach.</p>
+
+        <h3>Thermal Imaging of Brain Activity</h3>
+        <p>Neural activity is fundamentally a thermodynamic process, and each action potential generates minute temperature changes on the order of ~1 millikelvin. While this may seem impossibly small, advances in <a href="https://www.nature.com/articles/s41598-020-75355-6" target="_blank">ultra-sensitive infrared thermography</a> and <a href="https://en.wikipedia.org/wiki/Quantum_sensor" target="_blank">quantum thermal sensors</a> are making direct thermal imaging of brain activity increasingly feasible. The advantage of thermal imaging is its orthogonality to existing techniques — temperature provides independent information about metabolic rate and energy consumption that complements electrical and optical signals. Research groups are exploring both contact-based thermal sensors and non-contact infrared imaging systems, with the tantalizing possibility of monitoring brain activity from a distance without any physical contact.</p>
+
+        <h3>Optogenetics + Optical Imaging</h3>
+        <p>The combination of <a href="https://en.wikipedia.org/wiki/Optogenetics" target="_blank">optogenetics</a> and optical imaging represents a perfect marriage: using light both to manipulate and measure neural activity. Since the <a href="https://www.nature.com/articles/nmeth.f.324" target="_blank">pioneering work in 2005</a>, researchers have developed an extensive toolkit of light-sensitive proteins (opsins) that allow precise control of specific neuron types. Modern experiments combine optogenetic stimulation with simultaneous calcium imaging using <a href="https://www.nature.com/articles/s41586-020-2098-9" target="_blank">genetically encoded calcium indicators</a>, enabling causal inference impossible with correlation-based methods. The future lies in fully closed-loop systems that continuously adapt stimulation patterns based on real-time measurements, potentially revolutionizing treatments for epilepsy, Parkinson's disease, and psychiatric disorders.</p>
+
+        <h3>Functional Ultrasound (fUS)</h3>
+        <p><a href="https://www.nature.com/articles/s41551-019-0431-2" target="_blank">Functional ultrasound imaging</a> has emerged as a dark horse in the neuroimaging field, offering an unprecedented combination of spatial resolution (~100 micrometers), temporal resolution (~100 milliseconds), and penetration depth (several centimeters). The technique uses <a href="https://en.wikipedia.org/wiki/Doppler_ultrasonography" target="_blank">ultrafast Doppler imaging</a> to detect changes in cerebral blood flow associated with neural activity. Unlike optical methods limited by light scattering, ultrasound can penetrate deeply through intact skull (particularly in rodents and through surgical windows in larger animals). Recent <a href="https://www.science.org/doi/10.1126/scitranslmed.aaz9549" target="_blank">human studies</a> have demonstrated whole-brain functional mapping through intact skull, and when combined with optical techniques in multi-modal systems, promises to provide the most comprehensive picture of brain function yet achieved.</p>
+
+        <div class="warning">
+          <strong>🧠 Assignment Challenge:</strong> Design a novel brain imaging modality. What physical property changes during neural activity that we haven't exploited?
+          <ul style="margin-top:8px;">
+            <li>Temperature? (thermal imaging — how sensitive can we get?)</li>
+            <li>Electrical impedance? (EIT — could it work for brain?)</li>
+            <li>Sound waves? (ultrasound — but what about neural sound generation?)</li>
+            <li>Magnetic fields from ion flow? (beyond MEG — detect local fields?)</li>
+            <li>Pressure waves? (acoustic signals from neural activity?)</li>
+            <li>Mechanical vibrations? (can we detect brain "pulsing" with activity?)</li>
+            <li>Biophotons? (ultraweak photon emission — our next experiment!)</li>
+            <li>Metabolic byproducts? (can we detect changes in brain chemistry optically?)</li>
+          </ul>
+          <p style="margin-top:12px;"><strong>Consider:</strong> Signal strength, temporal resolution, spatial resolution, invasiveness, cost, and practical feasibility. What would revolutionize the field?</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>🎯 Today's Activities</h2>
+
+        <div class="callout">
+          <h3 style="margin-top:0;">Hands-on Explorations</h3>
+          <ol>
+            <li><strong>EROS Time-of-Flight Analysis:</strong> Examine the detection time distribution — how does neural activation change photon transit times?</li>
+            <li><strong>Advanced Signal Processing:</strong> Extract fast EROS signals from noisy data using filtering and phase analysis</li>
+            <li><strong>Imaging Modality Comparison:</strong> Use the interactive tool to understand where optical methods fit in the neuroimaging landscape</li>
+            <li><strong>Future BCI Design:</strong> Brainstorm how EROS could enable new types of brain-computer interfaces</li>
+            <li><strong>Novel Modality Proposal:</strong> Design your own brain imaging method — what would revolutionize the field?</li>
+          </ol>
+        </div>
+
+        <h3>Cutting-Edge Resources</h3>
+        <ul>
+          <li><a href="https://www.nature.com/articles/s41593-021-00907-4" target="_blank">Time-resolved NIRS for deep brain imaging (Nature Neuroscience)</a></li>
+          <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7690204/" target="_blank">Diffuse Correlation Spectroscopy: Recent advances (2020)</a></li>
+          <li><a href="https://www.nature.com/articles/s41551-021-00829-3" target="_blank">Wearable optical brain imaging systems (Nature Biomedical Engineering)</a></li>
+          <li><a href="https://www.frontiersin.org/articles/10.3389/fnins.2020.00641/full" target="_blank">EROS and real-time BCIs (Frontiers)</a></li>
+          <li><a href="https://www.nature.com/articles/s41598-021-92513-4" target="_blank">Photoacoustic brain imaging (2021)</a></li>
+        </ul>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Looking Forward: The Optical Neuroimaging Revolution</h2>
+
+        <div class="callout">
+          <h3 style="margin-top:0;">🔮 Vision for 2030</h3>
+          <p>Imagine a world where:</p>
+          <ul>
+            <li><strong>Wearable BCIs:</strong> Lightweight optical headsets that read your thoughts in real-time</li>
+            <li><strong>Personalized Medicine:</strong> Optical monitoring guides treatment for depression, ADHD, stroke recovery</li>
+            <li><strong>Educational Neuroscience:</strong> Real-time cognitive load assessment optimizes learning</li>
+            <li><strong>Social Neuroscience:</strong> Understand how multiple brains interact during social connection</li>
+            <li><strong>Clinical Monitoring:</strong> Continuous, non-invasive brain monitoring in hospitals and homes</li>
+          </ul>
+          <p style="margin-top:12px;"><strong>The technology is almost there.</strong> The missing pieces: better signal processing, machine learning, and creative applications. That's where you come in.</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Next Week (Nov 17): Lab Tour & Biophoton Experiment Prep</h2>
+        <p><strong>Optical Imaging Lab Tour & Experimental Design</strong></p>
+        <ul>
+          <li>Tour the campus optical imaging lab — see state-of-the-art fNIRS and EROS systems</li>
+          <li>Hands-on with real equipment — understand the engineering challenges</li>
+          <li>Learn experimental design for ultra-sensitive optical measurements</li>
+          <li>Prepare for our biophoton experiment — testing the limits of what we can detect</li>
+          <li>Critical thinking: How do we distinguish signal from noise in ultra-weak measurements?</li>
+        </ul>
+
+      </main>
+
+      <footer>
+        <div>
+          <span class="tag">fNIRS</span>
+          <span class="tag">EROS</span>
+          <span class="tag">Optical Imaging</span>
+          <span class="tag">p5.js</span>
+        </div>
+        <div style="margin-top:12px;">© 2025 Kyle Mathewson — <a href="./index.html">Course Home</a></div>
+      </footer>
+    </div>
+
+    <script>
+      // Cache busting script
+      if (window.performance && window.performance.navigation.type === 2) {
+        window.location.reload(true);
+      }
+
+      // ==========================================
+      // Demo 1: Hemoglobin Absorption Spectra
+      // ==========================================
+      let hbSpectraDemo;
+      
+      const hbSpectraSketch = (p) => {
+        let wavelength = 760;
+        let showBoth = false;
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(600, 400);
+          canvas.parent('hemoglobin-spectra-demo');
+        };
+        
+        p.draw = function() {
+          p.background(250);
+          
+          // Title
+          p.fill(0);
+          p.textSize(16);
+          p.textStyle(p.BOLD);
+          p.text('Hemoglobin Absorption Spectra', 20, 30);
+          
+          // Axes
+          p.stroke(100);
+          p.strokeWeight(2);
+          p.line(50, 350, 550, 350); // X-axis
+          p.line(50, 350, 50, 50);   // Y-axis
+          
+          // Labels
+          p.fill(0);
+          p.textSize(12);
+          p.text('Wavelength (nm)', 260, 385);
+          p.push();
+          p.translate(15, 200);
+          p.rotate(-p.PI/2);
+          p.text('Absorption Coefficient (cm⁻¹)', 0, 0);
+          p.pop();
+          
+          // Wavelength scale
+          for (let w = 650; w <= 950; w += 50) {
+            let x = p.map(w, 650, 950, 50, 550);
+            p.stroke(150);
+            p.strokeWeight(1);
+            p.line(x, 345, x, 355);
+            p.fill(100);
+            p.textSize(10);
+            p.textAlign(p.CENTER);
+            p.text(w, x, 370);
+          }
+          
+          // Draw spectra curves
+          p.noFill();
+          
+          // Oxy-Hb (red curve)
+          p.stroke(220, 50, 50);
+          p.strokeWeight(2);
+          p.beginShape();
+          for (let w = 650; w <= 950; w++) {
+            let abs = getOxyHbAbsorption(w);
+            let y = p.map(abs, 0, 5, 350, 50);
+            let x = p.map(w, 650, 950, 50, 550);
+            p.vertex(x, y);
+          }
+          p.endShape();
+          
+          // Deoxy-Hb (blue curve)
+          p.stroke(50, 50, 220);
+          p.strokeWeight(2);
+          p.beginShape();
+          for (let w = 650; w <= 950; w++) {
+            let abs = getDeoxyHbAbsorption(w);
+            let y = p.map(abs, 0, 5, 350, 50);
+            let x = p.map(w, 650, 950, 50, 550);
+            p.vertex(x, y);
+          }
+          p.endShape();
+          
+          // Current wavelength marker
+          let x = p.map(wavelength, 650, 950, 50, 550);
+          p.stroke(255, 200, 0);
+          p.strokeWeight(3);
+          p.line(x, 50, x, 350);
+          
+          // Show absorption values at current wavelength
+          let oxyAbs = getOxyHbAbsorption(wavelength);
+          let deoxyAbs = getDeoxyHbAbsorption(wavelength);
+          
+          p.fill(220, 50, 50);
+          p.circle(70, 100, 10);
+          p.fill(0);
+          p.textSize(12);
+          p.textAlign(p.LEFT);
+          p.text(`Oxy-Hb @ ${wavelength}nm: ${oxyAbs.toFixed(2)} cm⁻¹`, 90, 105);
+          
+          p.fill(50, 50, 220);
+          p.circle(70, 130, 10);
+          p.fill(0);
+          p.text(`Deoxy-Hb @ ${wavelength}nm: ${deoxyAbs.toFixed(2)} cm⁻¹`, 90, 135);
+          
+          // Legend
+          p.fill(220, 50, 50);
+          p.rect(400, 80, 20, 3);
+          p.fill(0);
+          p.text('Oxy-Hemoglobin', 430, 95);
+          
+          p.fill(50, 50, 220);
+          p.rect(400, 110, 20, 3);
+          p.fill(0);
+          p.text('Deoxy-Hemoglobin', 430, 125);
+        };
+        
+        function getOxyHbAbsorption(w) {
+          // Simplified model of oxy-Hb absorption
+          let base = 0.5;
+          if (w < 750) base = 1.5;
+          if (w > 850) base = 2.0;
+          let peak = Math.exp(-Math.pow((w - 760) / 50, 2)) * 2.5;
+          return base + peak;
+        }
+        
+        function getDeoxyHbAbsorption(w) {
+          // Simplified model of deoxy-Hb absorption
+          let base = 1.0;
+          if (w < 700) base = 3.0;
+          if (w > 850) base = 0.3;
+          let peak = Math.exp(-Math.pow((w - 760) / 60, 2)) * 1.5;
+          return base + peak;
+        }
+        
+        window.setWavelength = function(w) {
+          wavelength = w;
+        };
+        
+        window.toggleBothWavelengths = function() {
+          showBoth = !showBoth;
+        };
+      };
+      
+      hbSpectraDemo = new p5(hbSpectraSketch);
+      
+      document.getElementById('wavelength').addEventListener('input', (e) => {
+        const value = parseInt(e.target.value);
+        document.getElementById('wavelength-value').textContent = value + 'nm';
+        window.setWavelength(value);
+      });
+      
+      document.getElementById('show-both-wavelengths').addEventListener('click', () => {
+        window.toggleBothWavelengths();
+      });
+
+      // ==========================================
+      // Demo 2: EROS Scattering
+      // ==========================================
+      let erosDemo;
+      
+      const erosScatteringSketch = (p) => {
+        let neuronsActive = false;
+        let activationTime = 0;
+        let scatteringSensitivity = 50;
+        const numPhotons = 200;
+        const numVisiblePhotons = 20; // Show 10x fewer (20 out of 200)
+        let photonPaths = [];
+        let detectionTimes = []; // Track detection times
+        const sourceX = 100;
+        const detectorX = 500;
+        const sourceY = 200;
+        const detectorY = 200;
+        const cellX = 300;
+        const cellY = 180;
+        const cellRadius = 120;
+        let simulationTime = 0;
+        const speedMultiplier = 10; // 10x faster
+        const maxGraphPoints = 100;
+        
+        class Photon {
+          constructor(id) {
+            this.id = id;
+            this.reset();
+          }
+          
+          reset() {
+            this.x = sourceX;
+            this.y = sourceY;
+            // Initial angle biased toward detector
+            let toDetector = p.atan2(detectorY - sourceY, detectorX - sourceX);
+            this.angle = toDetector + p.random(-p.PI/8, p.PI/8);
+            this.active = true;
+            this.path = [{x: this.x, y: this.y}];
+            this.detected = false;
+            this.detectionTime = null;
+            this.startTime = simulationTime;
+            this.isVisible = this.id < numVisiblePhotons; // Only show first N photons
+          }
+          
+          update(scattering) {
+            if (!this.active) return;
+            
+            // Base scattering amount
+            let scatterAmount = 0.4;
+            
+            // Check if photon is in activation region (swollen cells)
+            let distToCell = p.dist(this.x, this.y, cellX, cellY);
+            let inCellRegion = distToCell < cellRadius;
+            
+            // When neurons active: cells swell, LESS scattering (straighter paths)
+            if (neuronsActive && inCellRegion) {
+              // Reduce scattering significantly (cells more organized)
+              scatterAmount = 0.1 + (scattering / 100) * 0.05;
+              // Also bias angle toward detector (more direct path)
+              let toDetector = p.atan2(detectorY - this.y, detectorX - this.x);
+              this.angle = p.lerp(this.angle, toDetector, 0.3);
+            }
+            
+            this.angle += p.random(-scatterAmount, scatterAmount);
+            // 10x faster movement
+            this.x += p.cos(this.angle) * 3 * speedMultiplier;
+            this.y += p.sin(this.angle) * 3 * speedMultiplier;
+            this.path.push({x: this.x, y: this.y});
+            
+            // Check if reached detector
+            if (p.dist(this.x, this.y, detectorX, detectorY) < 25) {
+              this.active = false;
+              this.detected = true;
+              this.detectionTime = simulationTime - this.startTime;
+              detectionTimes.push(this.detectionTime);
+              if (detectionTimes.length > maxGraphPoints) {
+                detectionTimes.shift();
+              }
+            }
+            
+            // Lost if out of bounds or too many steps
+            if (this.x > p.width || this.x < 0 || this.y < 0 || this.y > p.height || this.path.length > 200) {
+              this.active = false;
+            }
+          }
+          
+          draw() {
+            // Only draw visible photons
+            if (!this.isVisible) return;
+            if (this.path.length < 2) return;
+            
+            // Modulation: pulse brightness with activation
+            let modulation = 1.0;
+            if (neuronsActive) {
+              modulation = 0.7 + 0.3 * Math.sin(activationTime * 0.1);
+            }
+            
+            p.strokeWeight(1);
+            if (this.detected) {
+              p.stroke(50, 220, 50, 180 * modulation);
+            } else if (!this.active) {
+              p.stroke(200, 100, 100, 40 * modulation);
+            } else {
+              p.stroke(200, 150, 100, 120 * modulation);
+            }
+            
+            p.noFill();
+            p.beginShape();
+            for (let point of this.path) {
+              p.vertex(point.x, point.y);
+            }
+            p.endShape();
+          }
+        }
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(800, 600);
+          canvas.parent('eros-scattering-demo');
+          
+          for (let i = 0; i < numPhotons; i++) {
+            photonPaths.push(new Photon(i));
+          }
+        };
+        
+        p.draw = function() {
+          p.background(240);
+          simulationTime++;
+          
+          // Draw tissue layers
+          p.fill(255, 220, 200, 100);
+          p.noStroke();
+          p.rect(0, 80, 600, 30);
+          p.fill(230, 230, 230, 100);
+          p.rect(0, 110, 600, 20);
+          p.fill(255, 200, 200, 100);
+          p.rect(0, 130, 600, 220);
+          
+          // Draw activation region (cell) - larger, with modulation
+          if (neuronsActive) {
+            activationTime++;
+            let alpha = 120 + 60 * Math.sin(activationTime * 0.1);
+            // Main cell body - pulsing
+            p.fill(255, 100, 100, alpha);
+            p.noStroke();
+            p.circle(cellX, cellY, cellRadius * 2);
+            // Outer glow
+            p.fill(255, 150, 150, alpha * 0.4);
+            p.circle(cellX, cellY, cellRadius * 2.5);
+          } else {
+            // Show inactive cell (smaller, different color)
+            p.fill(150, 150, 150, 80);
+            p.noStroke();
+            p.circle(cellX, cellY, cellRadius * 1.5);
+          }
+          
+          // Source and detector - closer together, with modulation
+          let sourceModulation = neuronsActive ? (0.7 + 0.3 * Math.sin(activationTime * 0.1)) : 1.0;
+          p.fill(220 * sourceModulation, 50 * sourceModulation, 50 * sourceModulation);
+          p.noStroke();
+          p.circle(sourceX, sourceY, 24);
+          p.fill(255);
+          p.textSize(10);
+          p.textAlign(p.CENTER);
+          p.text('S', sourceX, sourceY + 4);
+          
+          p.fill(50, 50, 220);
+          p.circle(detectorX, detectorY, 24);
+          p.fill(255);
+          p.text('D', detectorX, detectorY + 4);
+          
+          // Update photons multiple times per frame for speed
+          for (let step = 0; step < speedMultiplier; step++) {
+            for (let photon of photonPaths) {
+              photon.update(scatteringSensitivity);
+            }
+          }
+          
+          // Draw visible photons
+          let detectedCount = 0;
+          for (let photon of photonPaths) {
+            photon.draw();
+            if (photon.detected) detectedCount++;
+          }
+          
+          // Reset photons when all done
+          if (photonPaths.every(ph => !ph.active)) {
+            if (p.frameCount % 30 === 0) {
+              photonPaths.forEach(ph => ph.reset());
+            }
+          }
+          
+          // Stats
+          p.fill(0);
+          p.textSize(12);
+          p.textAlign(p.LEFT);
+          p.text(`Detected: ${detectedCount}/${numPhotons} (showing ${numVisiblePhotons} paths)`, 20, 30);
+          p.text(neuronsActive ? 'Neurons: ACTIVE (Cells Swelling)' : 'Neurons: Idle', 20, 50);
+          
+          // Draw detection time graph
+          p.push();
+          p.translate(620, 80);
+          
+          p.fill(0);
+          p.textSize(13);
+          p.textStyle(p.BOLD);
+          p.text('Detection Time Distribution', 0, -10);
+          
+          if (detectionTimes.length > 0) {
+            // Calculate statistics
+            let timesActive = detectionTimes.filter(t => neuronsActive || t < detectionTimes.length * 0.5);
+            let timesInactive = detectionTimes.filter(t => !neuronsActive || t < detectionTimes.length * 0.5);
+            
+            let activeMean = timesActive.length > 0 ? timesActive.reduce((a, b) => a + b, 0) / timesActive.length : 0;
+            let inactiveMean = timesInactive.length > 0 ? timesInactive.reduce((a, b) => a + b, 0) / timesInactive.length : 0;
+            
+            // Graph area
+            let graphWidth = 150;
+            let graphHeight = 200;
+            let maxTime = Math.max(...detectionTimes, 50);
+            
+            // Draw axes
+            p.stroke(100);
+            p.strokeWeight(1);
+            p.line(0, 0, graphWidth, 0);
+            p.line(0, 0, 0, graphHeight);
+            
+            // Draw histogram
+            let bins = 20;
+            let binSize = maxTime / bins;
+            let activeBins = new Array(bins).fill(0);
+            let inactiveBins = new Array(bins).fill(0);
+            
+            for (let i = 0; i < detectionTimes.length; i++) {
+              let bin = Math.floor(detectionTimes[i] / binSize);
+              bin = p.constrain(bin, 0, bins - 1);
+              if (neuronsActive && i >= detectionTimes.length * 0.5) {
+                activeBins[bin]++;
+              } else {
+                inactiveBins[bin]++;
+              }
+            }
+            
+            let maxCount = Math.max(...activeBins, ...inactiveBins, 1);
+            
+            // Draw inactive (baseline) bins
+            for (let i = 0; i < bins; i++) {
+              let x = (i / bins) * graphWidth;
+              let h = (inactiveBins[i] / maxCount) * graphHeight * 0.4;
+              p.fill(200, 100, 100, 120);
+              p.noStroke();
+              p.rect(x, 0, graphWidth / bins, -h);
+            }
+            
+            // Draw active bins
+            for (let i = 0; i < bins; i++) {
+              let x = (i / bins) * graphWidth;
+              let h = (activeBins[i] / maxCount) * graphHeight * 0.4;
+              p.fill(50, 220, 50, 180);
+              p.noStroke();
+              p.rect(x, 0, graphWidth / bins, -h);
+            }
+            
+            // Draw mean lines
+            if (inactiveMean > 0) {
+              let x1 = (inactiveMean / maxTime) * graphWidth;
+              p.stroke(200, 100, 100);
+              p.strokeWeight(2);
+              p.line(x1, 0, x1, -graphHeight * 0.5);
+            }
+            
+            if (activeMean > 0) {
+              let x2 = (activeMean / maxTime) * graphWidth;
+              p.stroke(50, 220, 50);
+              p.strokeWeight(2);
+              p.line(x2, 0, x2, -graphHeight * 0.5);
+            }
+            
+            // Labels
+            p.fill(0);
+            p.textSize(10);
+            p.textAlign(p.LEFT);
+            if (inactiveMean > 0) {
+              p.fill(200, 100, 100);
+              p.text(`Baseline mean: ${inactiveMean.toFixed(1)}`, 0, graphHeight + 20);
+            }
+            if (activeMean > 0) {
+              p.fill(50, 220, 50);
+              p.text(`Active mean: ${activeMean.toFixed(1)}`, 0, graphHeight + 35);
+              p.fill(0);
+              p.text(`Time saved: ${(inactiveMean - activeMean).toFixed(1)}`, 0, graphHeight + 50);
+            }
+            
+            p.textAlign(p.CENTER);
+            p.fill(100);
+            p.textSize(9);
+            p.text('Time (steps)', graphWidth/2, graphHeight + 15);
+          } else {
+            p.fill(100);
+            p.textSize(11);
+            p.text('Waiting for data...', 75, 100);
+          }
+          
+          p.pop();
+          
+          if (neuronsActive) {
+            p.fill(50, 200, 50);
+            p.textSize(11);
+            p.text('Less scattering → Straighter paths → Faster detection!', 20, 560);
+          } else {
+            p.fill(100);
+            p.textSize(10);
+            p.text('Baseline: Random scattering paths', 20, 560);
+          }
+        };
+        
+        window.activateNeuronsEROS = function() {
+          neuronsActive = !neuronsActive;
+          activationTime = 0;
+          photonPaths.forEach(ph => ph.reset());
+          // Keep last 50% of detection times for comparison
+          if (detectionTimes.length > 50) {
+            detectionTimes = detectionTimes.slice(-50);
+          }
+        };
+        
+        window.setScatteringSensitivity = function(value) {
+          scatteringSensitivity = value;
+        };
+      };
+      
+      erosDemo = new p5(erosScatteringSketch);
+      
+      document.getElementById('activate-neurons-eros').addEventListener('click', () => {
+        window.activateNeuronsEROS();
+      });
+      
+      document.getElementById('scattering-sensitivity').addEventListener('input', (e) => {
+        const value = parseInt(e.target.value);
+        document.getElementById('sensitivity-value').textContent = value + '%';
+        window.setScatteringSensitivity(value);
+      });
+
+      // ==========================================
+      // Demo 3: Imaging Modality Comparison
+      // ==========================================
+      let comparisonDemo;
+      
+      const imagingTechniques = {
+        pet: {
+          name: 'PET (Positron Emission Tomography)',
+          color: [50, 200, 50],
+          portability: 0.15,
+          spatialRes: -2.0, // log10 meters
+          scope: 'whole',
+          description: 'Measures metabolic activity using radioactive tracers',
+          specs: ['Low portability (requires cyclotron)', 'Low spatial resolution (~5-10mm)', 'Whole brain coverage', 'Requires radioactive injection']
+        },
+        fmri: {
+          name: 'fMRI (functional Magnetic Resonance Imaging)',
+          color: [255, 220, 50],
+          portability: 0.2,
+          spatialRes: -2.5,
+          scope: 'whole',
+          description: 'Measures blood oxygenation changes using magnetic fields',
+          specs: ['Low portability (fixed scanner)', 'Medium spatial resolution (~3mm)', 'Whole brain coverage', 'Excellent temporal resolution (~2-3s)']
+        },
+        eeg: {
+          name: 'Surface EEG (Electroencephalography)',
+          color: [255, 150, 50],
+          portability: 0.75,
+          spatialRes: -2.2,
+          scope: 'whole',
+          description: 'Measures electrical activity from scalp electrodes',
+          specs: ['High portability', 'Low spatial resolution (~1-2cm)', 'Whole brain coverage', 'Excellent temporal resolution (ms)']
+        },
+        meg: {
+          name: 'MEG (Magnetoencephalography)',
+          color: [255, 200, 180],
+          portability: 0.85,
+          spatialRes: -2.3,
+          scope: 'whole',
+          description: 'Measures magnetic fields from neural currents',
+          specs: ['High portability', 'Low spatial resolution (~5mm)', 'Whole brain coverage', 'Excellent temporal resolution (ms)']
+        },
+        fnirs: {
+          name: 'fNIRS (functional Near-Infrared Spectroscopy)',
+          color: [255, 100, 50],
+          portability: 0.6,
+          spatialRes: -2.8,
+          scope: 'local',
+          description: 'Measures blood oxygenation using near-infrared light',
+          specs: ['Medium portability', 'Medium spatial resolution (~1-2cm)', 'Local/regional coverage', 'Good temporal resolution (~10Hz)']
+        },
+        ultrasound: {
+          name: 'Functional Ultrasound',
+          color: [220, 50, 50],
+          portability: 0.7,
+          spatialRes: -3.5,
+          scope: 'local',
+          description: 'Measures blood flow using ultrasound waves',
+          specs: ['Medium-high portability', 'High spatial resolution (~100μm)', 'Local coverage', 'Good temporal resolution']
+        },
+        optical: {
+          name: 'Optical Imaging',
+          color: [255, 180, 220],
+          portability: 0.9,
+          spatialRes: -4.0,
+          scope: 'local',
+          description: 'High-resolution optical microscopy of exposed cortex',
+          specs: ['High portability (for research)', 'Very high spatial resolution (μm)', 'Local/surface only', 'Requires exposed brain']
+        },
+        implanted: {
+          name: 'Implanted EEG (ECoG/iEEG)',
+          color: [150, 30, 30],
+          portability: 0.85,
+          spatialRes: -3.8,
+          scope: 'local',
+          description: 'Electrodes placed directly on/in brain tissue',
+          specs: ['High portability (after implant)', 'Very high spatial resolution (~1mm)', 'Local coverage', 'Invasive (requires surgery)']
+        }
+      };
+      
+      const comparisonSketch = (p) => {
+        let selectedTech = 'all';
+        const margin = 100;
+        const graphWidth = 550;
+        const graphHeight = 450;
+        
+        p.setup = function() {
+          const canvas = p.createCanvas(800, 600);
+          canvas.parent('imaging-comparison-demo');
+        };
+        
+        p.draw = function() {
+          p.background(250);
+          
+          // Title
+          p.fill(0);
+          p.textSize(18);
+          p.textStyle(p.BOLD);
+          p.text('Brain Imaging Modalities Comparison', 20, 30);
+          p.textSize(12);
+          p.fill(100);
+          p.text('Select a technique below to highlight it on the graph', 20, 50);
+          
+          // Draw axes
+          let originX = margin;
+          let originY = margin + graphHeight;
+          
+          // X-axis (Spatial Resolution - log scale)
+          p.stroke(100);
+          p.strokeWeight(2);
+          p.line(originX, originY, originX + graphWidth, originY);
+          
+          // Y-axis (Portability)
+          p.line(originX, originY, originX, originY - graphHeight);
+          
+          // Axis labels
+          p.fill(0);
+          p.textSize(13);
+          p.textAlign(p.CENTER);
+          p.textStyle(p.BOLD);
+          p.text('Spatial Resolution (log₁₀ meters)', originX + graphWidth/2, originY + 60);
+          
+          p.push();
+          p.translate(25, originY - graphHeight/2);
+          p.rotate(-p.PI/2);
+          p.textStyle(p.BOLD);
+          p.text('Portability', 0, 0);
+          p.pop();
+          
+          // X-axis scale (Spatial Resolution)
+          p.textAlign(p.CENTER);
+          p.textStyle(p.NORMAL);
+          for (let logRes = -2; logRes >= -6; logRes--) {
+            let x = originX + p.map(logRes, -2, -6, 0, graphWidth);
+            p.stroke(150);
+            p.line(x, originY - 5, x, originY + 5);
+            p.fill(100);
+            p.textSize(11);
+            p.text('10' + p.nf(logRes, 0, 0) + ' m', x, originY + 25);
+          }
+          
+          // Y-axis scale (Portability)
+          p.textAlign(p.RIGHT);
+          for (let port = 0; port <= 1; port += 0.25) {
+            let y = originY - port * graphHeight;
+            p.stroke(150);
+            p.line(originX - 5, y, originX + 5, y);
+            p.fill(100);
+            p.textSize(11);
+            p.text(p.nf(port, 1, 2), originX - 15, y + 4);
+          }
+          
+          // Draw whole brain vs local regions
+          let splitX = originX + graphWidth * 0.42;
+          p.fill(200, 230, 255, 100);
+          p.noStroke();
+          p.rect(originX, originY - graphHeight, splitX - originX, graphHeight);
+          
+          p.fill(255, 230, 200, 100);
+          p.rect(splitX, originY - graphHeight, graphWidth - (splitX - originX), graphHeight);
+          
+          // Icons for regions
+          p.fill(100, 150, 255);
+          p.textSize(24);
+          p.text('🧠', originX + (splitX - originX) / 2 - 10, originY - graphHeight + 30);
+          p.fill(100);
+          p.textSize(12);
+          p.textAlign(p.CENTER);
+          p.text('Whole Brain', originX + (splitX - originX) / 2, originY - graphHeight + 50);
+          
+          p.fill(200, 100, 200);
+          p.textSize(24);
+          p.text('🔬', splitX + (graphWidth - (splitX - originX)) / 2 - 10, originY - graphHeight + 30);
+          p.fill(100);
+          p.textSize(12);
+          p.text('Local Brain', splitX + (graphWidth - (splitX - originX)) / 2, originY - graphHeight + 50);
+          
+          // Draw techniques as 3D blocks
+          for (let [key, tech] of Object.entries(imagingTechniques)) {
+            if (selectedTech !== 'all' && selectedTech !== key) continue;
+            
+            let x = originX + p.map(tech.spatialRes, -2, -6, 0, graphWidth);
+            let y = originY - tech.portability * graphHeight;
+            
+            let alpha = (selectedTech === 'all') ? 180 : 255;
+            let blockWidth = 45;
+            let blockHeight = 35;
+            
+            // Draw 3D block effect
+            let isSelected = selectedTech === key;
+            let blockDepth = isSelected ? 8 : 4;
+            
+            // Shadow/depth
+            p.fill(50, 50, 50, alpha * 0.3);
+            p.noStroke();
+            p.rect(x + blockDepth, y + blockDepth, blockWidth, blockHeight);
+            
+            // Main block
+            p.fill(tech.color[0], tech.color[1], tech.color[2], alpha);
+            p.noStroke();
+            p.rect(x, y, blockWidth, blockHeight);
+            
+            // Highlight border if selected
+            if (isSelected) {
+              p.stroke(255, 220, 0);
+              p.strokeWeight(3);
+              p.noFill();
+              p.rect(x - 2, y - 2, blockWidth + 4, blockHeight + 4);
+            }
+            
+            // Label
+            p.fill(255);
+            p.textSize(9);
+            p.textAlign(p.CENTER);
+            p.textStyle(p.BOLD);
+            p.text(tech.name.split(' ')[0].toUpperCase(), x + blockWidth/2, y + blockHeight/2 + 3);
+            
+            // Tooltip on hover (simplified)
+            if (p.mouseX > x && p.mouseX < x + blockWidth && p.mouseY > y && p.mouseY < y + blockHeight) {
+              p.fill(0, 200);
+              p.noStroke();
+              p.rect(p.mouseX + 10, p.mouseY - 30, 180, 40);
+              p.fill(255);
+              p.textSize(10);
+              p.textAlign(p.LEFT);
+              p.text(tech.name, p.mouseX + 15, p.mouseY - 15);
+              p.text(`Portability: ${(tech.portability * 100).toFixed(0)}%`, p.mouseX + 15, p.mouseY - 3);
+            }
+          }
+          
+          // Legend at bottom
+          p.fill(0);
+          p.textSize(11);
+          p.textAlign(p.LEFT);
+          p.text('Low Resolution', originX, originY + 40);
+          p.textAlign(p.RIGHT);
+          p.text('High Resolution', originX + graphWidth, originY + 40);
+          
+          p.textAlign(p.LEFT);
+          p.push();
+          p.translate(originX - 30, originY - graphHeight/2);
+          p.rotate(-p.PI/2);
+          p.text('Low Portability', 0, 0);
+          p.pop();
+          
+          p.push();
+          p.translate(originX - 30, originY - graphHeight + 20);
+          p.rotate(-p.PI/2);
+          p.text('High Portability', 0, 0);
+          p.pop();
+        };
+        
+        window.setSelectedTechnique = function(tech) {
+          selectedTech = tech;
+          
+          // Update info panel
+          if (tech !== 'all' && imagingTechniques[tech]) {
+            let technique = imagingTechniques[tech];
+            document.getElementById('technique-details').style.display = 'block';
+            document.getElementById('tech-name').textContent = technique.name;
+            document.getElementById('tech-description').textContent = technique.description;
+            
+            let specsList = document.getElementById('tech-specs');
+            specsList.innerHTML = '';
+            technique.specs.forEach(spec => {
+              let li = document.createElement('li');
+              li.textContent = spec;
+              specsList.appendChild(li);
+            });
+          } else {
+            document.getElementById('technique-details').style.display = 'none';
+          }
+        };
+      };
+      
+      comparisonDemo = new p5(comparisonSketch);
+      
+      // Radio button handlers
+      document.querySelectorAll('input[name="technique"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          window.setSelectedTechnique(e.target.value);
+        });
+      });
+
+      // ==========================================
+    </script>
+  </body>
+</html>
