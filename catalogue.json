@@ -1,0 +1,11 @@
+{
+  "id": "NeuroimagingNeurostimulationCourse",
+  "title": "Psych403A1 NeuroimagingNeurostim",
+  "oneLiner": "Course content and lab web tools for neuroimaging and  neurostimulation upper level psychology course.",
+  "demoUrl": "http://neuroimneurostim.netlify.app",
+  "screenshot": "./screenshot.png",
+  "kind": "page",
+  "categories": ["Course", "Neuroimaging", "EEG"],
+  "tags": ["Course", "Neuroimaging", "EEG"],
+  "status": "published"
+}
