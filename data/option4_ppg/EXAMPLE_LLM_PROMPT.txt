@@ -1,0 +1,63 @@
+===============================================
+OPTION 4: EXAMPLE PROMPT FOR AI ASSISTANT
+===============================================
+
+Copy this entire prompt and paste it into ChatGPT, Claude, or another 
+AI assistant. Then attach or paste in your PPG data files.
+
+===============================================
+
+I'm working on a blood oxygen saturation (SpO2) estimation project from raw photoplethysmography (PPG) data. I have CSV files with PPG signals recorded at 64 Hz from a Muse S headset with three channels: red wavelength (~660nm), infrared wavelength (~880nm), and ambient light.
+
+The CSV files have this format:
+timestamp,ppg_red,ppg_infrared,ppg_ambient
+0.000000,924.56,865.23,14.21
+0.015625,925.12,866.01,14.18
+...
+
+I need you to help me:
+
+1. Write Python code to load and visualize the raw PPG data
+2. Apply bandpass filtering (0.5-5 Hz) to isolate the cardiac pulsations
+3. Detect cardiac cycles using peak detection
+4. For each cardiac cycle, calculate:
+   - AC component (pulsatile amplitude) for red and IR channels
+   - DC component (baseline level) for red and IR channels
+5. Calculate the R-ratio: R = (AC_red / DC_red) / (AC_ir / DC_ir)
+6. Estimate SpO2 using the empirical formula: SpO2 ≈ 110 - 25 × R
+7. Compare my estimates to the reference SpO2 values from a commercial pulse oximeter
+
+Here are the reference values for validation:
+- ppg_baseline_rest_spo2_98.csv: Reference SpO2 = 98%, HR = 68 bpm
+- ppg_baseline_rest_spo2_99.csv: Reference SpO2 = 99%, HR = 72 bpm  
+- ppg_breath_hold_protocol.csv: Baseline 98%, drops to 94-95% during breath hold (30-60 sec), recovers to 98%
+- ppg_post_exercise_spo2_99.csv: Reference SpO2 = 99%, HR = 95 bpm
+
+Please provide:
+- Complete Python code with comments
+- Visualization plots showing: raw signals, filtered signals, detected peaks, R-ratio over time, estimated SpO2
+- Statistical comparison between my estimates and reference values
+- Discussion of accuracy and potential sources of error
+
+Use libraries: numpy, scipy, matplotlib, pandas
+
+[ATTACH YOUR DATA FILES HERE OR PASTE FILE CONTENTS]
+
+===============================================
+TIPS FOR USING THIS PROMPT:
+===============================================
+
+✓ Copy everything above this line
+✓ Paste into your AI assistant
+✓ Attach the .csv files from the data/option4_ppg/ folder
+✓ The AI will generate complete analysis code for you!
+✓ You can then modify and improve the code to refine your results
+
+For your report:
+- Run the generated code and include the figures
+- Discuss the accuracy of your estimates vs. reference values
+- Explain what the breath hold data shows
+- Mention limitations and potential improvements
+
+Good luck! 🎓
+

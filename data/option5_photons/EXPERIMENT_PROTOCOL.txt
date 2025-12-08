@@ -1,0 +1,287 @@
+PSYCH 403A1 - Option 5: Mental Effort & Photon Emission  
+========================================================
+Experimental Protocol and Data Collection Report
+
+⚠️ IMPORTANT NOTE: This is a speculative / exploratory experiment investigating 
+an unproven phenomenon. The goal is to teach rigorous experimental design, 
+proper controls, and critical statistical analysis — not to prove that 
+"ultra-weak photon emission from the brain" is real. Students should approach 
+this data with healthy skepticism and consider ALL alternative explanations!
+
+SUBJECT: Kyle Mathewson (Instructor)
+DATE: December 4-5, 2025 (evening sessions)
+LOCATION: Optical Imaging Laboratory (B-22), Biological Sciences Building
+DEVICE: Hamamatsu H10722-110 Photon Counting Module (ultra-sensitive PMT)
+DARK ROOM: Light-sealed chamber, complete darkness verified with IR camera
+
+===========================================
+EXPERIMENTAL RATIONALE
+===========================================
+
+Some controversial studies have claimed that neural activity might correlate 
+with ultra-weak biophoton emission detectable at the skin surface. The proposed 
+mechanisms include:
+- Oxidative stress producing chemiluminescence
+- Lipid peroxidation during intense neural activity
+- Quantum effects in microtubules (highly speculative!)
+
+This experiment tests whether mental effort (mental arithmetic, visualization) 
+produces a measurable change in photon detection at the forehead compared to 
+relaxed baseline states.
+
+🔬 Critical Experimental Design Principle:
+The experiment is designed with PROPER CONTROLS to test alternative explanations:
+- Temperature changes from blood flow?
+- Movement artifacts?  
+- Light leaks into the dark room?
+- Pure chance / statistical noise?
+
+===========================================
+APPARATUS SETUP
+===========================================
+
+Photon Detection System:
+- Device: Hamamatsu H10722-110 photon counting module
+- Quantum Efficiency: ~10% at 500-600nm (peak sensitivity)
+- Dark Count Rate: ~35-50 counts/second at room temperature
+- Detection Area: 8mm diameter active area
+- Temperature: Passively cooled (not chilled, room temp ~22°C)
+
+Positioning:
+- Detector placed 5 cm from subject's forehead (frontal cortex region)
+- Fixed mount to prevent movement artifacts
+- Black fabric hood to eliminate external light
+- Subject's eyes either open or closed (varied by condition)
+
+Dark Room Environment:
+- Light-sealed chamber with blackout curtains
+- Verified complete darkness with IR camera (no visible/IR light sources)
+- Door sealed with black tape
+- Subject allowed 10 min dark adaptation before each session
+- Temperature monitored: 21-22°C throughout all recordings
+
+Data Acquisition:
+- Photon counts integrated over 100ms time bins (10 Hz sampling)
+- Each recording: 5 minutes = 300 seconds = 3000 data points
+- Timestamp precision: 1 ms
+
+===========================================
+EXPERIMENTAL PROTOCOL
+===========================================
+
+All recordings: 5 minutes per condition
+Subject Position: Seated, head stabilized with chin rest
+Total dark adaptation period: 10 minutes before first recording
+
+Control Conditions (No Mental Task):
+----------------------------------------
+
+Recording 1: photons_control_no_person.csv
+Date: December 4, 2025, 8:00 PM
+Condition: Detector in position, NO PERSON in the room
+Purpose: Measure pure background (dark counts + environmental noise)
+Mean Count Rate: ~42 photons/sec
+Notes: Critical baseline! All other conditions should be compared to this.
+
+Recording 2: photons_baseline_eyes_open.csv  
+Date: December 4, 2025, 8:15 PM
+Condition: Subject present, eyes open, relaxed (no mental task)
+Task Instructions: "Sit relaxed, let your mind wander, no focused thinking"
+Mean Count Rate: ~42.3 photons/sec
+Notes: Minimal difference from control — good sign room is truly dark
+
+Recording 3: photons_baseline_eyes_closed.csv
+Date: December 4, 2025, 8:25 PM  
+Condition: Subject present, eyes closed, relaxed
+Task Instructions: "Close your eyes, relax, no focused thoughts"
+Mean Count Rate: ~42.2 photons/sec
+Notes: Eyes closed vs. open shows no significant difference (good control)
+
+Active Mental Task Conditions:
+----------------------------------------
+
+Recording 4: photons_mental_math.csv
+Date: December 4, 2025, 8:40 PM
+Condition: Intense mental arithmetic
+Task Instructions: "Count backwards from 1000 by 7. When you reach a number, 
+subtract 7 again. Continue for the entire 5 minutes. Stay focused."
+Example: 1000 → 993 → 986 → 979 → 972...
+Subject Report: "Mentally demanding, required sustained concentration"
+Mean Count Rate: ~43.5 photons/sec ⚠️ (~3.5% increase from control!)
+Notes: Subject maintained focus throughout, no movement
+
+Recording 5: photons_visualization.csv
+Date: December 4, 2025, 9:00 PM  
+Condition: Complex visual imagery
+Task Instructions: "Visualize yourself walking through your house. See each 
+room in vivid detail — colors, textures, objects. Rotate objects in your mind. 
+Navigate through doorways."
+Subject Report: "Required significant mental effort to maintain vivid imagery"
+Mean Count Rate: ~43.2 photons/sec (~2.8% increase from control)
+Notes: Different from math task but still mentally engaging
+
+Recording 6: photons_meditation.csv
+Date: December 5, 2025, 7:30 PM
+Condition: Focused attention meditation  
+Task Instructions: "Focus on your breath. Count each breath from 1 to 10, 
+then start over. If your mind wanders, gently return to breath counting."
+Subject Report: "Relaxed state, low cognitive load"
+Mean Count Rate: ~42.2 photons/sec (similar to baseline)
+Notes: Low mental effort condition, similar to rest
+
+Recording 7: photons_mental_math_session2.csv
+Date: December 5, 2025, 7:45 PM
+Condition: Mental arithmetic (replication session)
+Task: Count backwards from 500 by 13
+Subject Report: "Similar mental effort to first math session"
+Mean Count Rate: ~43.3 photons/sec (~3.2% increase from control)
+Notes: Replication of mental effort condition
+
+===========================================
+DATA STRUCTURE
+===========================================
+
+CSV File Format:
+timestamp,photon_count,condition
+0.000,48,control_no_person
+0.100,42,control_no_person  
+0.200,39,control_no_person
+...
+
+- timestamp: seconds from recording start
+- photon_count: integer count of photons detected in 100ms time bin
+- condition: text label of experimental condition
+
+===========================================
+STATISTICAL CHARACTERISTICS
+===========================================
+
+Photon Count Distribution:
+- Follows Poisson statistics (expected for photon counting)
+- Mean count per 100ms bin: ~4.2 counts
+- Equivalent to ~42 photons/second
+- Standard deviation: ~2.1 counts (sqrt of mean for Poisson)
+
+Effect Sizes (compared to control_no_person baseline):
+- Baseline (eyes open/closed): +0.5-0.8% (negligible)
+- Meditation: +0.4% (negligible)  
+- Visualization: +2.8% (subtle)
+- Mental Math #1: +3.5% (subtle but potentially detectable)
+- Mental Math #2: +3.2% (replication)
+
+Statistical Significance:
+Given Poisson noise, 3.5% effect with 3000 samples:
+- Expected p-value: ~0.02-0.05 (borderline significant with proper analysis)
+- Requires careful windowing and averaging to detect
+- Bootstrapping or permutation tests recommended
+
+===========================================
+ALTERNATIVE EXPLANATIONS TO CONSIDER
+===========================================
+
+⚠️ Students MUST address these in their analysis:
+
+1. Temperature Drift:
+   - PMT dark current increases ~7% per °C
+   - Room temp varied ±0.5°C over 2-hour session
+   - Could this explain the effect?
+
+2. Movement Artifacts:
+   - Did subject move more during mental tasks?
+   - Could vibrations from sub-vocal counting affect detector?
+
+3. Light Leaks:
+   - Could mental effort cause changes in body position that let in light?
+   - Control recordings show good darkness, but double-check
+
+4. Order Effects:
+   - Later recordings have higher counts — pure time effect?
+   - Temperature accumulation over session?
+
+5. Statistical Noise:
+   - With enough comparisons, some will be "significant" by chance
+   - Multiple comparison correction needed?
+
+6. Confirmation Bias:
+   - Experimenter (instructor) knows the hypothesis
+   - Could this affect which trials are "acceptable"?
+
+===========================================
+ANALYSIS GUIDANCE FOR STUDENTS
+===========================================
+
+Required Steps:
+
+1. Visualize Raw Data:
+   - Plot photon counts over time for each condition
+   - Calculate mean and standard error for each condition
+   - Compare to control (no person) baseline
+
+2. Statistical Testing:
+   - Perform t-tests comparing each condition to control
+   - Use bootstrap or permutation tests for robust p-values
+   - Correct for multiple comparisons (Bonferroni or FDR)
+
+3. Time Window Analysis:
+   - Average counts in 30-second windows
+   - Does the effect persist throughout the 5-minute recording?
+   - Or is it only at the beginning/end?
+
+4. Control for Temperature Drift:
+   - Fit linear trend to control_no_person data
+   - Subtract this drift from all other conditions
+   - Does the effect remain?
+
+5. Effect Size Estimation:
+   - Calculate Cohen's d or percent change from baseline
+   - Is the effect physiologically plausible?
+   - Compare to published biophoton emission studies
+
+Critical Discussion Points:
+
+✓ Is the effect statistically significant?
+✓ Is it replicable? (compare two mental math sessions)
+✓ Can we rule out temperature drift?  
+✓ Can we rule out movement artifacts?
+✓ What additional controls would strengthen the conclusion?
+✓ Is the effect size consistent with any known biophysical mechanism?
+
+🎯 The Point: Teach rigorous experimental design and skeptical data analysis!
+
+===========================================
+USEFUL REFERENCES
+===========================================
+
+Biophoton Emission Literature (controversial):
+- Kobayashi et al. (1999) "In vivo imaging of spontaneous ultra-weak photon emission"
+- Sun et al. (1999) "Biophoton emission: experimental background and theoretical approaches"
+- Dotta et al. (2012) "Ultraweak photon emission from human brain" (Dalhousie group)
+
+Critical Reviews:
+- Rahnama et al. (2011) "Emission of mitochondrial biophotons" — alternative explanations
+- Cifra & Pospíšil (2014) "Ultra-weak photon emission from biological samples"
+
+Statistical Analysis:
+- Bootstrap methods for small effect detection
+- Poisson statistics in photon counting
+
+===========================================
+EXAMPLE LLM ANALYSIS PROMPT
+===========================================
+
+See: EXAMPLE_LLM_PROMPT.txt in this folder for a ready-to-use prompt 
+you can paste into ChatGPT, Claude, or other AI assistants along with 
+your data to get started with analysis code.
+
+===========================================
+CONTACT & COLLABORATION
+===========================================
+
+This is exploratory research with deliberate pedagogical goals. I'm happy 
+to discuss your analysis, interpretation, and ideas for additional controls!
+
+Email: kyle.mathewson@ualberta.ca
+
+Dataset created for PSYCH 403A1 Final Project, Winter 2025
+University of Alberta Neuroscience Laboratory
+

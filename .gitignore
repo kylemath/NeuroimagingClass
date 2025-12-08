@@ -1,2 +1,12 @@
 .vscode/
 node_modules/
+submissions/*
+submissions/**
+submissions_tracker.html
+generate_submissions_tracker.py
+.env
+submissions_config.js
+data/generate_*.py
+data/verify_data.py
+data/*_INSTRUCTOR.md
+data/DATA_CREATION_SUMMARY.md

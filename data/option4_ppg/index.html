@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 4: PPG Dataset</title>
+  <style>
+    :root {
+      --bg: #f8f4f8;
+      --text: #2d1b2d;
+      --accent: #20c997;
+      --accent-2: #d63384;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: linear-gradient(135deg, #f8f4f8, #ede8ed);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    h1 {
+      color: var(--accent);
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: var(--accent-2);
+      margin-top: 32px;
+    }
+    .file-list {
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      margin: 8px 0;
+      background: rgba(32, 201, 151, 0.1);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .file-item:hover {
+      background: rgba(32, 201, 151, 0.2);
+      transform: translateX(5px);
+    }
+    .file-name {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .file-desc {
+      font-size: 14px;
+      color: #666;
+      margin-left: 12px;
+    }
+    .download-btn {
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .download-btn:hover {
+      background: #17a085;
+      transform: scale(1.05);
+    }
+    .doc-item {
+      background: rgba(214, 51, 132, 0.1);
+      border-left: 4px solid var(--accent-2);
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 4px;
+    }
+    .banner {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .banner h1 {
+      color: white;
+      border: none;
+      margin: 0;
+    }
+    code {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: "Monaco", "Courier New", monospace;
+      font-size: 14px;
+    }
+    .tip {
+      background: rgba(249, 171, 0, 0.1);
+      border: 2px solid rgba(249, 171, 0, 0.4);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    a.back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--accent-2);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <a href="../../final-project.html" class="back-link">← Back to Final Project</a>
+  
+  <div class="banner">
+    <h1>💓 Option 4: Blood Oxygenation from PPG</h1>
+    <p style="margin: 8px 0 0 0;">Realistic PPG Dataset with Validation Measurements</p>
+  </div>
+
+  <h2>📦 Data Files</h2>
+  <p>All recordings collected December 5-6, 2025. Muse S (Gen 2) PPG sensors at 64 Hz sampling rate.</p>
+  
+  <div class="file-list">
+    <div class="file-item">
+      <div>
+        <span class="file-name">ppg_baseline_rest_spo2_98.csv</span>
+        <span class="file-desc">2 min baseline (SpO2 = 98%, HR = 68 bpm)</span>
+      </div>
+      <a href="ppg_baseline_rest_spo2_98.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">ppg_baseline_rest_spo2_99.csv</span>
+        <span class="file-desc">2 min baseline (SpO2 = 99%, HR = 72 bpm)</span>
+      </div>
+      <a href="ppg_baseline_rest_spo2_99.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">ppg_breath_hold_protocol.csv</span>
+        <span class="file-desc">2.5 min with breath hold (98% → 94% → 98%)</span>
+      </div>
+      <a href="ppg_breath_hold_protocol.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">ppg_post_exercise_spo2_99.csv</span>
+        <span class="file-desc">2 min post-exercise (SpO2 = 99%, HR = 95 bpm)</span>
+      </div>
+      <a href="ppg_post_exercise_spo2_99.csv" download class="download-btn">Download</a>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>📊 Quick Download All:</strong> Right-click → "Save Link As" on each file above, or use your browser's developer tools to download the entire folder.
+  </div>
+
+  <h2>📖 Documentation</h2>
+  
+  <div class="doc-item">
+    <strong>📄 README.txt</strong> - Quick start guide<br>
+    <a href="README.txt" target="_blank">View</a> | <a href="README.txt" download>Download</a>
+  </div>
+  
+  <div class="doc-item">
+    <strong>📋 EXPERIMENT_PROTOCOL.txt</strong> - Complete experimental details, reference measurements, validation data, and analysis hints<br>
+    <a href="EXPERIMENT_PROTOCOL.txt" target="_blank">View</a> | <a href="EXPERIMENT_PROTOCOL.txt" download>Download</a>
+  </div>
+  
+  <div class="doc-item">
+    <strong>🤖 EXAMPLE_LLM_PROMPT.txt</strong> - Ready-to-use prompt for ChatGPT/Claude to generate analysis code<br>
+    <a href="EXAMPLE_LLM_PROMPT.txt" target="_blank">View</a> | <a href="EXAMPLE_LLM_PROMPT.txt" download>Download</a>
+  </div>
+
+  <h2>🎯 Your Task</h2>
+  <p>Develop an algorithm to estimate blood oxygen saturation (SpO₂) from the raw PPG signals and validate your estimates against the reference values provided.</p>
+  
+  <p><strong>Expected Approach:</strong></p>
+  <ol>
+    <li>Load and visualize the raw PPG data</li>
+    <li>Apply bandpass filtering (0.5-5 Hz) to isolate cardiac signal</li>
+    <li>Detect cardiac cycles using peak detection</li>
+    <li>Calculate AC and DC components for red and infrared channels</li>
+    <li>Compute R-ratio: <code>R = (AC_red/DC_red) / (AC_ir/DC_ir)</code></li>
+    <li>Estimate SpO2 using: <code>SpO2 ≈ 110 - 25 × R</code></li>
+    <li>Compare your estimates to reference values</li>
+  </ol>
+
+  <h2>💡 Getting Started</h2>
+  <ol>
+    <li><strong>Read</strong> EXPERIMENT_PROTOCOL.txt for full context</li>
+    <li><strong>Download</strong> all 4 CSV data files</li>
+    <li><strong>Use</strong> EXAMPLE_LLM_PROMPT.txt to generate initial analysis code</li>
+    <li><strong>Refine</strong> your algorithm and validate against reference SpO2 values</li>
+    <li><strong>Write</strong> your report (2-4 pages) documenting methods, results, and accuracy</li>
+  </ol>
+
+  <div class="tip">
+    <strong>🚀 Pro Tip:</strong> Start with the baseline files first to get your algorithm working, then test it on the breath hold data to see if you can detect the SpO2 drop!
+  </div>
+
+  <h2>📧 Questions?</h2>
+  <p>Email: <a href="mailto:kyle.mathewson@ualberta.ca">kyle.mathewson@ualberta.ca</a></p>
+  
+  <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ccc; color: #666; font-size: 14px;">
+    Dataset created for PSYCH 403A1 Final Project, Winter 2025<br>
+    University of Alberta
+  </p>
+</body>
+</html>
+

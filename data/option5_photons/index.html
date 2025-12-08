@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 5: Photon Emission Dataset</title>
+  <style>
+    :root {
+      --bg: #f8f4f8;
+      --text: #2d1b2d;
+      --accent: #d63384;
+      --accent-2: #6f42c1;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: linear-gradient(135deg, #f8f4f8, #ede8ed);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    h1 {
+      color: var(--accent);
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: var(--accent-2);
+      margin-top: 32px;
+    }
+    .file-list {
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      margin: 8px 0;
+      background: rgba(214, 51, 132, 0.1);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .file-item:hover {
+      background: rgba(214, 51, 132, 0.2);
+      transform: translateX(5px);
+    }
+    .file-item.control {
+      background: rgba(111, 66, 193, 0.15);
+      border: 2px solid var(--accent-2);
+    }
+    .file-name {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .file-desc {
+      font-size: 14px;
+      color: #666;
+      margin-left: 12px;
+    }
+    .download-btn {
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .download-btn:hover {
+      background: #b52a6e;
+      transform: scale(1.05);
+    }
+    .doc-item {
+      background: rgba(214, 51, 132, 0.1);
+      border-left: 4px solid var(--accent);
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 4px;
+    }
+    .banner {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .banner h1 {
+      color: white;
+      border: none;
+      margin: 0;
+    }
+    .warning {
+      background: rgba(249, 171, 0, 0.15);
+      border: 2px solid rgba(249, 171, 0, 0.6);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .critical {
+      background: rgba(214, 51, 132, 0.15);
+      border: 2px solid var(--accent);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    code {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: "Monaco", "Courier New", monospace;
+      font-size: 14px;
+    }
+    a.back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+    .section-label {
+      background: var(--accent-2);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-block;
+      margin: 16px 0 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <a href="../../final-project.html" class="back-link">← Back to Final Project</a>
+  
+  <div class="banner">
+    <h1>✨ Option 5: Mental Effort & Photon Emission</h1>
+    <p style="margin: 8px 0 0 0;">Ultra-Sensitive Photon Detection Dataset</p>
+  </div>
+
+  <div class="warning">
+    <strong>⚠️ CRITICAL:</strong> This dataset explores a controversial/speculative phenomenon. Your job is <strong>rigorous experimental design and skeptical data analysis</strong>, not proving a claim. Consider ALL alternative explanations!
+  </div>
+
+  <h2>📦 Data Files</h2>
+  <p>All recordings: 5 minutes, 10 Hz sampling, complete darkness. December 4-5, 2025.</p>
+  
+  <div class="file-list">
+    <div class="section-label">🔬 Control Conditions</div>
+    
+    <div class="file-item control">
+      <div>
+        <span class="file-name">photons_control_no_person.csv</span>
+        <span class="file-desc">⭐ KEY: Background baseline (no person present)</span>
+      </div>
+      <a href="photons_control_no_person.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">photons_baseline_eyes_open.csv</span>
+        <span class="file-desc">Relaxed baseline (eyes open, no task)</span>
+      </div>
+      <a href="photons_baseline_eyes_open.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">photons_baseline_eyes_closed.csv</span>
+        <span class="file-desc">Relaxed baseline (eyes closed, no task)</span>
+      </div>
+      <a href="photons_baseline_eyes_closed.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">photons_meditation.csv</span>
+        <span class="file-desc">Low mental effort (focused breath meditation)</span>
+      </div>
+      <a href="photons_meditation.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="section-label" style="background: var(--accent);">🧠 Active Mental Task Conditions</div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">photons_mental_math.csv</span>
+        <span class="file-desc">Intense mental arithmetic (counting backwards)</span>
+      </div>
+      <a href="photons_mental_math.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">photons_visualization.csv</span>
+        <span class="file-desc">Complex visual imagery task</span>
+      </div>
+      <a href="photons_visualization.csv" download class="download-btn">Download</a>
+    </div>
+    
+    <div class="file-item">
+      <div>
+        <span class="file-name">photons_mental_math_session2.csv</span>
+        <span class="file-desc">Mental arithmetic replication session</span>
+      </div>
+      <a href="photons_mental_math_session2.csv" download class="download-btn">Download</a>
+    </div>
+  </div>
+
+  <div class="critical">
+    <strong>🎯 Analysis Strategy:</strong> The effect is <strong>VERY subtle (~3% increase)</strong> buried in Poisson noise. You'll need:
+    <ul style="margin: 8px 0 0 0;">
+      <li>Compare all conditions to <code>control_no_person</code> baseline</li>
+      <li>Time-windowed averaging (e.g., 30-second bins)</li>
+      <li>Proper statistical tests (t-test, bootstrap, permutation)</li>
+      <li>Multiple comparison correction</li>
+      <li>Critical evaluation of alternative explanations!</li>
+    </ul>
+  </div>
+
+  <h2>📖 Documentation</h2>
+  
+  <div class="doc-item">
+    <strong>📄 README.txt</strong> - Quick start guide with analysis strategy<br>
+    <a href="README.txt" target="_blank">View</a> | <a href="README.txt" download>Download</a>
+  </div>
+  
+  <div class="doc-item">
+    <strong>📋 EXPERIMENT_PROTOCOL.txt</strong> - Complete experimental details, critical discussion of alternative explanations, and skeptical analysis guidance<br>
+    <a href="EXPERIMENT_PROTOCOL.txt" target="_blank">View</a> | <a href="EXPERIMENT_PROTOCOL.txt" download>Download</a>
+  </div>
+  
+  <div class="doc-item">
+    <strong>🤖 EXAMPLE_LLM_PROMPT.txt</strong> - Ready-to-use prompt for ChatGPT/Claude to generate complete analysis code with statistical tests<br>
+    <a href="EXAMPLE_LLM_PROMPT.txt" target="_blank">View</a> | <a href="EXAMPLE_LLM_PROMPT.txt" download>Download</a>
+  </div>
+
+  <h2>🎯 Your Task</h2>
+  <p>Analyze the data to test whether mental effort produces detectable changes in photon emission. <strong>Critical evaluation required!</strong></p>
+  
+  <p><strong>Required Analysis Steps:</strong></p>
+  <ol>
+    <li>Visualize raw photon counts over time for each condition</li>
+    <li>Calculate mean photon rate per condition (expected: ~42-43 Hz)</li>
+    <li>Statistical testing: compare each condition to control baseline</li>
+    <li>Apply multiple comparison corrections</li>
+    <li>Test for temperature drift (linear trend analysis)</li>
+    <li>Assess replication (compare two mental math sessions)</li>
+  </ol>
+
+  <p><strong>Critical Discussion (REQUIRED):</strong></p>
+  <ul>
+    <li>Is the effect statistically significant after corrections?</li>
+    <li>Could temperature drift explain the results?</li>
+    <li>Could movement artifacts explain the results?</li>
+    <li>Could statistical noise (Type I error) explain the results?</li>
+    <li>What additional controls would strengthen conclusions?</li>
+    <li>Is the effect size plausible given known biophysics?</li>
+  </ul>
+
+  <h2>💡 Getting Started</h2>
+  <ol>
+    <li><strong>Read</strong> EXPERIMENT_PROTOCOL.txt for full context and critical discussion</li>
+    <li><strong>Download</strong> all 7 CSV data files (or just start with control + mental_math)</li>
+    <li><strong>Use</strong> EXAMPLE_LLM_PROMPT.txt to generate analysis code with statistical tests</li>
+    <li><strong>Run</strong> the analysis and create figures</li>
+    <li><strong>Write</strong> your report (3-5 pages) with skeptical discussion of alternative explanations</li>
+  </ol>
+
+  <div class="warning">
+    <strong>🔬 Remember:</strong> Great science requires skepticism! Your goal is NOT to prove photon emission is real, but to demonstrate rigorous experimental design and critical thinking. Consider what additional experiments would test alternative explanations.
+  </div>
+
+  <h2>📧 Questions?</h2>
+  <p>Email: <a href="mailto:kyle.mathewson@ualberta.ca">kyle.mathewson@ualberta.ca</a></p>
+  <p>I'm happy to discuss your analysis, interpretations, and ideas for additional controls!</p>
+  
+  <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ccc; color: #666; font-size: 14px;">
+    Dataset created for PSYCH 403A1 Final Project, Winter 2025<br>
+    University of Alberta — Optical Imaging Laboratory
+  </p>
+</body>
+</html>
+

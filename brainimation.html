@@ -2297,12 +2297,17 @@
                 }
               }, 1000);
             });
-
-            // Initial run
-            setTimeout(() => {
-              console.log('Auto-running initial code...');
-              this.runCode();
-            }, 500);
+            
+            // Check for URL parameters AFTER editor is ready, then run
+            this.checkAndLoadFromURL().then((loadedFromURL) => {
+              // Only auto-run default code if we didn't load from URL
+              if (!loadedFromURL) {
+                setTimeout(() => {
+                  console.log('Auto-running initial code...');
+                  this.runCode();
+                }, 500);
+              }
+            });
           });
         }
 
@@ -2968,6 +2973,134 @@ function draw() {
           };
           
           reader.readAsText(file);
+        }
+
+        /**
+         * Check URL parameters and auto-load code if specified
+         * Supports: ?sketch=filename.js or ?code=url
+         * Returns: Promise<boolean> - true if code was loaded from URL, false otherwise
+         */
+        async checkAndLoadFromURL() {
+          const urlParams = new URLSearchParams(window.location.search);
+          
+          // Support both 'sketch' and 'code' parameters
+          const sketchParam = urlParams.get('sketch') || urlParams.get('code');
+          
+          if (!sketchParam) {
+            return false; // No parameter specified
+          }
+          
+          try {
+            console.log('📥 Loading code from URL parameter:', sketchParam);
+            
+            // Show loading indicator
+            const statusDiv = document.querySelector('.status-indicator');
+            if (statusDiv) {
+              statusDiv.textContent = `Loading code...`;
+              statusDiv.style.color = 'var(--accent-2)';
+            }
+            
+            let code;
+            
+            // Check if it's a data URI (embedded code)
+            if (sketchParam.startsWith('data:')) {
+              console.log('📦 Loading embedded code from data URI');
+              
+              // Extract code from data URI
+              // Format: data:text/plain;base64,ENCODED_DATA
+              const base64Data = sketchParam.split(',')[1];
+              code = decodeURIComponent(escape(atob(base64Data)));
+              
+              console.log('✅ Decoded embedded code:', code.length, 'characters');
+            } else {
+              // Regular URL or relative path
+              let fetchUrl;
+              if (sketchParam.startsWith('http://') || sketchParam.startsWith('https://')) {
+                fetchUrl = sketchParam;
+              } else {
+                // Relative path - assume it's in the same directory or a subdirectory
+                fetchUrl = sketchParam;
+              }
+              
+              console.log('🌐 Fetching code from URL:', fetchUrl);
+              
+              // Fetch the code
+              const response = await fetch(fetchUrl);
+              
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              }
+              
+              code = await response.text();
+            }
+            
+            // Load into editor
+            this.editor.setValue(code);
+            this.lastLoadedCode = code;
+            this.lastLoadedFilename = sketchParam;
+            
+            // Enable reload button
+            document.getElementById('reload-btn').disabled = false;
+            
+            const sourceType = sketchParam.startsWith('data:') ? 'embedded data URI' : 'URL';
+            console.log(`✅ Code loaded successfully from ${sourceType}`);
+            console.log('📄 Code length:', code.length, 'characters');
+            
+            if (sketchParam.startsWith('data:')) {
+              console.log('🎉 Using embedded code - no internet required!');
+            }
+            
+            // Update status
+            if (statusDiv) {
+              const displayName = sketchParam.startsWith('data:') 
+                ? 'Embedded code' 
+                : sketchParam.split('/').pop() || 'code';
+              statusDiv.textContent = `✅ Loaded: ${displayName}`;
+              statusDiv.style.color = 'var(--success)';
+              setTimeout(() => {
+                statusDiv.textContent = '';
+              }, 3000);
+            }
+            
+            // Auto-run if specified in URL
+            const autoRunParam = urlParams.get('autorun');
+            if (autoRunParam === 'true' || autoRunParam === '1') {
+              console.log('▶️ Auto-running code from URL...');
+              setTimeout(() => {
+                this.runCode();
+              }, 500); // Small delay to ensure everything is ready
+            } else {
+              console.log('⏸️ Code loaded but not auto-running (autorun=false)');
+            }
+            
+            return true; // Successfully loaded from URL
+            
+          } catch (error) {
+            console.error('❌ Failed to load code from URL:', error);
+            
+            const statusDiv = document.querySelector('.status-indicator');
+            if (statusDiv) {
+              statusDiv.textContent = `Failed to load ${sketchParam}: ${error.message}`;
+              statusDiv.style.color = 'var(--error)';
+            }
+            
+            // Check if it's a CORS error
+            if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+              alert(
+                `⚠️ CORS Error - Cannot load from Google Drive locally\n\n` +
+                `Local testing from file:// or localhost is blocked by browser security.\n\n` +
+                `Options:\n` +
+                `1. Deploy to Netlify/hosting (CORS will work)\n` +
+                `2. Use "📁 Load" button to manually load the file\n` +
+                `3. Copy/paste code from Drive into the editor\n\n` +
+                `File to load: ${sketchParam.split('/').pop() || 'code file'}`
+              );
+            } else {
+              alert(`Failed to load code from URL:\n\n${sketchParam}\n\nError: ${error.message}\n\nMake sure the file exists and is accessible.`);
+            }
+            
+            return false; // Failed to load
+          }
         }
 
         reloadCode() {
@@ -5535,6 +5668,8 @@ Respond ONLY with JavaScript code, no explanations or markdown. Include setup() 
         aiAssistant = new AIAssistant();
         codePanelTabs = new CodePanelTabs();
         soundTester = new SoundTester();
+
+        // Note: URL parameter checking now happens in CodeEditor after Monaco is initialized
 
         // Toggle reference panel
         document.getElementById('toggle-reference-btn').addEventListener('click', () => {

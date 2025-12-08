@@ -23,7 +23,7 @@
         --accent-2: #20c997;
         --glow: rgba(214, 51, 132, 0.3);
         --neural: rgba(32, 201, 151, 0.2);
-        --maxw: 880px;
+        --maxw: 1200px;
       }
 
       html, body { height: 100%; }
@@ -258,6 +258,72 @@
         border-radius: 6px;
         text-align: center;
       }
+
+      .options-grid {
+        display: grid;
+        gap: 20px;
+        margin: 24px 0;
+      }
+      @media (min-width: 800px) {
+        .options-grid.easy { grid-template-columns: 1fr 1fr 1fr; }
+        .options-grid.technical { grid-template-columns: 1fr 1fr 1fr; }
+      }
+
+      .option-card {
+        background: rgba(255,255,255,0.6);
+        border: 2px solid rgba(214,51,132,0.3);
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+      }
+      .option-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(214,51,132,0.2);
+      }
+
+      .option-number {
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 36px;
+        text-align: center;
+        margin-bottom: 12px;
+      }
+
+      .option-card h3 {
+        margin-top: 0;
+        font-size: 20px;
+        color: var(--accent);
+      }
+
+      .option-card p {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .option-card .deliverables {
+        background: rgba(32,201,151,0.08);
+        border-left: 3px solid var(--accent-2);
+        padding: 12px;
+        margin: 12px 0;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      .option-card ul {
+        margin: 8px 0;
+        padding-left: 1.2em;
+        font-size: 13px;
+      }
+
+      .option-card li {
+        margin: 4px 0;
+      }
     </style>
   </head>
   <body>
@@ -273,246 +339,250 @@
       </header>
 
       <main>
-        <h1>Final Project</h1>
+        <h1>Final Project — Simplified Options</h1>
         
         <div class="project-overview">
           <p><strong>Weight:</strong> 30% of final grade<br>
-          <strong>Team Size:</strong> 2-3 students (individual projects possible with approval)<br>
-          <strong>Duration:</strong> Developed progressively throughout the semester<br>
-          <strong>Final Presentation:</strong> December 7, 2025 (15 minutes per team)</p>
-          <p>Your final project should demonstrate mastery of neuroimaging/neurostimulation concepts through original research, device development, or software creation. Projects are integrated throughout the course, not a last-minute assignment.</p>
+          <strong>Work Style:</strong> Individual or groups<br>
+          <strong>Due Date:</strong> December 16, 2025<br>
+          <strong>Submission:</strong> Digital files via submission form (code, documents, videos, HTML pages)</p>
+          <p>Given the end of semester timing, you have <strong>flexible project options</strong> ranging from simple creative work to technical challenges. Choose what interests you and fits your schedule!</p>
         </div>
 
         <div class="beat" aria-hidden="true"></div>
 
-        <h2>Project Options</h2>
-
-        <div class="project-option">
-          <div class="option-header">
-            <div class="option-icon icon-analysis">📊</div>
-            <h3 class="option-title">Data Analysis Project</h3>
-          </div>
-          <p>Design and conduct an original data analysis addressing a specific research question using neuroimaging data.</p>
-          <div class="deliverable-list">
-            <strong>What you'll create:</strong>
-            <ul>
-              <li>Research question with literature review</li>
-              <li>Data collection protocol (in-person or online)</li>
-              <li>Complete analysis pipeline with statistical validation</li>
-              <li>Scientific report with publication-quality figures</li>
-              <li>Reproducible code and documentation</li>
-            </ul>
-          </div>
-          <p><strong>Examples:</strong> ERP study of attention, fMRI connectivity in meditation, EEG-based emotion recognition, mobile EEG during physical activity</p>
-        </div>
-
-        <div class="project-option">
-          <div class="option-header">
-            <div class="option-icon icon-device">🔧</div>
-            <h3 class="option-title">Device Design Project</h3>
-          </div>
-          <p>Design and build a novel neuroimaging or neurostimulation device, or significantly improve an existing system.</p>
-          <div class="deliverable-list">
-            <strong>What you'll create:</strong>
-            <ul>
-              <li>Engineering specifications and design rationale</li>
-              <li>Prototype device (physical or detailed simulation)</li>
-              <li>Safety analysis and regulatory considerations</li>
-              <li>Performance validation with test data</li>
-              <li>User manual and technical documentation</li>
-            </ul>
-          </div>
-          <p><strong>Examples:</strong> Low-cost EEG amplifier, portable tDCS device, fNIRS probe optimization, artifact reduction hardware</p>
-        </div>
-
-        <div class="project-option">
-          <div class="option-header">
-            <div class="option-icon icon-software">💻</div>
-            <h3 class="option-title">Software Development Project</h3>
-          </div>
-          <p>Develop software tools, applications, or platforms that advance neuroimaging research or clinical applications.</p>
-          <div class="deliverable-list">
-            <strong>What you'll create:</strong>
-            <ul>
-              <li>Functional software application with user interface</li>
-              <li>Technical documentation and API reference</li>
-              <li>Validation with real data and user testing</li>
-              <li>Open-source code repository with clear documentation</li>
-              <li>Deployment guide and installation instructions</li>
-            </ul>
-          </div>
-          <p><strong>Examples:</strong> Real-time BCI application, EEG analysis web app, VR neurofeedback system, automated preprocessing pipeline</p>
+        <div class="callout">
+          <p><strong>🎯 Choose Your Path:</strong> Select <strong>ONE</strong> option below. Options 1-3 are designed to be simple and completable in a few hours. Options 4-6 are technical challenges for those seeking deeper engagement with course concepts.</p>
         </div>
 
         <div class="beat" aria-hidden="true"></div>
 
-        <h2>Project Timeline</h2>
-        <div class="timeline-grid">
-          <div class="timeline-item">
-            <div class="timeline-date">September 15</div>
-            <p><strong>Project Introduction</strong><br>Overview of options, team formation begins</p>
+        <h2>Easy Baseline Options (Recommended)</h2>
+        
+        <div class="options-grid easy">
+          <div class="option-card">
+            <div class="option-number">1</div>
+            <h3>🧠 BrainImation Creative Project</h3>
+            <p>Extend your BrainImation work or create something new using the platform. You can use real EEG data from a Muse headset or work entirely with simulated data — your choice! The easiest approach is to start with one of the 33+ example sketches and add your own creative twist. Think brain-controlled generative art, meditation feedback, music visualization, neurofeedback games, or real-time frequency band displays with a novel angle.</p>
+            
+            <div class="deliverables">
+              <strong>Deliverables:</strong>
+              <ol>
+                <li>Working BrainImation sketch (.js code file)</li>
+                <li>Screen recording video showing it in action (1-3 minutes, MP4)</li>
+                <li>Brief written description as PDF or text file (1-2 paragraphs)</li>
+              </ol>
+            </div>
+            
+            <p class="note">💡 <strong>Tip:</strong> No need to collect new data if you don't want to — simulated data works great for testing creative ideas!</p>
           </div>
-          <div class="timeline-item">
-            <div class="timeline-date">September 22</div>
-            <p><strong>Research Question Development</strong><br>Teams finalize and begin literature review</p>
+
+          <div class="option-card">
+            <div class="option-number">2</div>
+            <h3>📊 EEG Experiment with EEGEdu</h3>
+            <p>Connect your Muse headset to <strong>eegedu.com</strong> and use Modules 9-13 to collect real experimental data following the built-in instructions. Choose one module that interests you: steady-state visually evoked potentials (SSVEP), event-related potentials (ERP), auditory oddball paradigm, motor imagery, or attention tasks. Collect data from yourself or volunteers, analyze the results, and write up your findings like a mini research report.</p>
+            
+            <div class="deliverables">
+              <strong>Deliverables:</strong>
+              <ol>
+                <li>Exported data files from your experiment (CSV or JSON)</li>
+                <li>Analysis code or screenshots showing your results</li>
+                <li>Written report (2-4 pages, PDF) with introduction, methods, results, discussion</li>
+              </ol>
+            </div>
+            
+            <p class="note">💡 <strong>Tip:</strong> Visit <a href="https://eegedu.com" target="_blank">eegedu.com</a>, connect your Muse, and explore the experiment modules. Follow the on-screen instructions for data collection!</p>
           </div>
-          <div class="timeline-item">
-            <div class="timeline-date">September 29</div>
-            <p><strong>Literature Review & Methodology</strong><br>Background research and method planning</p>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">October 6</div>
-            <p><strong>Project Proposals</strong><br>5-minute presentations to class for feedback</p>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">October 27</div>
-            <p><strong>Data Collection Planning</strong><br>Ethics considerations, protocol finalization</p>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">November 3</div>
-            <p><strong>Data Collection Begins</strong><br>Implementation phase starts</p>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">November 17</div>
-            <p><strong>Progress Check-ins</strong><br>Individual team meetings, troubleshooting</p>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">November 24</div>
-            <p><strong>Results & Interpretation</strong><br>Data analysis, visualization preparation</p>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">December 1</div>
-            <p><strong>Presentation Preparation</strong><br>Final report writing, presentation practice</p>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">December 7</div>
-            <p><strong>Final Presentations</strong><br>15-minute team presentations + Q&A</p>
+
+          <div class="option-card">
+            <div class="option-number">3</div>
+            <h3>🚀 Future BCI White Paper</h3>
+            <p>Write a visionary paper about brain-computer interfaces <strong>10x more futuristic</strong> than current technology. Be wildly creative and speculative! Imagine direct brain-to-brain communication networks, memory upload/download systems, collective consciousness platforms, thought-to-text at natural thinking speed, sensory augmentation to see infrared or magnetic fields, dream recording and playback, or neural enhancement for learning and creativity. Ground your ideas in real neuroscience, but don't limit yourself to current technical constraints.</p>
+            
+            <div class="deliverables">
+              <strong>Deliverables:</strong>
+              <ol>
+                <li>Written paper (3-5 pages, PDF or HTML page with images)</li>
+                <li>Describe your futuristic BCI concept and applications</li>
+                <li>Include technology requirements, societal implications, timeline</li>
+                <li>At least 3 references to real research</li>
+              </ol>
+            </div>
+            
+            <p class="note">💡 <strong>Tip:</strong> Think science fiction grounded in neuroscience — what could be possible in 10, 20, or 50 years?</p>
           </div>
         </div>
 
         <div class="beat" aria-hidden="true"></div>
 
-        <h2>Grading Rubric</h2>
-        <div class="grading-rubric">
-          <p><strong>Total: 30% of final course grade</strong></p>
-          <div class="rubric-grid">
-            <div class="rubric-item">
-              <strong>Technical Quality (40%)</strong><br>
-              <small>Methodology, analysis, implementation</small>
+        <h2>Technical Challenge Options (For the Ambitious)</h2>
+        
+        <div class="options-grid technical">
+          <div class="option-card">
+            <div class="option-number">4</div>
+            <h3>💓 Blood Oxygenation from PPG</h3>
+            <p>Estimate blood oxygen saturation (SpO₂) from raw photoplethysmography (PPG) data collected by your Muse 2 or Muse S Athena headset. The Muse devices have both ambient and infrared PPG channels — you'll implement an algorithm using the ratio of these wavelengths to estimate oxygen saturation, then validate your estimates against a commercial pulse oximeter to assess accuracy.</p>
+            
+            <div style="background: linear-gradient(135deg, rgba(32,201,151,0.15), rgba(214,51,132,0.1)); border: 2px solid var(--accent-2); border-radius: 8px; padding: 16px; margin: 16px 0;">
+              <strong>📦 Dataset Provided!</strong><br>
+              <span style="font-size: 14px;">Realistic PPG data with validation measurements ready for analysis:</span><br>
+              <a href="./data/option4_ppg/" target="_blank" style="display: inline-block; margin-top: 8px; padding: 8px 16px; background: var(--accent-2); color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">→ Download PPG Dataset & Protocol</a>
+              <p style="font-size: 13px; margin: 8px 0 0 0;">Includes: 4 recordings, experimental protocol, reference SpO2 values, and example LLM analysis prompt!</p>
             </div>
-            <div class="rubric-item">
-              <strong>Innovation (25%)</strong><br>
-              <small>Originality, creativity, problem-solving</small>
+            
+            <div class="deliverables">
+              <strong>Deliverables:</strong>
+              <ol>
+                <li>Code implementation (Python or JavaScript)</li>
+                <li>Comparison data: your estimates vs. commercial device</li>
+                <li>Short report (2-4 pages) documenting method and accuracy</li>
+              </ol>
             </div>
-            <div class="rubric-item">
-              <strong>Communication (20%)</strong><br>
-              <small>Presentation, documentation, clarity</small>
+            
+            <p class="note">⚕️ <strong>Tip:</strong> Use the provided dataset or collect your own! The dataset includes baseline recordings and a breath-hold challenge with reference measurements.</p>
+          </div>
+
+          <div class="option-card">
+            <div class="option-number">5</div>
+            <h3>✨ Mental Effort & Photon Emission</h3>
+            <p>Investigate whether mental effort affects photon detection on the forehead using ultra-sensitive light detection in complete darkness. Design a controlled experiment comparing photon counts during different mental states: rest, mental math, visualization, and meditation. Critical thinking is essential — carefully control for artifacts like movement, temperature changes, and ambient light leaks. This project is about rigorous experimental design and skeptical analysis, not confirming a hypothesis.</p>
+            
+            <div style="background: linear-gradient(135deg, rgba(214,51,132,0.12), rgba(32,201,151,0.08)); border: 2px solid rgba(214,51,132,0.4); border-radius: 8px; padding: 16px; margin: 16px 0;">
+              <strong>📦 Dataset Provided!</strong><br>
+              <span style="font-size: 14px;">Ultra-weak photon emission data from controlled experiments:</span><br>
+              <a href="./data/option5_photons/" target="_blank" style="display: inline-block; margin-top: 8px; padding: 8px 16px; background: var(--accent); color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">→ Download Photon Dataset & Protocol</a>
+              <p style="font-size: 13px; margin: 8px 0 0 0;">Includes: 7 recordings (control + mental tasks), experimental protocol with critical discussion, and example LLM analysis prompt!</p>
             </div>
-            <div class="rubric-item">
-              <strong>Scientific Rigor (10%)</strong><br>
-              <small>Literature review, validation, reproducibility</small>
+            
+            <div class="deliverables">
+              <strong>Deliverables:</strong>
+              <ol>
+                <li>Statistical analysis of provided data OR your own data collection</li>
+                <li>Critical evaluation of alternative explanations (temperature drift, artifacts, etc.)</li>
+                <li>Short report (3-5 pages) with skeptical discussion</li>
+                <li>Proposed improvements for future experiments</li>
+              </ol>
             </div>
-            <div class="rubric-item">
-              <strong>Collaboration (5%)</strong><br>
-              <small>Teamwork, peer interaction, contribution</small>
+            
+            <p class="note">🔬 <strong>Tip:</strong> Use the provided dataset for analysis practice, or coordinate with instructor for optical lab access to collect your own data!</p>
+          </div>
+
+          <div class="option-card">
+            <div class="option-number">6</div>
+            <h3>💼 Neuroimaging Business Plan</h3>
+            <p>Create a business or non-profit plan based on lecture 6 material about the future of optical neuroimaging. Turn a course concept into a viable organization! Consider ideas like portable fNIRS for clinical assessment, consumer neurofeedback devices, research-grade open-source optical imaging, time-resolved NIRS for deeper brain imaging, or wearable brain health monitoring. Be realistic about technology readiness levels and market timing.</p>
+            
+            <div class="deliverables">
+              <strong>Deliverables (5-8 page document):</strong>
+              <ol>
+                <li>Executive summary (1 page)</li>
+                <li>Technology/product description from course material</li>
+                <li>Market analysis: who needs this, why now?</li>
+                <li>Business model or non-profit funding strategy</li>
+                <li>3-year timeline and milestones</li>
+                <li>Team needs and budget overview</li>
+              </ol>
             </div>
+            
+            <p class="note">📊 <strong>Tip:</strong> Think about regulatory pathways, competitive landscape, and realistic go-to-market strategies.</p>
           </div>
         </div>
-
-        <div class="beat" aria-hidden="true"></div>
-
-        <div class="example-projects">
-          <h2>Example Project Ideas</h2>
-          
-          <h3>Data Analysis Projects</h3>
-          <ul>
-            <li><strong>Mobile EEG during Exercise:</strong> Compare alpha/beta rhythms during stationary vs. cycling conditions</li>
-            <li><strong>Meditation and Connectivity:</strong> fMRI analysis of default mode network changes during mindfulness</li>
-            <li><strong>Music and Emotion:</strong> EEG responses to different musical genres using affective computing</li>
-            <li><strong>Sleep Stage Classification:</strong> Machine learning approach to automated sleep scoring from EEG</li>
-            <li><strong>fNIRS Language Study:</strong> Hemispheric activation patterns during bilingual word processing</li>
-          </ul>
-
-          <h3>Device Design Projects</h3>
-          <ul>
-            <li><strong>Arduino-based EEG:</strong> Low-cost 8-channel EEG system with smartphone app</li>
-            <li><strong>Wearable tDCS:</strong> Portable stimulation device with safety monitoring</li>
-            <li><strong>fNIRS Probe Optimization:</strong> 3D-printed optode holders for improved signal quality</li>
-            <li><strong>Artifact Reduction Hardware:</strong> Active shielding system for mobile EEG</li>
-            <li><strong>Hybrid EEG-fNIRS:</strong> Combined system for simultaneous electrical and optical recording</li>
-          </ul>
-
-          <h3>Software Development Projects</h3>
-          <ul>
-            <li><strong>Real-time BCI Speller:</strong> Web-based SSVEP typing interface</li>
-            <li><strong>EEG Analysis Dashboard:</strong> Interactive visualization tool for preprocessing and analysis</li>
-            <li><strong>VR Neurofeedback:</strong> Immersive environment controlled by real-time EEG</li>
-            <li><strong>Mobile EEG App:</strong> Smartphone application for data collection and basic analysis</li>
-            <li><strong>Automated Preprocessing:</strong> Machine learning pipeline for artifact detection and removal</li>
-          </ul>
-        </div>
-
-        <div class="beat" aria-hidden="true"></div>
-
-        <h2>Resources & Support</h2>
-
-        <h3>Equipment Available</h3>
-        <ul>
-          <li>25 Muse EEG headsets for data collection</li>
-          <li>Access to campus MRI facility (with supervision)</li>
-          <li>fNIRS system for optical brain imaging</li>
-          <li>tDCS and TMS devices for stimulation projects</li>
-          <li>Electronics lab with Arduino, Raspberry Pi, 3D printer</li>
-          <li>High-performance computing resources for analysis</li>
-        </ul>
-
-        <h3>Software & Computing</h3>
-        <ul>
-          <li><strong>Analysis:</strong> Python (MNE, SciPy), MATLAB (EEGLAB, SPM), R</li>
-          <li><strong>Development:</strong> Web technologies (JavaScript, React), mobile (React Native, Flutter)</li>
-          <li><strong>Hardware:</strong> Arduino IDE, KiCad for PCB design, Fusion 360 for 3D modeling</li>
-          <li><strong>Computing:</strong> Google Colab Pro, university HPC cluster access</li>
-        </ul>
-
-        <h3>Mentorship</h3>
-        <ul>
-          <li>Weekly office hours with instructor and TAs</li>
-          <li>Individual team consultations throughout the semester</li>
-          <li>Access to graduate student mentors in related research areas</li>
-          <li>Industry connections for device design and software projects</li>
-        </ul>
 
         <div class="beat" aria-hidden="true"></div>
 
         <h2>Submission Requirements</h2>
+        <p>All projects must be submitted as <strong>digital files via the submission form</strong>. Choose the format that best showcases your work: <strong>written documents</strong> (PDF format for reports and papers), <strong>code files and demos</strong> (BrainImation .js files, Python notebooks, or GitHub repository links), <strong>HTML pages with supporting files</strong> (great for interactive demos or rich media reports), <strong>video recordings</strong> (MP4 format showing your demo or explaining your work), or <strong>images and visualizations</strong> (figures, diagrams, screenshots as PNG or JPG). You can combine multiple formats — for example, a written report PDF with accompanying code files and demonstration video.</p>
+        
+        <div style="background: linear-gradient(135deg, rgba(32,201,151,0.1), rgba(214,51,132,0.05)); border: 2px solid rgba(32,201,151,0.4); border-radius: 12px; padding: 20px; margin: 20px 0; box-shadow: 0 4px 16px rgba(32,201,151,0.15);">
+          <h3 style="margin: 0 0 16px 0; color: var(--accent-2); text-align: center;">📤 Submit Your Final Project</h3>
+          
+          <div style="text-align: center; margin-bottom: 20px;">
+            <p style="margin: 0 0 16px 0; color: var(--text); font-size: 16px;">
+              Use the same submission system you've been using for assignments. You can upload multiple files!
+            </p>
+            
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdkZyzDGpeOv8PTrNUDTYWPArQUwqzoZbiAdmgntMpt59f2tg/viewform?usp=dialog" 
+               target="_blank"
+               style="display: inline-block; background: linear-gradient(135deg, var(--accent-2), #17a085); color: white; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 18px; box-shadow: 0 6px 20px rgba(32,201,151,0.4); transition: all 0.3s ease; border: none;">
+              🎓 Submit Final Project
+            </a>
+          </div>
+          
+          <div style="background: rgba(32,201,151,0.08); padding: 16px; border-radius: 8px; margin: 16px 0;">
+            <h4 style="margin: 0 0 12px 0; color: var(--accent-2); font-size: 16px;">✨ Submission Process:</h4>
+            <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6;">
+              <li>📝 Fill out the form with your name, student ID, and project option number</li>
+              <li>📄 Upload all your project files (you can upload multiple files at once)</li>
+              <li>💾 Your files are automatically saved to the instructor's Google Drive</li>
+              <li>📧 You'll receive a confirmation email</li>
+              <li>🔒 Your submission is private and secure</li>
+            </ul>
+          </div>
+          
+          <div style="background: rgba(249,171,0,0.1); padding: 12px; border-radius: 6px; margin: 16px 0; border: 1px solid rgba(249,171,0,0.3);">
+            <p style="margin: 0; font-size: 14px; color: var(--text);">
+              <strong>📦 Tip for Multiple Files:</strong> You can upload multiple files in one submission (code, video, PDF, etc.). 
+              If you have many small files, consider putting them in a ZIP folder first.
+            </p>
+          </div>
+          
+          <div style="background: rgba(214,51,132,0.1); padding: 12px; border-radius: 6px; margin: 16px 0; border: 1px solid rgba(214,51,132,0.3);">
+            <p style="margin: 0; font-size: 14px; color: var(--text);">
+              <strong>⏰ Deadline:</strong> December 16, 2025 — You have time to create something great!
+            </p>
+          </div>
+          
+          <div style="background: rgba(32,201,151,0.1); padding: 12px; border-radius: 6px; margin: 16px 0; border: 1px solid rgba(32,201,151,0.3);">
+            <p style="margin: 0; font-size: 14px; color: var(--text);">
+              <strong>💬 Need Help?</strong> Email <a href="mailto:kyle.mathewson@ualberta.ca" style="color: var(--accent); text-decoration: underline;">kyle.mathewson@ualberta.ca</a> with a detailed description of your questions or what you're working on. I'm happy to help, provide guidance, and even collaborate with you on your project ideas!
+            </p>
+          </div>
+        </div>
 
-        <h3>Final Report (Due December 7)</h3>
-        <ul>
-          <li><strong>Length:</strong> 8-12 pages (excluding references and appendices)</li>
-          <li><strong>Format:</strong> Scientific paper style with abstract, introduction, methods, results, discussion</li>
-          <li><strong>Figures:</strong> Publication-quality plots, diagrams, and photographs</li>
-          <li><strong>Code:</strong> Complete, documented, and reproducible (GitHub repository preferred)</li>
-          <li><strong>Data:</strong> Raw and processed data with clear documentation</li>
-        </ul>
+        <div class="beat" aria-hidden="true"></div>
 
-        <h3>Final Presentation (December 7)</h3>
-        <ul>
-          <li><strong>Duration:</strong> 15 minutes presentation + 5 minutes Q&A</li>
-          <li><strong>Format:</strong> Professional slides with live demonstration if applicable</li>
-          <li><strong>Content:</strong> Problem motivation, approach, results, implications, future work</li>
-          <li><strong>Audience:</strong> Classmates, instructor, invited guests from industry/academia</li>
-        </ul>
+        <h2>Grading Rubric (Simplified)</h2>
+        <div class="grading-rubric">
+          <p><strong>Total: 30% of final course grade</strong></p>
+          <div class="rubric-grid">
+            <div class="rubric-item">
+              <strong>Completion (40%)</strong><br>
+              <small>Project is complete and functional/coherent</small>
+            </div>
+            <div class="rubric-item">
+              <strong>Effort & Quality (30%)</strong><br>
+              <small>Demonstrates understanding and engagement</small>
+            </div>
+            <div class="rubric-item">
+              <strong>Communication (30%)</strong><br>
+              <small>Clear documentation and explanation of work</small>
+            </div>
+          </div>
+          <p style="margin-top:16px;"><strong>Grading Philosophy:</strong> This is designed to be an achievable, low-stress culmination of your semester learning. Show me what interested you and what you learned. Creativity and genuine effort count more than technical perfection!</p>
+        </div>
 
-        <p class="note"><strong>Ethics Note:</strong> All projects involving human participants must receive ethics approval. We'll work together to ensure proper protocols are followed for data collection.</p>
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Resources Available</h2>
+        <p>The <strong>BrainImation platform</strong> at <a href="./brainimation.html">brainimation.html</a> has 33+ example sketches you can explore and modify. <strong>Muse EEG headsets</strong> are available for checkout — contact the TAs to arrange pickup. For photon emission experiments, coordinate with the instructor to access the <strong>optical imaging lab</strong>. <strong>Office hours</strong> are available Dec 2-6 for questions and troubleshooting. Join the <a href="https://discord.gg/ugF8wxvW">course Discord</a> for quick help from peers and TAs.</p>
+
+        <div class="callout">
+          <p><strong>🎓 Getting Help:</strong> Don't hesitate to reach out! Email <a href="mailto:kyle.mathewson@ualberta.ca" style="color: var(--accent); text-decoration: underline;">kyle.mathewson@ualberta.ca</a> with a detailed description of what you're working on, any questions you have, or ideas you want to explore. I'm genuinely excited to help, provide guidance, offer feedback, and even collaborate with you on your project! You can also contact TA Tamari (<a href="mailto:shalambe@ualberta.ca" style="color: var(--accent); text-decoration: underline;">shalambe@ualberta.ca</a>) if you need equipment or technical assistance.</p>
+        </div>
+
+        <div class="beat" aria-hidden="true"></div>
+
+        <h2>Tips for Success</h2>
+        <p><strong>Start simple</strong> — Options 1-3 are designed to be completable in a few hours, so don't overthink it! <strong>Build on what you know</strong> by leveraging your assignments and class demos as starting points. Remember that <strong>the "wow factor" comes from interesting ideas</strong>, not complex code. <strong>Document as you go</strong> by taking screenshots, saving code versions, and writing notes while you work. If you're recording a video demo, <strong>test your screen recording software</strong> beforehand and do a practice run to avoid technical issues. Most importantly, <strong>choose something that genuinely interests you</strong> and have fun with it!</p>
 
       </main>
 
       <footer>
         <div>
-          <span class="tag">Original Research</span>
-          <span class="tag">Team Collaboration</span>
-          <span class="tag">Real-world Applications</span>
-          <span class="tag">Professional Presentation</span>
+          <span class="tag">Flexible Options</span>
+          <span class="tag">Creative Freedom</span>
+          <span class="tag">Low-Stress Completion</span>
+          <span class="tag">Show What You Learned</span>
         </div>
         <div>© <span id="year"></span> Kyle Mathewson</div>
       </footer>

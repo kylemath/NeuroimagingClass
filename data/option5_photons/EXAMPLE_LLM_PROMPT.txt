@@ -1,0 +1,107 @@
+===============================================
+OPTION 5: EXAMPLE PROMPT FOR AI ASSISTANT
+===============================================
+
+Copy this entire prompt and paste it into ChatGPT, Claude, or another 
+AI assistant. Then attach or paste in your photon count data files.
+
+===============================================
+
+I'm analyzing an experimental dataset on ultra-weak photon emission from the forehead during different mental states. This is exploratory research testing whether mental effort correlates with measurable changes in photon detection.
+
+The experiment was conducted in complete darkness using an ultra-sensitive photomultiplier tube positioned 5 cm from the subject's forehead. Data was collected at 10 Hz (photon counts per 100ms time bin) for 5 minutes per condition.
+
+CSV files have this format:
+timestamp,photon_count,condition
+0.000,48,mental_math
+0.100,42,mental_math
+0.200,51,mental_math
+...
+
+Experimental Conditions:
+1. photons_control_no_person.csv - Pure background (detector alone, no person)
+2. photons_baseline_eyes_open.csv - Subject present, relaxed, eyes open
+3. photons_baseline_eyes_closed.csv - Subject present, relaxed, eyes closed
+4. photons_mental_math.csv - Intense mental arithmetic (counting backwards)
+5. photons_visualization.csv - Complex visual imagery task
+6. photons_meditation.csv - Focused attention meditation (low effort)
+7. photons_mental_math_session2.csv - Replication of mental math
+
+I need you to help me:
+
+1. Load and visualize the data:
+   - Plot photon counts over time for each condition
+   - Calculate mean, standard error for each condition
+   - Create comparison bar plots
+
+2. Statistical analysis:
+   - Compare each condition to the control (no person) baseline using t-tests
+   - Use bootstrap or permutation tests for robust p-values
+   - Apply multiple comparison correction (Bonferroni or FDR)
+   - Calculate effect sizes (Cohen's d or percent change from baseline)
+
+3. Time series analysis:
+   - Average counts in 30-second windows
+   - Test whether effects persist throughout the 5-minute recording
+   - Check for time-dependent trends (temperature drift?)
+
+4. Critical controls:
+   - Fit linear trend to control_no_person data (temperature drift)
+   - Subtract drift from all other conditions
+   - Re-analyze after drift correction
+
+5. Replication test:
+   - Compare the two mental math sessions statistically
+   - Is the effect replicable?
+
+6. Create publication-quality figures showing:
+   - Raw time series for each condition
+   - Mean ± SEM comparison across conditions
+   - Statistical significance annotations
+   - Effect size visualization
+
+7. Provide a critical discussion addressing:
+   - Are the effects statistically significant after multiple comparison correction?
+   - Can we rule out temperature drift as an explanation?
+   - Can we rule out movement artifacts?
+   - Is the effect size physiologically plausible?
+   - What additional controls would strengthen the conclusions?
+
+Important: Photon counting follows Poisson statistics (variance = mean). Use appropriate statistical tests.
+
+Please provide complete Python code with detailed comments, all figures, and statistical results tables.
+
+Use libraries: numpy, scipy, matplotlib, pandas, seaborn
+
+[ATTACH YOUR DATA FILES HERE OR PASTE FILE CONTENTS]
+
+===============================================
+TIPS FOR USING THIS PROMPT:
+===============================================
+
+✓ Copy everything above this line
+✓ Paste into your AI assistant (ChatGPT, Claude, etc.)
+✓ Attach ALL 7 .csv files from the data/option5_photons/ folder
+✓ The AI will generate complete analysis code for you!
+
+For your report:
+- Include all generated figures
+- Present the statistical test results in a table
+- Write a critical discussion section addressing alternative explanations:
+  * Temperature drift over the 2-hour session?
+  * Movement artifacts during mental tasks?
+  * Statistical noise (Type I error)?
+  * Light leaks into the dark room?
+  * Order effects (later recordings ≠ mental effort)?
+
+- Conclude with:
+  * What additional experiments would test your conclusion?
+  * What are the limitations of this dataset?
+  * Is the effect size consistent with published biophoton emission literature?
+
+Remember: The goal is rigorous experimental design and skeptical analysis, 
+not proving a controversial claim! Be critical. Consider all alternative 
+explanations. Design better controls for future experiments.
+
+Good luck! 🔬
+

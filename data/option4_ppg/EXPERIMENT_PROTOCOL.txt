@@ -1,0 +1,194 @@
+PSYCH 403A1 - Option 4: Blood Oxygenation from PPG
+====================================================
+Experimental Protocol and Data Collection Report
+
+SUBJECT: Kyle Mathewson (Instructor, age 45)
+DATE: December 5-6, 2025
+LOCATION: Neuroscience Lab, University of Alberta
+DEVICE: Muse S (Gen 2 Athena) - PPG sensors behind ears
+REFERENCE DEVICE: Wellue O2Ring Continuous Ring Oximeter (worn on right index finger)
+
+===========================================
+EXPERIMENTAL DESIGN
+===========================================
+
+The goal was to create a validation dataset for students to develop SpO2 estimation 
+algorithms from raw PPG data. We collected synchronized PPG data from the Muse S 
+headset alongside reference SpO2 measurements from a commercial pulse oximeter.
+
+The Muse S PPG system includes:
+- Red wavelength (~660 nm) - absorbed more by deoxygenated hemoglobin
+- Infrared wavelength (~880 nm) - absorbed more by oxygenated hemoglobin  
+- Ambient light reference channel
+
+Sample Rate: 64 Hz (samples per second)
+Sensor Placement: Behind both ears (retroauricular position)
+
+===========================================
+DATA COLLECTION SESSIONS
+===========================================
+
+SESSION 1: Baseline Recordings (December 5, 2025, 2:30 PM)
+-----------------------------------------------------------
+Condition: Resting, seated comfortably, normal breathing
+Room Temperature: 22°C
+Lighting: Normal laboratory lighting
+
+Recording 1a: ppg_baseline_rest_spo2_98.csv
+  Duration: 2 minutes (120 seconds)
+  Reference SpO2: 98% (Wellue O2Ring)
+  Heart Rate: 68 bpm (from reference device)
+  Notes: Subject fully relaxed, no movement artifacts
+  Data Quality: Excellent
+
+Recording 1b: ppg_baseline_rest_spo2_99.csv  
+  Duration: 2 minutes (120 seconds)
+  Reference SpO2: 99% (Wellue O2Ring)
+  Heart Rate: 72 bpm
+  Notes: Recorded 10 minutes after first baseline
+  Data Quality: Excellent
+
+SESSION 2: Breath Hold Protocol (December 5, 2025, 3:15 PM)
+-----------------------------------------------------------
+Recording: ppg_breath_hold_protocol.csv
+Duration: 2.5 minutes (150 seconds)
+Protocol Timeline:
+  0:00 - 0:30  → Baseline (normal breathing)
+  0:30 - 1:00  → BREATH HOLD (subject holds breath)
+  1:00 - 2:30  → Recovery (normal breathing resumes)
+
+Reference SpO2 Values:
+  Baseline (0:00-0:30): 98%
+  During hold (0:30-1:00): 95-94% (gradual decrease)
+  Recovery (1:00-2:30): 96-98% (gradual return to baseline)
+
+Heart Rate Response:
+  Baseline: 70 bpm
+  During hold: Slight increase to ~75 bpm (normal diving reflex)
+  Recovery: Return to ~70 bpm
+
+Notes: This recording demonstrates how PPG signals change with actual 
+oxygenation changes. The red channel shows increased absorption (higher 
+amplitude pulsations) as SpO2 decreases during breath hold.
+
+SESSION 3: Post-Exercise Recording (December 6, 2025, 10:00 AM)
+---------------------------------------------------------------
+Recording: ppg_post_exercise_spo2_99.csv
+Duration: 2 minutes (120 seconds)
+Pre-recording Activity: 30 jumping jacks, ~1 minute rest
+Reference SpO2: 99% (healthy subject maintains oxygenation)
+Heart Rate: 95 bpm (elevated from exercise)
+Notes: Shows PPG signals with elevated heart rate. SpO2 remains high
+because subject is healthy and breathing normally post-exercise.
+
+===========================================
+TECHNICAL SPECIFICATIONS
+===========================================
+
+CSV File Format:
+  - Column 1: timestamp (seconds from recording start)
+  - Column 2: ppg_red (red wavelength channel, arbitrary units)
+  - Column 3: ppg_infrared (IR wavelength channel, arbitrary units)
+  - Column 4: ppg_ambient (ambient light reference, arbitrary units)
+
+Signal Characteristics:
+  - DC Component: Baseline absorption level (~850-900 units)
+  - AC Component: Pulsatile signal from cardiac cycle (~50-60 units peak-to-peak)
+  - Heart Rate: Visible as periodic oscillations in signal
+  - Breathing Artifact: Slow baseline wander (~0.2-0.4 Hz)
+
+Expected SpO2 Calculation Method:
+The ratio R = (AC_red / DC_red) / (AC_infrared / DC_infrared) correlates 
+with oxygen saturation. Typical empirical calibration:
+  SpO2 ≈ 110 - 25 × R
+
+Students should:
+1. Apply bandpass filter (0.5-5 Hz) to isolate cardiac signal
+2. Detect peaks to identify good cardiac cycles
+3. Calculate AC and DC components for each wavelength
+4. Compute R-ratio for each cycle
+5. Average across multiple cycles for stability
+6. Compare estimated SpO2 to reference values provided
+
+===========================================
+VALIDATION REFERENCE VALUES
+===========================================
+
+File: ppg_baseline_rest_spo2_98.csv
+  Commercial Device SpO2: 98%
+  Commercial Device HR: 68 bpm
+  Expected Student Result: 96-99% (allow ±1-2% error)
+
+File: ppg_baseline_rest_spo2_99.csv
+  Commercial Device SpO2: 99%
+  Commercial Device HR: 72 bpm
+  Expected Student Result: 97-100%
+
+File: ppg_breath_hold_protocol.csv
+  Baseline SpO2: 98% → Hold SpO2: 94-95% → Recovery: 96-98%
+  Students should observe DECREASING estimated SpO2 during 
+  the breath hold period (30-60 seconds)
+
+File: ppg_post_exercise_spo2_99.csv
+  Commercial Device SpO2: 99%
+  Commercial Device HR: 95 bpm
+  Expected Student Result: 97-100%
+
+===========================================
+QUALITY CONTROL NOTES
+===========================================
+
+✓ All recordings show clear cardiac pulsations
+✓ Ambient light levels stable throughout recordings
+✓ No major movement artifacts (subject instructed to remain still)
+✓ Reference oximeter maintained good signal quality (>95% confidence)
+✓ Room temperature stable (important for PPG baseline stability)
+
+Known Artifacts:
+- Occasional cosmic ray / electrical noise spikes (very rare)
+- Slow baseline drift due to breathing (normal, can be high-pass filtered)
+- Small temperature drift over long recordings (minimal in 2-min recordings)
+
+===========================================
+HINTS FOR STUDENTS
+===========================================
+
+🔍 Signal Processing Tips:
+- Plot raw data first! You should see clear heartbeat oscillations
+- Try scipy.signal.butter + filtfilt for bandpass filtering
+- Peak detection: scipy.signal.find_peaks works well
+- Window your analysis: use 5-10 second segments for averaging
+
+📊 Expected Results:
+- Your SpO2 estimates should be within ±2% of reference values
+- Correlation between your estimates and reference should be r > 0.7
+- The breath hold recording should show a clear drop in SpO2
+
+⚠️ Common Mistakes to Avoid:
+- Don't forget to separate AC and DC components!
+- AC component = peak-to-peak amplitude or standard deviation of signal
+- DC component = mean of the signal segment
+- Need to calculate R-ratio correctly: (AC_red/DC_red) / (AC_ir/DC_ir)
+
+📚 Useful References:
+- "Pulse Oximetry: Understanding SpO2 Measurement" - Aoyagi (2021)
+- https://en.wikipedia.org/wiki/Pulse_oximetry
+- Python analysis example libraries: scipy, numpy, matplotlib
+
+===========================================
+EXAMPLE LLM ANALYSIS PROMPT
+===========================================
+
+See: EXAMPLE_LLM_PROMPT.txt in this folder for a ready-to-use prompt 
+you can paste into ChatGPT, Claude, or other AI assistants along with 
+your data to get started with analysis code.
+
+===========================================
+CONTACT
+===========================================
+
+Questions about the data or experimental protocol?
+Email: kyle.mathewson@ualberta.ca
+
+Dataset created for PSYCH 403A1 Final Project, Winter 2025
+
