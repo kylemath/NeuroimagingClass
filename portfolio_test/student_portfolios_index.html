@@ -32,6 +32,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            margin: 0;
         }
         
         .neural-grid {
@@ -58,6 +59,7 @@
             padding: 0 1.5rem;
             position: relative;
             z-index: 1;
+            width: 100%;
         }
         
         .main-header {
@@ -273,11 +275,6 @@
             animation: spin 1s linear infinite;
         }
         
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
         .status-indicator .available {
             color: #4CAF50;
             font-weight: bold;
@@ -364,12 +361,12 @@
     
     <main class="container">
         <section class="intro">
-            <p>Click any card to explore the student's complete portfolio including Assignment 6, EEG analysis, BrainImation projects, and midterm submissions.</p>
+            <p>Click any card to open the student's portfolio in a new tab.</p>
         </section>
         
         <section class="student-grid">
             
-            <a href="Tori_A_portfolio.html" class="portfolio-card" data-portfolio-file="Tori_A_portfolio.html" data-image-file="ToriA.png">
+            <a href="Tori_A_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Tori_A_portfolio.html" data-image-file="ToriA.png">
                 <div class="card-image-container">
                     <img src="ToriA.png" alt="Tori Anderson's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -392,7 +389,7 @@
                 </div>
             </a>
         
-            <a href="Caitlyn_A_portfolio.html" class="portfolio-card" data-portfolio-file="Caitlyn_A_portfolio.html" data-image-file="CaitlynA.png">
+            <a href="Caitlyn_A_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Caitlyn_A_portfolio.html" data-image-file="CaitlynA.png">
                 <div class="card-image-container">
                     <img src="CaitlynA.png" alt="Caitlyn Archibald's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -415,7 +412,7 @@
                 </div>
             </a>
         
-            <a href="Sarah_B_portfolio.html" class="portfolio-card" data-portfolio-file="Sarah_B_portfolio.html" data-image-file="SarahB.png">
+            <a href="Sarah_B_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Sarah_B_portfolio.html" data-image-file="SarahB.png">
                 <div class="card-image-container">
                     <img src="SarahB.png" alt="Sarah Badran's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -438,7 +435,7 @@
                 </div>
             </a>
         
-            <a href="Kora_B_portfolio.html" class="portfolio-card" data-portfolio-file="Kora_B_portfolio.html" data-image-file="KoraB.png">
+            <a href="Kora_B_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kora_B_portfolio.html" data-image-file="KoraB.png">
                 <div class="card-image-container">
                     <img src="KoraB.png" alt="Kora Budzyk's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -461,30 +458,7 @@
                 </div>
             </a>
         
-            <a href="Casey_C_portfolio.html" class="portfolio-card" data-portfolio-file="Casey_C_portfolio.html" data-image-file="CaseyC.png">
-                <div class="card-image-container">
-                    <img src="CaseyC.png" alt="Casey Campbell's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
-                    <div class="image-overlay">
-                        <h3 class="card-name">Casey C.</h3>
-                        <div class="hover-info">
-                            <span class="click-hint">👆 Click for portfolio</span>
-                            <div class="card-meta">
-                                <span class="mini-badge">EEG</span>
-                                
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="status-indicator">
-                    <span class="checking">⟳</span>
-                    <span class="available" style="display:none;">✓</span>
-                    <span class="unavailable" style="display:none;">⚠</span>
-                </div>
-            </a>
-        
-            <a href="Natasha_C_portfolio.html" class="portfolio-card" data-portfolio-file="Natasha_C_portfolio.html" data-image-file="NatashaC.png">
+            <a href="Natasha_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Natasha_C_portfolio.html" data-image-file="NatashaC.png">
                 <div class="card-image-container">
                     <img src="NatashaC.png" alt="Natasha Chemello's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -507,7 +481,7 @@
                 </div>
             </a>
         
-            <a href="Hannah_C_portfolio.html" class="portfolio-card" data-portfolio-file="Hannah_C_portfolio.html" data-image-file="HannahC.png">
+            <a href="Hannah_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hannah_C_portfolio.html" data-image-file="HannahC.png">
                 <div class="card-image-container">
                     <img src="HannahC.png" alt="Hannah Cooper's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -530,7 +504,7 @@
                 </div>
             </a>
         
-            <a href="Kyle_C_portfolio.html" class="portfolio-card" data-portfolio-file="Kyle_C_portfolio.html" data-image-file="KyleC.png">
+            <a href="Kyle_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kyle_C_portfolio.html" data-image-file="KyleC.png">
                 <div class="card-image-container">
                     <img src="KyleC.png" alt="Kyle Cordez's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -553,7 +527,7 @@
                 </div>
             </a>
         
-            <a href="Jake_G_portfolio.html" class="portfolio-card" data-portfolio-file="Jake_G_portfolio.html" data-image-file="JakeG.png">
+            <a href="Jake_G_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Jake_G_portfolio.html" data-image-file="JakeG.png">
                 <div class="card-image-container">
                     <img src="JakeG.png" alt="Jake Gannon's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -576,7 +550,7 @@
                 </div>
             </a>
         
-            <a href="Jia_G_portfolio.html" class="portfolio-card" data-portfolio-file="Jia_G_portfolio.html" data-image-file="JiaG.png">
+            <a href="Jia_G_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Jia_G_portfolio.html" data-image-file="JiaG.png">
                 <div class="card-image-container">
                     <img src="JiaG.png" alt="Jia Guina's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -599,7 +573,7 @@
                 </div>
             </a>
         
-            <a href="Samir_J_portfolio.html" class="portfolio-card" data-portfolio-file="Samir_J_portfolio.html" data-image-file="SamirJ.png">
+            <a href="Samir_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Samir_J_portfolio.html" data-image-file="SamirJ.png">
                 <div class="card-image-container">
                     <img src="SamirJ.png" alt="Samir Jaber's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -622,7 +596,7 @@
                 </div>
             </a>
         
-            <a href="Ayaan_J_portfolio.html" class="portfolio-card" data-portfolio-file="Ayaan_J_portfolio.html" data-image-file="AyaanJ.png">
+            <a href="Ayaan_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ayaan_J_portfolio.html" data-image-file="AyaanJ.png">
                 <div class="card-image-container">
                     <img src="AyaanJ.png" alt="Ayaan Jimale's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -645,7 +619,7 @@
                 </div>
             </a>
         
-            <a href="Mohamed_J_portfolio.html" class="portfolio-card" data-portfolio-file="Mohamed_J_portfolio.html" data-image-file="MohamedJ.png">
+            <a href="Mohamed_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Mohamed_J_portfolio.html" data-image-file="MohamedJ.png">
                 <div class="card-image-container">
                     <img src="MohamedJ.png" alt="Mohamed Jomha's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -668,7 +642,7 @@
                 </div>
             </a>
         
-            <a href="Amna_K_portfolio.html" class="portfolio-card" data-portfolio-file="Amna_K_portfolio.html" data-image-file="AmnaK.png">
+            <a href="Amna_K_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Amna_K_portfolio.html" data-image-file="AmnaK.png">
                 <div class="card-image-container">
                     <img src="AmnaK.png" alt="Amna Khan's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -691,7 +665,7 @@
                 </div>
             </a>
         
-            <a href="Ivan_L_portfolio.html" class="portfolio-card" data-portfolio-file="Ivan_L_portfolio.html" data-image-file="IvanL.png">
+            <a href="Ivan_L_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ivan_L_portfolio.html" data-image-file="IvanL.png">
                 <div class="card-image-container">
                     <img src="IvanL.png" alt="Ivan Espino Lopez's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -702,7 +676,7 @@
                                 <span class="mini-badge">EEG</span>
                                 <span class="mini-badge">Brain</span>
                                 <span class="mini-badge">MT</span>
-                                
+                                <span class="mini-badge">A6</span>
                             </div>
                         </div>
                     </div>
@@ -714,7 +688,7 @@
                 </div>
             </a>
         
-            <a href="Yan_L_portfolio.html" class="portfolio-card" data-portfolio-file="Yan_L_portfolio.html" data-image-file="YanL.png">
+            <a href="Yan_L_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Yan_L_portfolio.html" data-image-file="YanL.png">
                 <div class="card-image-container">
                     <img src="YanL.png" alt="Yan Luo's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -737,30 +711,7 @@
                 </div>
             </a>
         
-            <a href="Kyle_M_portfolio.html" class="portfolio-card" data-portfolio-file="Kyle_M_portfolio.html" data-image-file="KyleM.png">
-                <div class="card-image-container">
-                    <img src="KyleM.png" alt="Kyle Mathewson's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
-                    <div class="image-overlay">
-                        <h3 class="card-name">Kyle M.</h3>
-                        <div class="hover-info">
-                            <span class="click-hint">👆 Click for portfolio</span>
-                            <div class="card-meta">
-                                <span class="mini-badge">EEG</span>
-                                
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="status-indicator">
-                    <span class="checking">⟳</span>
-                    <span class="available" style="display:none;">✓</span>
-                    <span class="unavailable" style="display:none;">⚠</span>
-                </div>
-            </a>
-        
-            <a href="Angel_N_portfolio.html" class="portfolio-card" data-portfolio-file="Angel_N_portfolio.html" data-image-file="AngelN.png">
+            <a href="Angel_N_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Angel_N_portfolio.html" data-image-file="AngelN.png">
                 <div class="card-image-container">
                     <img src="AngelN.png" alt="Angel Nwaka's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -783,7 +734,7 @@
                 </div>
             </a>
         
-            <a href="Alicia_O_portfolio.html" class="portfolio-card" data-portfolio-file="Alicia_O_portfolio.html" data-image-file="AliciaO.png">
+            <a href="Alicia_O_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Alicia_O_portfolio.html" data-image-file="AliciaO.png">
                 <div class="card-image-container">
                     <img src="AliciaO.png" alt="Alicia Osorio's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -806,7 +757,7 @@
                 </div>
             </a>
         
-            <a href="Ryan_P_portfolio.html" class="portfolio-card" data-portfolio-file="Ryan_P_portfolio.html" data-image-file="RyanP.png">
+            <a href="Ryan_P_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ryan_P_portfolio.html" data-image-file="RyanP.png">
                 <div class="card-image-container">
                     <img src="RyanP.png" alt="Ryan Park's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -829,7 +780,7 @@
                 </div>
             </a>
         
-            <a href="Hardi_P_portfolio.html" class="portfolio-card" data-portfolio-file="Hardi_P_portfolio.html" data-image-file="HardiP.png">
+            <a href="Hardi_P_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hardi_P_portfolio.html" data-image-file="HardiP.png">
                 <div class="card-image-container">
                     <img src="HardiP.png" alt="Hardi Patel's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -852,7 +803,7 @@
                 </div>
             </a>
         
-            <a href="Rana_R_portfolio.html" class="portfolio-card" data-portfolio-file="Rana_R_portfolio.html" data-image-file="RanaR.png">
+            <a href="Rana_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Rana_R_portfolio.html" data-image-file="RanaR.png">
                 <div class="card-image-container">
                     <img src="RanaR.png" alt="Rana Radiansyah's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -875,7 +826,7 @@
                 </div>
             </a>
         
-            <a href="Hamza_R_portfolio.html" class="portfolio-card" data-portfolio-file="Hamza_R_portfolio.html" data-image-file="HamzaR.png">
+            <a href="Hamza_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hamza_R_portfolio.html" data-image-file="HamzaR.png">
                 <div class="card-image-container">
                     <img src="HamzaR.png" alt="Hamza Razzo's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -898,7 +849,7 @@
                 </div>
             </a>
         
-            <a href="Kiara_R_portfolio.html" class="portfolio-card" data-portfolio-file="Kiara_R_portfolio.html" data-image-file="KiaraR.png">
+            <a href="Kiara_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kiara_R_portfolio.html" data-image-file="KiaraR.png">
                 <div class="card-image-container">
                     <img src="KiaraR.png" alt="Kiara Ruda's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -921,7 +872,7 @@
                 </div>
             </a>
         
-            <a href="Marinaya_S_portfolio.html" class="portfolio-card" data-portfolio-file="Marinaya_S_portfolio.html" data-image-file="MarinayaS.png">
+            <a href="Marinaya_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Marinaya_S_portfolio.html" data-image-file="MarinayaS.png">
                 <div class="card-image-container">
                     <img src="MarinayaS.png" alt="Marinaya Saigh's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -944,7 +895,7 @@
                 </div>
             </a>
         
-            <a href="Zainab_S_portfolio.html" class="portfolio-card" data-portfolio-file="Zainab_S_portfolio.html" data-image-file="ZainabS.png">
+            <a href="Zainab_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Zainab_S_portfolio.html" data-image-file="ZainabS.png">
                 <div class="card-image-container">
                     <img src="ZainabS.png" alt="Zainab Samiuddin's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -967,7 +918,7 @@
                 </div>
             </a>
         
-            <a href="Bani_S_portfolio.html" class="portfolio-card" data-portfolio-file="Bani_S_portfolio.html" data-image-file="BaniS.png">
+            <a href="Bani_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Bani_S_portfolio.html" data-image-file="BaniS.png">
                 <div class="card-image-container">
                     <img src="BaniS.png" alt="Bani Sekhon's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -990,7 +941,7 @@
                 </div>
             </a>
         
-            <a href="Raissa_S_portfolio.html" class="portfolio-card" data-portfolio-file="Raissa_S_portfolio.html" data-image-file="RaissaS.png">
+            <a href="Raissa_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Raissa_S_portfolio.html" data-image-file="RaissaS.png">
                 <div class="card-image-container">
                     <img src="RaissaS.png" alt="Raissa Shariff's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -1013,7 +964,7 @@
                 </div>
             </a>
         
-            <a href="Grace_S_portfolio.html" class="portfolio-card" data-portfolio-file="Grace_S_portfolio.html" data-image-file="GraceS.png">
+            <a href="Grace_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Grace_S_portfolio.html" data-image-file="GraceS.png">
                 <div class="card-image-container">
                     <img src="GraceS.png" alt="Grace Shin's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -1036,7 +987,7 @@
                 </div>
             </a>
         
-            <a href="Chloe_S_portfolio.html" class="portfolio-card" data-portfolio-file="Chloe_S_portfolio.html" data-image-file="ChloeS.png">
+            <a href="Chloe_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Chloe_S_portfolio.html" data-image-file="ChloeS.png">
                 <div class="card-image-container">
                     <img src="ChloeS.png" alt="Chloe Sorochan's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -1059,7 +1010,7 @@
                 </div>
             </a>
         
-            <a href="Ella_T_portfolio.html" class="portfolio-card" data-portfolio-file="Ella_T_portfolio.html" data-image-file="EllaT.png">
+            <a href="Ella_T_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ella_T_portfolio.html" data-image-file="EllaT.png">
                 <div class="card-image-container">
                     <img src="EllaT.png" alt="Ella Thorsen-Bell's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -1082,7 +1033,7 @@
                 </div>
             </a>
         
-            <a href="Portia_W_portfolio.html" class="portfolio-card" data-portfolio-file="Portia_W_portfolio.html" data-image-file="PortiaW.png">
+            <a href="Portia_W_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Portia_W_portfolio.html" data-image-file="PortiaW.png">
                 <div class="card-image-container">
                     <img src="PortiaW.png" alt="Portia Wainwright's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -1173,7 +1124,7 @@
         
         // Search/filter functionality
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Portfolio index loaded - Visual grid mode');
+            console.log('Portfolio index loaded - Links open in new tabs');
             
             // Check portfolio availability
             checkPortfolioAvailability();
