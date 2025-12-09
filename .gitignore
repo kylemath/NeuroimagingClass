@@ -11,3 +11,10 @@ data/verify_data.py
 data/*_INSTRUCTOR.md
 data/DATA_CREATION_SUMMARY.md
 docs/*
+generate_portfolio_index.js
+portfolio_generator.js
+submissions_tracker_live.html
+.aa
+.emails
+.DS_Store
+venv/
