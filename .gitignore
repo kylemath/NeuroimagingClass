@@ -10,3 +10,4 @@ data/generate_*.py
 data/verify_data.py
 data/*_INSTRUCTOR.md
 data/DATA_CREATION_SUMMARY.md
+docs/*
