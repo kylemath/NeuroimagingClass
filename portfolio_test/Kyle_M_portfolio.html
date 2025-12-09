@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyle M. - PSYCH 403 Portfolio</title>
+    <style>
+        
+        :root {
+            --primary: #d63384;
+            --secondary: #20c997;
+            --accent-2: #4ecdc4;
+            --muted: #999;
+            --text: #2d1b2d;
+            --bg: #f8f4f8;
+            --sidebar-bg: #2d1b2d;
+            --sidebar-text: #f8f4f8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .student-info h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Spectral', Georgia, serif;
+        }
+        
+        .course {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        
+        .navigation h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin: 2rem 0 1rem;
+        }
+        
+        .toc, .nav-links {
+            list-style: none;
+        }
+        
+        .toc li, .nav-links li {
+            margin: 0.5rem 0;
+        }
+        
+        .toc a, .nav-links a {
+            color: var(--sidebar-text);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .toc a:hover, .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+            padding-left: 1rem;
+        }
+        
+        .nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 2rem 0;
+        }
+        
+        .back-link {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .back-link a {
+            color: var(--sidebar-text);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .back-link a:hover {
+            opacity: 1;
+        }
+        
+        /* Main Content */
+        .content {
+            margin-left: 300px;
+            flex: 1;
+            padding: 3rem;
+            max-width: 900px;
+        }
+        
+        .portfolio-header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .portfolio-header h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .byline {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .info-banner {
+            margin-top: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(32, 201, 151, 0.1);
+            border-left: 4px solid var(--secondary);
+            border-radius: 6px;
+        }
+        
+        .info-banner p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 2rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .section-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .section-content h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--secondary);
+        }
+        
+        .section-content h4 {
+            font-size: 1.1rem;
+            margin: 1.25rem 0 0.5rem;
+        }
+        
+        .section-content p {
+            margin: 1rem 0;
+        }
+        
+        .section-content ul, .section-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        
+        .section-content li {
+            margin: 0.5rem 0;
+        }
+        
+        .section-content pre {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-left: 4px solid var(--primary);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .section-content code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.9em;
+        }
+        
+        .section-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .section-content a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .section-content a:hover {
+            border-bottom-color: var(--primary);
+        }
+        
+        .section-content iframe {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .images {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .images figure {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .images img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        .image-placeholder {
+            background: linear-gradient(135deg, rgba(214,51,132,0.1), rgba(32,201,151,0.1));
+            border: 2px dashed rgba(214,51,132,0.3);
+            border-radius: 8px;
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #666;
+        }
+        
+        figure {
+            margin: 0;
+        }
+        
+        figcaption {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        .other-work {
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 2px solid #ddd;
+        }
+        
+        .other-work h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .assignment-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .assignment-section h4 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .media-card {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .media-card h5 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .media-caption {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        .video-note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+        }
+        
+        .video-note a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .file-link {
+            margin: 0.75rem 0;
+            padding: 0.75rem 1rem;
+            background: #f5f5f5;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+            transition: all 0.2s;
+        }
+        
+        .file-link:hover {
+            background: #ebebeb;
+            border-left-width: 5px;
+        }
+        
+        .file-link a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .file-link a:hover {
+            color: var(--primary);
+        }
+        
+        .brainimation-card {
+            background: linear-gradient(135deg, rgba(214,51,132,0.05), rgba(32,201,151,0.05));
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            margin: 1rem 0;
+        }
+        
+        .brainimation-card h5 {
+            margin: 0 0 0.5rem 0;
+            color: var(--accent-2);
+            font-size: 1.1rem;
+        }
+        
+        .btn-brainimation {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent-2));
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+        }
+        
+        .btn-brainimation:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.5);
+        }
+        
+        .notebook-card {
+            background: linear-gradient(135deg, rgba(249, 168, 37, 0.05), rgba(249, 115, 22, 0.05));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(249, 115, 22, 0.3);
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .notebook-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
+        }
+        
+        .notebook-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .notebook-header h5 {
+            margin: 0;
+            color: #f97316;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .notebook-badge {
+            background: #f97316;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .notebook-meta {
+            margin-bottom: 1rem;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .notebook-meta p {
+            margin: 0;
+        }
+        
+        .notebook-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-colab {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        }
+        
+        .btn-colab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.5);
+            background: linear-gradient(135deg, #ea580c, #f97316);
+        }
+        
+        .btn-drive-link {
+            color: #999;
+            text-decoration: none;
+            font-size: 0.85em;
+            padding: 8px 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .btn-drive-link:hover {
+            border-color: #f97316;
+            color: #f97316;
+        }
+        
+        .notebook-note {
+            font-size: 0.85em;
+            color: #999;
+            margin: 0;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(249, 115, 22, 0.1);
+        }
+        
+        .p5-embed-card {
+            background: linear-gradient(135deg, rgba(237, 70, 135, 0.05), rgba(78, 205, 196, 0.05));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .p5-embed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .p5-badge {
+            background: linear-gradient(135deg, #ed4687, #4ecdc4);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .p5-length {
+            color: #999;
+            font-size: 0.85em;
+        }
+        
+        .p5-code-preview {
+            display: none;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .p5-embed-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .btn-brainimation-inline {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #ed4687, #4ecdc4);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+        }
+        
+        .btn-brainimation-inline:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.5);
+        }
+        
+        .btn-show-code {
+            padding: 10px 18px;
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-show-code:hover {
+            background: #e0e0e0;
+            border-color: #4ecdc4;
+        }
+        
+        .pdf-content-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .pdf-header h5 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .view-original {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .view-original:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .pdf-content {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #333;
+        }
+        
+        .pdf-content h2 {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .pdf-content h3 {
+            font-size: 1.1rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        .pdf-content p {
+            margin: 0.75rem 0;
+        }
+        
+        .pdf-content ul {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .pdf-content pre {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-left: 4px solid var(--secondary);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .pdf-content code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.9em;
+        }
+        
+        .pdf-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .pdf-content a {
+            color: var(--secondary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .pdf-content a:hover {
+            border-bottom-color: var(--secondary);
+        }
+        
+        .pdf-content iframe {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .pdf-images {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .references {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .references h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .references ol {
+            padding-left: 2rem;
+        }
+        
+        .references li {
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+            .content {
+                margin-left: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                padding: 2rem 1rem;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="student-info">
+            <h1>Kyle M.</h1>
+            <p class="course">PSYCH 403A1<br>Neuroimaging</p>
+        </div>
+        
+        <div class="navigation">
+            <h3>Portfolio</h3>
+            <ul class="toc">
+                <li><a href="#section-0">Portfolio Overview</a></li>
+            </ul>
+            
+            <div class="nav-divider"></div>
+            
+            <h3>Course Work</h3>
+            <ul class="nav-links">
+                <li><a href="#other-work">Assignment 1</a></li>
+                
+                
+            </ul>
+        </div>
+        
+        <div class="back-link">
+            <a href="javascript:history.back()">← Back</a>
+        </div>
+    </nav>
+    
+    <main class="content">
+        <header class="portfolio-header">
+            <h1>Course Portfolio</h1>
+            <p class="byline">by Kyle M.</p>
+            <div class="info-banner">
+                <p>📄 This portfolio is a self-contained HTML document with all images embedded. 
+                 
+                Browse the assignments below to see all coursework.</p>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            
+        <section id="section-0" class="content-section">
+            <h2>Portfolio Overview</h2>
+            <div class="section-content">
+                <p>This portfolio showcases work from PSYCH 403A1: Neuroimaging & Neurostimulation. Browse the assignments below to see the complete coursework.</p>
+            </div>
+            
+        </section>
+        
+            
+            
+        </div>
+        
+        <div id="other-work">
+            
+        <div class="other-work">
+            <h3>Other Course Work</h3>
+            
+            <div class="assignment-section">
+                <h4>📊 Assignment 1: EEG Analysis</h4>
+                
+                <div class="notebook-card">
+                    <div class="notebook-header">
+                        <h5>📓 assignment1_eeg_filtering - Kyle Mathewson.ipynb</h5>
+                        <span class="notebook-badge">Jupyter Notebook</span>
+                    </div>
+                    <div class="notebook-meta">
+                        <p>Interactive Python notebook with code, visualizations, and analysis</p>
+                    </div>
+                    <div class="notebook-actions">
+                        <a href="https://colab.research.google.com/drive/1oDFfBjP07IPfTd1rO6aB1_pbHmubNga-" target="_blank" class="btn-colab">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px; vertical-align: middle;">
+                                <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm0 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm-1-17v10h2V5h-2zm0 12v2h2v-2h-2z"/>
+                            </svg>
+                            Open in Google Colab
+                        </a>
+                        <a href="https://drive.google.com/file/d/1oDFfBjP07IPfTd1rO6aB1_pbHmubNga-/view" target="_blank" class="btn-drive-link">
+                            📄 View on Drive
+                        </a>
+                    </div>
+                    <p class="notebook-note">
+                        💡 Opens in Google Colab for interactive execution. Requires Google account.
+                    </p>
+                </div>
+            
+            </div>
+        
+            
+            
+        </div>
+    
+        </div>
+    </main>
+    
+    <script>
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Highlight current section in navigation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.toc a').forEach(link => {
+                        link.style.background = '';
+                    });
+                    const activeLink = document.querySelector(`.toc a[href="#${id}"]`);
+                    if (activeLink) {
+                        activeLink.style.background = 'rgba(255,255,255,0.15)';
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        document.querySelectorAll('.content-section').forEach(section => {
+            observer.observe(section);
+        });
+    
+    </script>
+</body>
+</html>

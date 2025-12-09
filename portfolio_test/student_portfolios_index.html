@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSYCH 403A1 - Student Portfolio Catalog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Spectral:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        
+        :root {
+            --bg: #f8f4f8;
+            --bg-2: #ede8ed;
+            --text: #2d1b2d;
+            --muted: #6b5a6b;
+            --accent: #d63384;
+            --accent-2: #20c997;
+            --glow: rgba(214, 51, 132, 0.3);
+            --neural: rgba(32, 201, 151, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Inter, system-ui, -apple-system, sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, #f8f4f8 0%, #ede8ed 25%, #f0ebf2 50%, #ebf2f0 75%, #f4f8f8 100%);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .neural-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                radial-gradient(2px 2px at 15% 25%, var(--neural) 0, transparent 50%),
+                radial-gradient(1px 1px at 75% 35%, rgba(214,51,132,0.2) 0, transparent 50%),
+                radial-gradient(1px 1px at 45% 65%, var(--neural) 0, transparent 50%),
+                radial-gradient(2px 2px at 85% 85%, rgba(214,51,132,0.15) 0, transparent 50%);
+            opacity: 0.4;
+            animation: pulse-grid 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-grid {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.02); }
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-header {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: white;
+            padding: 3rem 0 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-header {
+                padding: 2rem 0 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        .main-header h1 {
+            font-family: Spectral, Georgia, serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .main-header h2 {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            opacity: 0.95;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.85;
+            font-weight: 300;
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .intro p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--muted);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 4rem;
+        }
+        
+        @media (max-width: 768px) {
+            .student-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem;
+            }
+        }
+        
+        .portfolio-card {
+            position: relative;
+            display: block;
+            text-decoration: none;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .portfolio-card {
+                border-radius: 8px;
+            }
+        }
+        
+        .portfolio-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(214, 51, 132, 0.3);
+        }
+        
+        .card-image-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            background: linear-gradient(135deg, #2d1b2d 0%, #1a1a2e 100%);
+        }
+        
+        @media (max-width: 768px) {
+            .card-image-container {
+                aspect-ratio: 1/1;
+            }
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .portfolio-card:hover .card-image {
+            transform: scale(1.05);
+        }
+        
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, 
+                rgba(0,0,0,0.3) 0%, 
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.7) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 0.75rem;
+            transition: background 0.3s ease;
+        }
+        
+        @media (min-width: 769px) {
+            .image-overlay {
+                padding: 1rem;
+            }
+        }
+        
+        .portfolio-card:hover .image-overlay {
+            background: linear-gradient(to bottom, 
+                rgba(214, 51, 132, 0.4) 0%, 
+                rgba(32, 201, 151, 0.2) 50%,
+                rgba(0,0,0,0.8) 100%);
+        }
+        
+        .card-name {
+            font-family: Spectral, Georgia, serif;
+            font-size: clamp(0.9rem, 2vw, 1.4rem);
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            margin: 0;
+            z-index: 2;
+            line-height: 1.2;
+        }
+        
+        .hover-info {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .portfolio-card:hover .hover-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .click-hint {
+            display: block;
+            font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .card-meta {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+        
+        .mini-badge {
+            font-size: clamp(0.5rem, 1vw, 0.6rem);
+            padding: 0.2rem 0.4rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--accent);
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .status-indicator {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .portfolio-card:hover .status-indicator {
+            transform: scale(1.1);
+        }
+        
+        .status-indicator .checking {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .status-indicator .available {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .status-indicator .unavailable {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        /* Unavailable/disabled state */
+        .portfolio-card.unavailable {
+            opacity: 0.5;
+            filter: grayscale(80%);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .portfolio-card.unavailable:hover {
+            transform: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        
+        /* Error state for missing images */
+        .image-error .card-image {
+            display: none;
+        }
+        
+        .image-error::before {
+            content: '🖼️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+        
+        .image-error::after {
+            content: 'Image not found';
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        .main-footer {
+            background: var(--text);
+            color: rgba(255,255,255,0.8);
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .main-footer p {
+            margin: 0.25rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .intro p {
+                font-size: 0.9rem;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="neural-grid" aria-hidden="true"></div>
+    
+    <header class="main-header">
+        <div class="container">
+            <h1>PSYCH 403A1</h1>
+            <h2>Neuroimaging & Neurostimulation</h2>
+            <p class="subtitle">Student Portfolio Catalog — Fall 2025</p>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="intro">
+            <p>Click any card to explore the student's complete portfolio including Assignment 6, EEG analysis, BrainImation projects, and midterm submissions.</p>
+        </section>
+        
+        <section class="student-grid">
+            
+            <a href="Tori_A_portfolio.html" class="portfolio-card" data-portfolio-file="Tori_A_portfolio.html" data-image-file="ToriA.png">
+                <div class="card-image-container">
+                    <img src="ToriA.png" alt="Tori Anderson's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Tori A.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Caitlyn_A_portfolio.html" class="portfolio-card" data-portfolio-file="Caitlyn_A_portfolio.html" data-image-file="CaitlynA.png">
+                <div class="card-image-container">
+                    <img src="CaitlynA.png" alt="Caitlyn Archibald's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Caitlyn A.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Sarah_B_portfolio.html" class="portfolio-card" data-portfolio-file="Sarah_B_portfolio.html" data-image-file="SarahB.png">
+                <div class="card-image-container">
+                    <img src="SarahB.png" alt="Sarah Badran's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Sarah B.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Kora_B_portfolio.html" class="portfolio-card" data-portfolio-file="Kora_B_portfolio.html" data-image-file="KoraB.png">
+                <div class="card-image-container">
+                    <img src="KoraB.png" alt="Kora Budzyk's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Kora B.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Casey_C_portfolio.html" class="portfolio-card" data-portfolio-file="Casey_C_portfolio.html" data-image-file="CaseyC.png">
+                <div class="card-image-container">
+                    <img src="CaseyC.png" alt="Casey Campbell's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Casey C.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Natasha_C_portfolio.html" class="portfolio-card" data-portfolio-file="Natasha_C_portfolio.html" data-image-file="NatashaC.png">
+                <div class="card-image-container">
+                    <img src="NatashaC.png" alt="Natasha Chemello's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Natasha C.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Hannah_C_portfolio.html" class="portfolio-card" data-portfolio-file="Hannah_C_portfolio.html" data-image-file="HannahC.png">
+                <div class="card-image-container">
+                    <img src="HannahC.png" alt="Hannah Cooper's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Hannah C.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Kyle_C_portfolio.html" class="portfolio-card" data-portfolio-file="Kyle_C_portfolio.html" data-image-file="KyleC.png">
+                <div class="card-image-container">
+                    <img src="KyleC.png" alt="Kyle Cordez's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Kyle C.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Jake_G_portfolio.html" class="portfolio-card" data-portfolio-file="Jake_G_portfolio.html" data-image-file="JakeG.png">
+                <div class="card-image-container">
+                    <img src="JakeG.png" alt="Jake Gannon's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Jake G.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Jia_G_portfolio.html" class="portfolio-card" data-portfolio-file="Jia_G_portfolio.html" data-image-file="JiaG.png">
+                <div class="card-image-container">
+                    <img src="JiaG.png" alt="Jia Guina's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Jia G.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Samir_J_portfolio.html" class="portfolio-card" data-portfolio-file="Samir_J_portfolio.html" data-image-file="SamirJ.png">
+                <div class="card-image-container">
+                    <img src="SamirJ.png" alt="Samir Jaber's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Samir J.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Ayaan_J_portfolio.html" class="portfolio-card" data-portfolio-file="Ayaan_J_portfolio.html" data-image-file="AyaanJ.png">
+                <div class="card-image-container">
+                    <img src="AyaanJ.png" alt="Ayaan Jimale's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Ayaan J.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Mohamed_J_portfolio.html" class="portfolio-card" data-portfolio-file="Mohamed_J_portfolio.html" data-image-file="MohamedJ.png">
+                <div class="card-image-container">
+                    <img src="MohamedJ.png" alt="Mohamed Jomha's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Mohamed J.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Amna_K_portfolio.html" class="portfolio-card" data-portfolio-file="Amna_K_portfolio.html" data-image-file="AmnaK.png">
+                <div class="card-image-container">
+                    <img src="AmnaK.png" alt="Amna Khan's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Amna K.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Ivan_L_portfolio.html" class="portfolio-card" data-portfolio-file="Ivan_L_portfolio.html" data-image-file="IvanL.png">
+                <div class="card-image-container">
+                    <img src="IvanL.png" alt="Ivan Espino Lopez's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Ivan L.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Yan_L_portfolio.html" class="portfolio-card" data-portfolio-file="Yan_L_portfolio.html" data-image-file="YanL.png">
+                <div class="card-image-container">
+                    <img src="YanL.png" alt="Yan Luo's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Yan L.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Kyle_M_portfolio.html" class="portfolio-card" data-portfolio-file="Kyle_M_portfolio.html" data-image-file="KyleM.png">
+                <div class="card-image-container">
+                    <img src="KyleM.png" alt="Kyle Mathewson's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Kyle M.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Angel_N_portfolio.html" class="portfolio-card" data-portfolio-file="Angel_N_portfolio.html" data-image-file="AngelN.png">
+                <div class="card-image-container">
+                    <img src="AngelN.png" alt="Angel Nwaka's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Angel N.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Alicia_O_portfolio.html" class="portfolio-card" data-portfolio-file="Alicia_O_portfolio.html" data-image-file="AliciaO.png">
+                <div class="card-image-container">
+                    <img src="AliciaO.png" alt="Alicia Osorio's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Alicia O.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Ryan_P_portfolio.html" class="portfolio-card" data-portfolio-file="Ryan_P_portfolio.html" data-image-file="RyanP.png">
+                <div class="card-image-container">
+                    <img src="RyanP.png" alt="Ryan Park's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Ryan P.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Hardi_P_portfolio.html" class="portfolio-card" data-portfolio-file="Hardi_P_portfolio.html" data-image-file="HardiP.png">
+                <div class="card-image-container">
+                    <img src="HardiP.png" alt="Hardi Patel's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Hardi P.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                
+                                <span class="mini-badge">MT</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Rana_R_portfolio.html" class="portfolio-card" data-portfolio-file="Rana_R_portfolio.html" data-image-file="RanaR.png">
+                <div class="card-image-container">
+                    <img src="RanaR.png" alt="Rana Radiansyah's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Rana R.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Hamza_R_portfolio.html" class="portfolio-card" data-portfolio-file="Hamza_R_portfolio.html" data-image-file="HamzaR.png">
+                <div class="card-image-container">
+                    <img src="HamzaR.png" alt="Hamza Razzo's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Hamza R.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Kiara_R_portfolio.html" class="portfolio-card" data-portfolio-file="Kiara_R_portfolio.html" data-image-file="KiaraR.png">
+                <div class="card-image-container">
+                    <img src="KiaraR.png" alt="Kiara Ruda's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Kiara R.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Marinaya_S_portfolio.html" class="portfolio-card" data-portfolio-file="Marinaya_S_portfolio.html" data-image-file="MarinayaS.png">
+                <div class="card-image-container">
+                    <img src="MarinayaS.png" alt="Marinaya Saigh's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Marinaya S.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Zainab_S_portfolio.html" class="portfolio-card" data-portfolio-file="Zainab_S_portfolio.html" data-image-file="ZainabS.png">
+                <div class="card-image-container">
+                    <img src="ZainabS.png" alt="Zainab Samiuddin's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Zainab S.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Bani_S_portfolio.html" class="portfolio-card" data-portfolio-file="Bani_S_portfolio.html" data-image-file="BaniS.png">
+                <div class="card-image-container">
+                    <img src="BaniS.png" alt="Bani Sekhon's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Bani S.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Raissa_S_portfolio.html" class="portfolio-card" data-portfolio-file="Raissa_S_portfolio.html" data-image-file="RaissaS.png">
+                <div class="card-image-container">
+                    <img src="RaissaS.png" alt="Raissa Shariff's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Raissa S.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Grace_S_portfolio.html" class="portfolio-card" data-portfolio-file="Grace_S_portfolio.html" data-image-file="GraceS.png">
+                <div class="card-image-container">
+                    <img src="GraceS.png" alt="Grace Shin's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Grace S.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Chloe_S_portfolio.html" class="portfolio-card" data-portfolio-file="Chloe_S_portfolio.html" data-image-file="ChloeS.png">
+                <div class="card-image-container">
+                    <img src="ChloeS.png" alt="Chloe Sorochan's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Chloe S.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Ella_T_portfolio.html" class="portfolio-card" data-portfolio-file="Ella_T_portfolio.html" data-image-file="EllaT.png">
+                <div class="card-image-container">
+                    <img src="EllaT.png" alt="Ella Thorsen-Bell's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Ella T.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+            <a href="Portia_W_portfolio.html" class="portfolio-card" data-portfolio-file="Portia_W_portfolio.html" data-image-file="PortiaW.png">
+                <div class="card-image-container">
+                    <img src="PortiaW.png" alt="Portia Wainwright's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
+                    <div class="image-overlay">
+                        <h3 class="card-name">Portia W.</h3>
+                        <div class="hover-info">
+                            <span class="click-hint">👆 Click for portfolio</span>
+                            <div class="card-meta">
+                                <span class="mini-badge">EEG</span>
+                                <span class="mini-badge">Brain</span>
+                                <span class="mini-badge">MT</span>
+                                <span class="mini-badge">A6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicator">
+                    <span class="checking">⟳</span>
+                    <span class="available" style="display:none;">✓</span>
+                    <span class="unavailable" style="display:none;">⚠</span>
+                </div>
+            </a>
+        
+        </section>
+    </main>
+    
+    <footer class="main-footer">
+        <p>PSYCH 403A1 • University of Alberta • Fall 2025</p>
+        <p>Instructor: Dr. Kyle Mathewson</p>
+    </footer>
+    
+    <script>
+        
+        // Check which portfolio files exist
+        async function checkPortfolioAvailability() {
+            const cards = document.querySelectorAll('.portfolio-card');
+            let availableCount = 0;
+            
+            // Check each portfolio file and image
+            const checkPromises = Array.from(cards).map(async (card) => {
+                const portfolioFile = card.dataset.portfolioFile;
+                const imageFile = card.dataset.imageFile;
+                const statusIndicator = card.querySelector('.status-indicator');
+                const checkingSpan = statusIndicator.querySelector('.checking');
+                const availableSpan = statusIndicator.querySelector('.available');
+                const unavailableSpan = statusIndicator.querySelector('.unavailable');
+                
+                try {
+                    // Check portfolio file
+                    const portfolioResponse = await fetch(portfolioFile, { method: 'HEAD' });
+                    const portfolioExists = portfolioResponse.ok;
+                    
+                    // Image check happens via onerror on img tag
+                    // Just need to check portfolio
+                    
+                    if (portfolioExists) {
+                        card.classList.add('available');
+                        availableCount++;
+                        checkingSpan.style.display = 'none';
+                        availableSpan.style.display = 'inline';
+                    } else {
+                        card.classList.add('unavailable');
+                        checkingSpan.style.display = 'none';
+                        unavailableSpan.style.display = 'inline';
+                    }
+                } catch (error) {
+                    // If fetch fails, assume file doesn't exist
+                    card.classList.add('unavailable');
+                    checkingSpan.style.display = 'none';
+                    unavailableSpan.style.display = 'inline';
+                }
+            });
+            
+            await Promise.all(checkPromises);
+            
+            console.log(`Portfolio availability: ${availableCount}/${cards.length} available`);
+            
+            // Move unavailable cards to the bottom
+            const grid = document.querySelector('.student-grid');
+            const allCards = Array.from(cards);
+            const availableCards = allCards.filter(card => card.classList.contains('available'));
+            const unavailableCards = allCards.filter(card => card.classList.contains('unavailable'));
+            
+            // Reorder: available first, then unavailable
+            [...availableCards, ...unavailableCards].forEach(card => {
+                grid.appendChild(card);
+            });
+        }
+        
+        // Search/filter functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Portfolio index loaded - Visual grid mode');
+            
+            // Check portfolio availability
+            checkPortfolioAvailability();
+            
+            // Optional: Add live search
+            const searchInput = document.getElementById('search');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    document.querySelectorAll('.portfolio-card').forEach(card => {
+                        const name = card.querySelector('.card-name').textContent.toLowerCase();
+                        card.style.display = name.includes(query) ? 'block' : 'none';
+                    });
+                });
+            }
+        });
+    
+    </script>
+</body>
+</html>

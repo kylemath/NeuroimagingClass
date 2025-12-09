@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natasha C. - PSYCH 403 Portfolio</title>
+    <style>
+        
+        :root {
+            --primary: #d63384;
+            --secondary: #20c997;
+            --accent-2: #4ecdc4;
+            --muted: #999;
+            --text: #2d1b2d;
+            --bg: #f8f4f8;
+            --sidebar-bg: #2d1b2d;
+            --sidebar-text: #f8f4f8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .student-info h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Spectral', Georgia, serif;
+        }
+        
+        .course {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        
+        .navigation h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin: 2rem 0 1rem;
+        }
+        
+        .toc, .nav-links {
+            list-style: none;
+        }
+        
+        .toc li, .nav-links li {
+            margin: 0.5rem 0;
+        }
+        
+        .toc a, .nav-links a {
+            color: var(--sidebar-text);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .toc a:hover, .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+            padding-left: 1rem;
+        }
+        
+        .nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 2rem 0;
+        }
+        
+        .back-link {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .back-link a {
+            color: var(--sidebar-text);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .back-link a:hover {
+            opacity: 1;
+        }
+        
+        /* Main Content */
+        .content {
+            margin-left: 300px;
+            flex: 1;
+            padding: 3rem;
+            max-width: 900px;
+        }
+        
+        .portfolio-header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .portfolio-header h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .byline {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .info-banner {
+            margin-top: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(32, 201, 151, 0.1);
+            border-left: 4px solid var(--secondary);
+            border-radius: 6px;
+        }
+        
+        .info-banner p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 2rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .section-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .section-content h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--secondary);
+        }
+        
+        .section-content h4 {
+            font-size: 1.1rem;
+            margin: 1.25rem 0 0.5rem;
+        }
+        
+        .section-content p {
+            margin: 1rem 0;
+        }
+        
+        .section-content ul, .section-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        
+        .section-content li {
+            margin: 0.5rem 0;
+        }
+        
+        .section-content pre {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-left: 4px solid var(--primary);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .section-content code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.9em;
+        }
+        
+        .section-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .section-content a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .section-content a:hover {
+            border-bottom-color: var(--primary);
+        }
+        
+        .section-content iframe {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .images {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .images figure {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .images img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        .image-placeholder {
+            background: linear-gradient(135deg, rgba(214,51,132,0.1), rgba(32,201,151,0.1));
+            border: 2px dashed rgba(214,51,132,0.3);
+            border-radius: 8px;
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #666;
+        }
+        
+        figure {
+            margin: 0;
+        }
+        
+        figcaption {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        .other-work {
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 2px solid #ddd;
+        }
+        
+        .other-work h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .assignment-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .assignment-section h4 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .media-card {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .media-card h5 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .media-caption {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        .video-note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+        }
+        
+        .video-note a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .file-link {
+            margin: 0.75rem 0;
+            padding: 0.75rem 1rem;
+            background: #f5f5f5;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+            transition: all 0.2s;
+        }
+        
+        .file-link:hover {
+            background: #ebebeb;
+            border-left-width: 5px;
+        }
+        
+        .file-link a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .file-link a:hover {
+            color: var(--primary);
+        }
+        
+        .brainimation-card {
+            background: linear-gradient(135deg, rgba(214,51,132,0.05), rgba(32,201,151,0.05));
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            margin: 1rem 0;
+        }
+        
+        .brainimation-card h5 {
+            margin: 0 0 0.5rem 0;
+            color: var(--accent-2);
+            font-size: 1.1rem;
+        }
+        
+        .btn-brainimation {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent-2));
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+        }
+        
+        .btn-brainimation:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.5);
+        }
+        
+        .notebook-card {
+            background: linear-gradient(135deg, rgba(249, 168, 37, 0.05), rgba(249, 115, 22, 0.05));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(249, 115, 22, 0.3);
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .notebook-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
+        }
+        
+        .notebook-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .notebook-header h5 {
+            margin: 0;
+            color: #f97316;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .notebook-badge {
+            background: #f97316;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .notebook-meta {
+            margin-bottom: 1rem;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .notebook-meta p {
+            margin: 0;
+        }
+        
+        .notebook-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-colab {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        }
+        
+        .btn-colab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.5);
+            background: linear-gradient(135deg, #ea580c, #f97316);
+        }
+        
+        .btn-drive-link {
+            color: #999;
+            text-decoration: none;
+            font-size: 0.85em;
+            padding: 8px 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .btn-drive-link:hover {
+            border-color: #f97316;
+            color: #f97316;
+        }
+        
+        .notebook-note {
+            font-size: 0.85em;
+            color: #999;
+            margin: 0;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(249, 115, 22, 0.1);
+        }
+        
+        .p5-embed-card {
+            background: linear-gradient(135deg, rgba(237, 70, 135, 0.05), rgba(78, 205, 196, 0.05));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .p5-embed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .p5-badge {
+            background: linear-gradient(135deg, #ed4687, #4ecdc4);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .p5-length {
+            color: #999;
+            font-size: 0.85em;
+        }
+        
+        .p5-code-preview {
+            display: none;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .p5-embed-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .btn-brainimation-inline {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #ed4687, #4ecdc4);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+        }
+        
+        .btn-brainimation-inline:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.5);
+        }
+        
+        .btn-show-code {
+            padding: 10px 18px;
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-show-code:hover {
+            background: #e0e0e0;
+            border-color: #4ecdc4;
+        }
+        
+        .pdf-content-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .pdf-header h5 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .view-original {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .view-original:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .pdf-content {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #333;
+        }
+        
+        .pdf-content h2 {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .pdf-content h3 {
+            font-size: 1.1rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        .pdf-content p {
+            margin: 0.75rem 0;
+        }
+        
+        .pdf-content ul {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .pdf-content pre {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-left: 4px solid var(--secondary);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .pdf-content code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.9em;
+        }
+        
+        .pdf-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .pdf-content a {
+            color: var(--secondary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .pdf-content a:hover {
+            border-bottom-color: var(--secondary);
+        }
+        
+        .pdf-content iframe {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .pdf-images {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .references {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .references h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .references ol {
+            padding-left: 2rem;
+        }
+        
+        .references li {
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+            .content {
+                margin-left: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                padding: 2rem 1rem;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="student-info">
+            <h1>Natasha C.</h1>
+            <p class="course">PSYCH 403A1<br>Neuroimaging</p>
+        </div>
+        
+        <div class="navigation">
+            <h3>Portfolio</h3>
+            <ul class="toc">
+                <li><a href="#section-0">Portfolio Overview</a></li>
+            </ul>
+            
+            <div class="nav-divider"></div>
+            
+            <h3>Course Work</h3>
+            <ul class="nav-links">
+                
+                <li><a href="#other-work">Assignment 2</a></li>
+                <li><a href="#other-work">Midterm</a></li>
+            </ul>
+        </div>
+        
+        <div class="back-link">
+            <a href="javascript:history.back()">← Back</a>
+        </div>
+    </nav>
+    
+    <main class="content">
+        <header class="portfolio-header">
+            <h1>Course Portfolio</h1>
+            <p class="byline">by Natasha C.</p>
+            <div class="info-banner">
+                <p>📄 This portfolio is a self-contained HTML document with all images embedded. 
+                 
+                Browse the assignments below to see all coursework.</p>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            
+        <section id="section-0" class="content-section">
+            <h2>Portfolio Overview</h2>
+            <div class="section-content">
+                <p>This portfolio showcases work from PSYCH 403A1: Neuroimaging & Neurostimulation. Browse the assignments below to see the complete coursework.</p>
+            </div>
+            
+        </section>
+        
+            
+            
+        </div>
+        
+        <div id="other-work">
+            
+        <div class="other-work">
+            <h3>Other Course Work</h3>
+            
+            
+            <div class="assignment-section">
+                <h4>🎨 Assignment 2: BrainImation</h4>
+                
+                    <div class="pdf-content-card">
+                        <div class="pdf-header">
+                            <h5>📄 Code because the downloaded file wouldn't work - Natasha Chemello.pdf</h5>
+                            <a href="https://drive.google.com/file/d/18XbLIqLYVvopidDOpbV1wd76s2U2FRxH/view" target="_blank" class="view-original">View Original PDF</a>
+                        </div>
+                        <div class="pdf-content">
+                            <p>// 🌿 Neurofeedback Meditation Garden — Smooth & Responsive Version 🌿 <br>// Smooth noise motion + speed up at attention = 1.0, slow down at meditation = 1.0. <br>// For BrainImation EEG environment (uses eegData.meditation & eegData.attention). <br>let flowers = []; <br>let clouds = []; <br>let fireflies = []; <br>function setup() { <br>colorMode(HSB, 360, 100, 100); <br>noiseSeed(random(1000)); <br>for (let i = 0; i < 25; i++) { <br>flowers.push({ <br>x: random(width), <br>y: random(height * 0.85, height * 0.95), <br>baseY: 0, <br>size: random(20, 40), <br>bloom: 0.5, <br>swayOffset: random(1000), <br>hue: random(250, 285) <br>}); <br>} <br>for (let f of flowers) f.baseY = f.y; <br>for (let i = 0; i < 14; i++) { <br>clouds.push({ <br>x: random(width), <br>y: random(height * 0.1, height * 0.4), <br>size: random(120, 250), <br>noiseOffset: random(1000), <br>speedNoise: random(500) <br>}); <br>} <br>for (let i = 0; i < 25; i++) { <br>fireflies.push({ <br>x: random(width), <br>y: random(height * 0.7, height), <br>flicker: random(TWO_PI), <br>hue: random(50, 70), <br>moveNoise: random(1000) <br>}); <br>}</p><p>} <br>function draw() { <br>let calm = eegData.meditation; // alpha <br>let focus = eegData.attention; // beta <br>// Map base speed from both brain states: <br>// Calm slows time, focus accelerates it. Maximum boost at focus=1, calm=0. <br>let base = map(focus, 0, 1, 1, 7); // up to 7× faster attention <br>let slow = map(calm, 0, 1, 1, 0.25); // quarter speed at full calm <br>let tSpeed = base * slow; <br>drawSky(calm, focus); <br>drawClouds(tSpeed); <br>drawGround(); <br>drawFlowers(calm, focus, tSpeed); <br>drawFireflies(calm, focus, tSpeed); <br>drawHUD(calm, focus); <br>} <br>function drawSky(calm, focus) { <br>let hue = lerp(200, 255, calm); <br>let sat = lerp(70, 40, focus); <br>let bright = lerp(90, 60, calm); <br>background(hue, sat, bright); <br>} <br>function drawClouds(tSpeed) { <br>noStroke(); <br>for (let c of clouds) { <br>c.noiseOffset += 0.0015 * tSpeed; // smoother noise drift <br>c.x = map(noise(c.noiseOffset), 0, 1, -c.size, width + c.size); <br>c.y += sin(frameCount * 0.002 * tSpeed) * 0.2; // minor float motion <br>fill(200, 20, 95, 0.6); <br>ellipse(c.x, c.y, c.size * 0.8, c.size * 0.6); <br>ellipse(c.x + c.size * 0.25, c.y + 10, c.size * 0.6, c.size * 0.4); <br>ellipse(c.x - c.size * 0.25, c.y + 10, c.size * 0.6, c.size * 0.4); <br>} <br>} <br>function drawGround() { <br>noStroke(); <br>fill(115, 35, 75);</p><p>rect(0, height * 0.8, width, height * 0.25); <br>} <br>function drawFlowers(calm, focus, tSpeed) { <br>for (let f of flowers) { <br>// Gradual bloom interpolation <br>f.bloom = lerp(f.bloom, calm, 0.08); <br>// Perlin-smooth sway influenced by speed <br>f.swayOffset += 0.002 * tSpeed; <br>let sway = map(noise(f.swayOffset), 0, 1, -10 * f.bloom, 10 * f.bloom); <br>stroke(120, 60, 45); <br>strokeWeight(2 + 4 * f.bloom); <br>line(f.x + sway, f.baseY, f.x, f.baseY - f.bloom * 65); <br>noStroke(); <br>push(); <br>translate(f.x + sway, f.baseY - f.bloom * 65); <br>for (let i = 0; i < 6; i++) { <br>let hueShift = map(focus, 0, 1, -10, 10); <br>fill(f.hue + hueShift, 55, 95, 0.8); <br>push(); <br>rotate((i * TWO_PI) / 6 + noise(frameCount * 0.0015 * tSpeed)); <br>ellipse(0, -f.size * 0.8, f.size, f.size * 1.6); <br>pop(); <br>} <br>fill(55, 90, 95, 0.9); <br>ellipse(0, 0, f.size * 0.5 + f.bloom * 10); <br>pop(); <br>} <br>} <br>function drawFireflies(calm, focus, tSpeed) { <br>let count = map(calm, 0, 1, 5, 25); <br>for (let i = 0; i < count; i++) { <br>let ff = fireflies[i]; <br>ff.flicker += 0.05 * tSpeed; <br>ff.moveNoise += 0.001 * tSpeed; <br>let flicker = (sin(ff.flicker) + 1) / 2; <br>let wander = map(noise(ff.moveNoise), 0, 1, -5, 5);</p><p>fill(ff.hue, 80, 100, flicker); <br>noStroke(); <br>ellipse(ff.x + wander, ff.y + sin(frameCount * 0.01 * tSpeed) * 2, 4 + flicker * 3); <br>} <br>} <br>function drawHUD(calm, focus) { <br>noStroke(); <br>fill(0, 0, 20, 0.7); <br>rect(0, 0, width, 70); <br>fill(0, 0, 100); <br>textSize(16); <br>textAlign(LEFT, TOP); <br>text("Meditation (Alpha): " + calm.toFixed(2), 20, 10); <br>text("Attention (Beta): " + focus.toFixed(2), 20, 30); <br>text("At full focus, the world races; in calm, time slows.", 20, 50); <br>}</p>
+                        </div>
+                    </div>
+                
+                <div class="media-card">
+                    <h5>🎥 IMG_6179 - Natasha Chemello.mov</h5>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
+                        <iframe src="https://drive.google.com/file/d/1cRkzwrOcGbC-pH5jtvQo-JILNBD6gYwn/preview" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                                allow="autoplay; fullscreen"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="video-note">💡 Videos require Google Drive access. <a href="https://drive.google.com/file/d/1cRkzwrOcGbC-pH5jtvQo-JILNBD6gYwn/view" target="_blank">Open in new tab</a> if it doesn't load.</p>
+                </div>
+            <div class="file-link"><a href="https://drive.google.com/file/d/1SP7wT59HvOpl4m9XwP_O9vnaQs4YbuF071i_KVEUwkI/view" target="_blank">📄 PSYCH 403 assignment 2 - Natasha Chemello</a></div>
+            </div>
+        
+            
+            <div class="assignment-section">
+                <h4>🎯 Midterm Project</h4>
+                
+                    <div class="pdf-content-card">
+                        <div class="pdf-header">
+                            <h5>📄 PSYCH 403 midterm 1 - Natasha Chemello.pdf</h5>
+                            <a href="https://drive.google.com/file/d/1CJSr02WDx4-gc5ZAS_-9qL1HwixrpvJL/view" target="_blank" class="view-original">View Original PDF</a>
+                        </div>
+                        <div class="pdf-content">
+                            <p>Part 1: <br>I chose to implement a BCI that accomplishes brain state training with a little <br>game component to it, to build upon a simple meditation landscape. I <br>implemented a game component where instead of having the fl owers simply <br>re fl ect your brain state, I made the fl owers react to your brain state, and then <br>you get a score based upon your brain state (whether it’s dominant in alpha or <br>beta waves). I tried to include an audio component, but it would not work with <br>BrainImation in the way I wanted it to. <br>There are fl owers, clouds, fi re fl ies, and a color scheme; each is manipulated in <br>some way to provide feedback on how the player is doing. The landscape <br>becomes more harmonious as a meditation state is detected. This is shown by <br>the fl owers blooming and deepening in color, clouds slowing/accelerating <br>gracefully, fi re fl ies fl ickering slowly, and the sky hues shifting from daylight blue <br>to a deep purple. If attention is detected to be higher, then everything is more <br>chaotic and glitchy. There will also be a reduction in the score. Progress toward <br>the stated target ratio gives a small bonus in points. The score will never go <br>negative, and it directly re fl ects the user’s immediate mental state. The target <br>ratio for meditation training is 0.8–1.0 (Alpha/Theta), which was decided on <br>based on some previous researchers’ work on neurofeedback training <br>(Nooripour et al., 2024). The EEG data collected is immediately used to calculate <br>an alpha/theta ratio, which can then be used to track progress in the game <br>mode. When the ratio reaches a desired ratio (0.8–1.0), then the landscape <br>provides visual feedback of stable, calming colors and less chaos in the <br>landscape. <br>This goes beyond basic parameters because instead of just being an endless <br>loop of the same thing, it shows immediate feedback from the user’s brain state. <br>It reacts to the user rather than the user reacting to the animation. It also keeps <br>a game score of the user’s brain state, which is a novel concept. <br>By implementing this animation, I learned that there is such a thing as a desired <br>alpha/theta ratio. I’ve continued to learn throughout this course about all the <br>different BCIs that can be implemented, and it’s really interesting to see the <br>various ways that brain state can be manipulated or reacted to. I’ve learned <br>that you can combine different concepts, like a game and neurofeedback, to <br>create something unique like my animation.</p><p>Part 2: <br>I chose to measure N400 in my ERP experiment. N400 has been shown to be <br>connected to understanding the meaning of words, which is why I used words <br>as my stimulus to test this phenomenon. N400 peaks around 400 ms after the <br>stimulus is presented. I have several words involved including DOG, CAT, BREAD, <br>BUTTER, CHAIR, TABLE, FORK, CAR, and RAIN. They are grouped into related <br>categories (congruent), like BREAD and BUTTER for example, and then they are <br>quickly presented in these categories on the screen. After the congruent pairing <br>is shown, it is followed by an incongruent pairing, which should produce a larger <br>N400 because it is particularly reactive to incongruency. The fi rst pairing acts <br>as a “primer” while the second (incongruent) pairing acts as the “target” for this <br>experiment. The target is expected to elicit a larger N400. The experiment also <br>involves the coloring of each word based on it being congruent or incongruent <br>with the previous word shown; green means they are congruent, and orange <br>means that they are incongruent. The colors are intentionally chosen to elicit <br>different reactions because green tends to be related to being correct, while <br>orange is often seen as being wrong, especially in comparison to green. Thus, <br>the color component is intended to also aid in creating a stronger N400. <br>EEG data are collected for each trial ranging from −200 ms to +800 ms around <br>the time the pairing appears. Each EEG segment is baseline-corrected by <br>subtracting the average signal from the pre-stimulus window (−200–0 ms), then <br>categorized as congruent or incongruent. The number of averaged trials for <br>each condition is displayed at the top. ERPs are generated by averaging all <br>epochs for each category and plotted using distinct colors on the same graph as <br>shown in the upper display. <br>If there were testing with a real EEG, then I would expect the N400 to show a <br>greater negative de fl ection in the 400 ms post-stimulus region when <br>incongruent pairings are shown on the screen. <br>References <br>Nooripour, R., Viki, M. G., Ghanbari, N., Farmani, F., & Emadi, F. (2024). <br>Alpha/theta neurofeedback rehabilitation for improving attention <br>and working memory in female students with learning disabilities.</p><p>OBM Neurobiology, 8(3), 229. <br><a href="https://doi.org/10.21926/obm.neurobiol.2403229" target="_blank">https://doi.org/10.21926/obm.neurobiol.2403229</a></p>
+                        </div>
+                    </div>
+                
+                <div class="media-card">
+                    <h5>🎥 Screen Recording 2025-10-24 at 4.27.21 PM - Natasha Chemello.mov</h5>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
+                        <iframe src="https://drive.google.com/file/d/1KLnKfb2Z2dcnXxQcqXAm0IwzvTnRfz-8/preview" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                                allow="autoplay; fullscreen"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="video-note">💡 Videos require Google Drive access. <a href="https://drive.google.com/file/d/1KLnKfb2Z2dcnXxQcqXAm0IwzvTnRfz-8/view" target="_blank">Open in new tab</a> if it doesn't load.</p>
+                </div>
+            
+                <div class="media-card">
+                    <h5>🎥 Screen Recording 2025-10-24 at 12.10.26 PM - Natasha Chemello.mov</h5>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
+                        <iframe src="https://drive.google.com/file/d/1gmInZTdWqKEAuihpwUtQEzvxpymbzoE0/preview" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                                allow="autoplay; fullscreen"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="video-note">💡 Videos require Google Drive access. <a href="https://drive.google.com/file/d/1gmInZTdWqKEAuihpwUtQEzvxpymbzoE0/view" target="_blank">Open in new tab</a> if it doesn't load.</p>
+                </div>
+            
+                    <div class="brainimation-card">
+                        <h5>📝 Chemello_midterm_part2 - Natasha Chemello.txt</h5>
+                        <div class="brainimation-meta" style="font-size: 0.85em; color: #999; margin: 5px 0 10px 0;">
+                            Code File • P5.js Code • 6566 characters • ✅ Embedded
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a href="https://neuroimneurostim.netlify.app/brainimation.html?code=data%3Atext%2Fplain%3Bbase64%2CLy8gPT09IE40MDAgU2VtYW50aWMgRVJQIERlbW8gKEJyYWluSW1hdGlvbiwgRnVsbCBBc3NpZ25tZW50IFZlcnNpb24pID09PQoKLy8gLS0tIFN0aW11bHVzIGNvbmZpZ3VyYXRpb24gLS0tCmxldCB3b3JkUGFpcnMgPSBbCiAgWyJET0ciLCAiQ0FUIl0sICAgICAvLyBjb25ncnVlbnQKICBbIkJSRUFEIiwgIkJVVFRFUiJdLAogIFsiQ0hBSVIiLCAiVEFCTEUiXSwKICBbIkRPRyIsICJGT1JLIl0sICAgIC8vIGluY29uZ3J1ZW50CiAgWyJCUkVBRCIsICJDQVIiXSwKICBbIkNIQUlSIiwgIlJBSU4iXQpdOwpsZXQgY3VycmVudFBhaXIgPSBbIkRPRyIsICJDQVQiXTsKbGV0IGlzQ29uZ3J1ZW50ID0gdHJ1ZTsKCmxldCBlcG9jaHNDID0gW10sIGVwb2Noc0kgPSBbXTsKbGV0IG1heFRyaWFscyA9IDIwOwoKLy8gPT09IEFkanVzdCBoZXJlIGZvciBlcG9jaCBsZW5ndGguIEFzc2lnbm1lbnQgYXNrcyBmb3Ig4oiSMjAwIHRvICs4MDAgbXMgYXQgMjU2IEh6ICgyNTYgc2FtcGxlcykKbGV0IGVwb2NoU2FtcGxlcyA9IDI1NjsgLy8gMXM6IOKIkjIwMCB0byArODAwIG1zLCBjYW4gY2hhbmdlIHRvIDM4NCBmb3IgMTUwMCBtcyAo4oiSMjAwIHRvICsxMzAwbXMpCmxldCBzYW1wbGVSYXRlID0gMjU2OwpsZXQgYmFzZWxpbmVTdGFydCA9IDA7ICAgICAgICAgICAgICAgICAvLyBlcG9jaCBzYW1wbGUgMCA9IOKIkjIwMCBtcwpsZXQgYmFzZWxpbmVFbmQgPSBNYXRoLmZsb29yKDAuMiAqIHNhbXBsZVJhdGUpOyAvLyBGb3IgMjU2SHosIH41MSBzYW1wbGVzID0gMjAwbXMKCi8vIFRyaWFsIHRpbWluZyAobXMpCmxldCBiYXNlRHVyID0gMTAwMDsgICAgICAvLyBiYXNlbGluZSBwcmUgdHJpYWwKbGV0IHdvcmREdXIgPSAyNTA7ICAgICAgIC8vIHdvcmQgMSBkaXNwbGF5CmxldCBpc2lEdXIgPSAyNTA7ICAgICAgICAvLyBnYXAKbGV0IGl0aUR1ciA9IDUwMDsgICAgICAgIC8vIElUSSBhZnRlciB3b3JkIDIKbGV0IHRvdGFsVHJpYWwgPSBiYXNlRHVyICsgd29yZER1ciArIGlzaUR1ciArIHdvcmREdXIgKyBpdGlEdXI7CgpsZXQgdHJpYWxTdGFydDsKbGV0IG5leHRTd2l0Y2ggPSAwOwoKZnVuY3Rpb24gc2V0dXAoKSB7CiAgY29sb3JNb2RlKEhTQiwgMzYwLCAxMDAsIDEwMCk7CiAgdGV4dEZvbnQoInNhbnMtc2VyaWYiKTsKICB0cmlhbFN0YXJ0ID0gbWlsbGlzKCk7Cn0KCmZ1bmN0aW9uIGRyYXcoKSB7CiAgYmFja2dyb3VuZCgwLCAwLCA4KTsKICBsZXQgdCA9IG1pbGxpcygpIC0gdHJpYWxTdGFydDsKCiAgLy8gU2VsZWN0IG5ldyB3b3JkIHBhaXIgZXZlcnkgdHJpYWwKICBpZiAobWlsbGlzKCkgPiBuZXh0U3dpdGNoKSB7CiAgICBsZXQgcGFpciA9IHJhbmRvbSh3b3JkUGFpcnMpOwogICAgY3VycmVudFBhaXIgPSBwYWlyOwogICAgbGV0IGkgPSB3b3JkUGFpcnMuaW5kZXhPZihwYWlyKTsKICAgIGlzQ29uZ3J1ZW50ID0gaSA8IDM7CiAgICBuZXh0U3dpdGNoID0gbWlsbGlzKCkgKyB0b3RhbFRyaWFsOwogIH0KCiAgLy8gU3RpbXVsdXMgdGltaW5nOiBzaG93IGZpcnN0IHdvcmQsIHRoZW4gc2Vjb25kCiAgbGV0IHBoYXNlID0gdCAlIHRvdGFsVHJpYWw7CiAgbGV0IHNob3dQcmltZSA9IChwaGFzZSA%2BIGJhc2VEdXIgJiYgcGhhc2UgPD0gYmFzZUR1ciArIHdvcmREdXIpOwogIGxldCBzaG93VGFyZ2V0ID0gKHBoYXNlID4gYmFzZUR1ciArIHdvcmREdXIgKyBpc2lEdXIgJiYgcGhhc2UgPD0gYmFzZUR1ciArIHdvcmREdXIgKyBpc2lEdXIgKyB3b3JkRHVyKTsKCiAgLy8gLS0tIEVFRyBlcG9jaCBjb2xsZWN0aW9uIGFuZCBzaW11bGF0aW9uIChiYXNlbGluZSBjb3JyZWN0ZWQpIC0tLQogIGxldCBpc0VFRyA9IGVlZ0RhdGEgJiYgZWVnRGF0YS5jb25uZWN0ZWQ7CiAgaWYgKGZyYW1lQ291bnQgJSA2MCA9PT0gMCkgewogICAgbGV0IGVwb2NoOwogICAgaWYgKGlzRUVHKSB7CiAgICAgIGVwb2NoID0gZWVnRGF0YS5nZXRSZWNlbnRFcG9jaChlcG9jaFNhbXBsZXMpOwogICAgfSBlbHNlIHsKICAgICAgLy8gU2ltdWxhdGUgcmFuZG9tIEVFRyB0cmFjZSBmb3IgZGVtbyBpZiBub3QgY29ubmVjdGVkCiAgICAgIGVwb2NoID0gW107CiAgICAgIGZvciAobGV0IGkgPSAwOyBpIDwgZXBvY2hTYW1wbGVzOyBpKyspIHsKICAgICAgICBsZXQgc2FtcGxlID0gW107CiAgICAgICAgZm9yIChsZXQgYyA9IDA7IGMgPCA0OyBjKyspIHNhbXBsZS5wdXNoKDEwICogc2luKGkgLyA4ICsgYyAqIDEuNykgKyByYW5kb20oLTIsIDIpKTsKICAgICAgICBlcG9jaC5wdXNoKHNhbXBsZSk7CiAgICAgIH0KICAgIH0KCiAgICBpZiAoZXBvY2ggJiYgZXBvY2gubGVuZ3RoID49IGVwb2NoU2FtcGxlcykgewogICAgICAvLyBCYXNlbGluZSBjb3JyZWN0aW9uIChzdWJ0cmFjdCBtZWFuIG9mIOKIkjIwMCB0byAwbXMsIGkuZS4gZmlyc3QgfjUxIHNhbXBsZXMpCiAgICAgIGZvciAobGV0IGMgPSAwOyBjIDwgNDsgYysrKSB7CiAgICAgICAgbGV0IGJhc2VsaW5lU3VtID0gMDsKICAgICAgICBmb3IgKGxldCBqID0gYmFzZWxpbmVTdGFydDsgaiA8IGJhc2VsaW5lRW5kOyBqKyspIGJhc2VsaW5lU3VtICs9IGVwb2NoW2pdW2NdOwogICAgICAgIGxldCBiYXNlbGluZU1lYW4gPSBiYXNlbGluZVN1bSAvIChiYXNlbGluZUVuZCAtIGJhc2VsaW5lU3RhcnQpOwogICAgICAgIGZvciAobGV0IGkgPSAwOyBpIDwgZXBvY2hTYW1wbGVzOyBpKyspIGVwb2NoW2ldW2NdIC09IGJhc2VsaW5lTWVhbjsKICAgICAgfQogICAgICAvLyBTaW11bGF0ZSBONDAwOiBuZWdhdGl2ZSBidW1wIDMwMOKAkzUwMG1zIGluIGluY29uZ3J1ZW50IG9ubHkKICAgICAgaWYgKCFpc0NvbmdydWVudCkgewogICAgICAgIGxldCBuNDAwU3RhcnQgPSBNYXRoLmZsb29yKDAuNSAqIHNhbXBsZVJhdGUpOyAgIC8vIDBtcyBvbnNldDogc2FtcGxlIDUxCiAgICAgICAgbGV0IG40MDBNaWQgPSBNYXRoLmZsb29yKDAuNyAqIHNhbXBsZVJhdGUpOyAgICAgLy8gNDAwbXM6IHNhbXBsZSAxNTMKICAgICAgICBmb3IgKGxldCBpID0gbjQwME1pZC0xNTsgaSA8PSBuNDAwTWlkKzE1OyBpKyspIHsKICAgICAgICAgIGlmIChpID49IGJhc2VsaW5lRW5kICYmIGkgPCBlcG9jaFNhbXBsZXMpIHsKICAgICAgICAgICAgZm9yIChsZXQgYyA9IDA7IGMgPCA0OyBjKyspIGVwb2NoW2ldW2NdIC09IDEyOwogICAgICAgICAgfQogICAgICAgIH0KICAgICAgfQogICAgICBpZiAoaXNDb25ncnVlbnQpIHsKICAgICAgICBlcG9jaHNDLnB1c2goZXBvY2gpOwogICAgICAgIGlmIChlcG9jaHNDLmxlbmd0aCA%2BIG1heFRyaWFscykgZXBvY2hzQy5zaGlmdCgpOwogICAgICB9IGVsc2UgewogICAgICAgIGVwb2Noc0kucHVzaChlcG9jaCk7CiAgICAgICAgaWYgKGVwb2Noc0kubGVuZ3RoID4gbWF4VHJpYWxzKSBlcG9jaHNJLnNoaWZ0KCk7CiAgICAgIH0KICAgIH0KICB9CgogIC8vIC0tLSBFUlAgKHRvcCkgLS0tCiAgbGV0IGVycEggPSBoZWlnaHQgKiAwLjc7CiAgZHJhd0VSUFBhbmVsKGVycEgpOwoKICAvLyAtLS0gU3RpbXVsdXMgcGFuZWwgKGJvdHRvbSkgLS0tCiAgZHJhd1N0aW11bHVzUGFuZWwoZXJwSCwgc2hvd1ByaW1lLCBzaG93VGFyZ2V0KTsKfQoKZnVuY3Rpb24gZHJhd0VSUFBhbmVsKGVycEgpIHsKICBmaWxsKDAsIDAsIDEwKTsKICByZWN0KDAsIDAsIHdpZHRoLCBlcnBIKTsKCiAgc3Ryb2tlKDAsIDAsIDI1KTsKICBzdHJva2VXZWlnaHQoMSk7CiAgbGluZSg2MCwgZXJwSCAvIDIsIHdpZHRoIC0gNjAsIGVycEggLyAyKTsKCiAgLy8gVGltZSB0aWNrcyAo4oiSMjAwIHRvICs4MDBtcykKICBmb3IgKGxldCBtcyA9IC0yMDA7IG1zIDw9IDgwMDsgbXMgKz0gMTAwKSB7CiAgICBsZXQgaWR4ID0gbWFwKG1zICsgMjAwLCAwLCAxMDAwLCAwLCBlcG9jaFNhbXBsZXMpOwogICAgbGV0IHggPSBtYXAoaWR4LCAwLCBlcG9jaFNhbXBsZXMsIDYwLCB3aWR0aCAtIDYwKTsKICAgIGxpbmUoeCwgNjAsIHgsIGVycEggLSA2MCk7CiAgICBub1N0cm9rZSgpOyBmaWxsKDAsIDAsIDgwKTsKICAgIHRleHRTaXplKDEwKTsKICAgIHRleHRBbGlnbihDRU5URVIsIFRPUCk7CiAgICB0ZXh0KG1zICsgIiBtcyIsIHgsIGVycEggLSA0MCk7CiAgICBzdHJva2UoMCwgMCwgMjUpOwogIH0KCiAgc3Ryb2tlKDAsIDAsIDEwMCk7CiAgc3Ryb2tlV2VpZ2h0KDIpOwogIGxldCB6ZXJvWCA9IG1hcCgyMDAsIDAsIDEwMDAsIDYwLCB3aWR0aCAtIDYwKTsgLy8gMG1zIG9uc2V0IHBvc2l0aW9uCiAgbGluZSh6ZXJvWCwgNTAsIHplcm9YLCBlcnBIIC0gNTApOwoKICAvLyBONDAwIHdpbmRvdyAoc2hhZGluZyAzMDDigJM1MDBtcykKICBub1N0cm9rZSgpOwogIGZpbGwoMCwgMCwgNjAsIDAuMik7CiAgbGV0IG5TdGFydCA9IG1hcCgzMDAgKyAyMDAsIDAsIDEwMDAsIDYwLCB3aWR0aCAtIDYwKTsKICBsZXQgbkVuZCA9IG1hcCg1MDAgKyAyMDAsIDAsIDEwMDAsIDYwLCB3aWR0aCAtIDYwKTsKICByZWN0KG5TdGFydCwgNTAsIG5FbmQgLSBuU3RhcnQsIGVycEggLSAxMDApOwogIGZpbGwoMCwgMCwgOTApOwogIHRleHRBbGlnbihMRUZULCBUT1ApOwogIHRleHRTaXplKDEwKTsKICB0ZXh0KCJONDAwIHJlZ2lvbiAoMzAw4oCTNTAwIG1zKSIsIG5TdGFydCArIDUsIDU1KTsKCiAgZHJhd0F2ZXJhZ2VFUlAoZXBvY2hzQywgWzEyMCwgMjIwLCAxNjAsIDEwMF0sIGVycEgsICJDb25ncnVlbnQiLCA2MCk7CiAgZHJhd0F2ZXJhZ2VFUlAoZXBvY2hzSSwgWzIwLCAxODAsIDQwLCAzMDBdLCBlcnBILCAiSW5jb25ncnVlbnQiLCA4MCk7Cn0KCmZ1bmN0aW9uIGRyYXdBdmVyYWdlRVJQKGJ1ZmZlciwgY2xyQXJyYXksIGVycEgsIGxhYmVsLCB5T2ZmKSB7CiAgaWYgKGJ1ZmZlci5sZW5ndGggPT09IDApIHJldHVybjsKICBsZXQgYXZnID0gbmV3IEFycmF5KGVwb2NoU2FtcGxlcykuZmlsbCgpLm1hcCgoKSA9PiBbMCwgMCwgMCwgMF0pOwogIGZvciAobGV0IGUgPSAwOyBlIDwgYnVmZmVyLmxlbmd0aDsgZSsrKQogICAgZm9yIChsZXQgaSA9IDA7IGkgPCBlcG9jaFNhbXBsZXM7IGkrKykKICAgICAgZm9yIChsZXQgYyA9IDA7IGMgPCA0OyBjKyspCiAgICAgICAgYXZnW2ldW2NdICs9IGJ1ZmZlcltlXVtpXVtjXSB8fCAwOwoKICBmb3IgKGxldCBpID0gMDsgaSA8IGVwb2NoU2FtcGxlczsgaSsrKQogICAgZm9yIChsZXQgYyA9IDA7IGMgPCA0OyBjKyspCiAgICAgIGF2Z1tpXVtjXSAvPSBidWZmZXIubGVuZ3RoOwoKICBmb3IgKGxldCBjaCA9IDA7IGNoIDwgNDsgY2grKykgewogICAgc3Ryb2tlKGNsckFycmF5W2NoXSwgODAsIDkwKTsKICAgIHN0cm9rZVdlaWdodCgyKTsKICAgIG5vRmlsbCgpOwogICAgYmVnaW5TaGFwZSgpOwogICAgZm9yIChsZXQgaSA9IDA7IGkgPCBhdmcubGVuZ3RoOyBpKyspIHsKICAgICAgbGV0IHggPSBtYXAoaSwgMCwgYXZnLmxlbmd0aCAtIDEsIDYwLCB3aWR0aCAtIDYwKTsKICAgICAgbGV0IHkgPSBlcnBIIC8gMiArIChjaCAtIDEuNSkgKiA2MCArIG1hcChhdmdbaV1bY2hdLCAtNTAsIDUwLCAyNSwgLTI1KTsKICAgICAgdmVydGV4KHgsIHkpOwogICAgfQogICAgZW5kU2hhcGUoKTsKICAgIGZpbGwoY2xyQXJyYXlbY2hdLCA4MCwgOTApOwogICAgbm9TdHJva2UoKTsKICAgIHRleHRTaXplKDEwKTsKICAgIHRleHRBbGlnbihMRUZULCBDRU5URVIpOwogICAgdGV4dChbIlRQOSIsICJBRjciLCAiQUY4IiwgIlRQMTAiXVtjaF0sIDEwLCBlcnBIIC8gMiArIChjaCAtIDEuNSkgKiA2MCk7CiAgfQoKICBmaWxsKDAsIDAsIDEwMCk7CiAgdGV4dFNpemUoMTIpOwogIG5vU3Ryb2tlKCk7CiAgdGV4dEFsaWduKExFRlQsIFRPUCk7CiAgdGV4dChgJHtsYWJlbH0gbj0ke2J1ZmZlci5sZW5ndGh9YCwgNjAsIHlPZmYpOwp9CgpmdW5jdGlvbiBkcmF3U3RpbXVsdXNQYW5lbChlcnBILCBzaG93UHJpbWUsIHNob3dUYXJnZXQpIHsKICBsZXQgc3RpbVkgPSBlcnBIOwogIGxldCBzdGltSCA9IGhlaWdodCAtIGVycEg7CiAgZmlsbCgwLCAwLCAxNSk7CiAgcmVjdCgwLCBzdGltWSwgd2lkdGgsIHN0aW1IKTsKCiAgbGV0IGN4ID0gd2lkdGggLyAyOwogIGxldCBjeSA9IHN0aW1ZICsgc3RpbUggLyAyOwoKICB0ZXh0QWxpZ24oQ0VOVEVSLCBDRU5URVIpOwogIHRleHRTaXplKHN0aW1IICogMC4yNSk7CgogIGlmIChzaG93UHJpbWUpIHsKICAgIGZpbGwoMCwgMCwgMTAwKTsKICAgIHRleHQoY3VycmVudFBhaXJbMF0sIGN4LCBjeSk7CiAgfSBlbHNlIGlmIChzaG93VGFyZ2V0KSB7CiAgICBpZiAoaXNDb25ncnVlbnQpIGZpbGwoMTIwLCA3MCwgMTAwKTsKICAgIGVsc2UgZmlsbCgyMCwgODAsIDEwMCk7CiAgICB0ZXh0KGN1cnJlbnRQYWlyWzFdLCBjeCwgY3kpOwogIH0gZWxzZSB7CiAgICBmaWxsKDAsIDAsIDUwKTsKICAgIHRleHRTaXplKDIwKTsKICAgIHRleHQoIkdldCByZWFkeS4uLiIsIGN4LCBjeSk7CiAgfQoKICBmaWxsKDAsIDAsIDEwMCk7CiAgdGV4dFNpemUoMTYpOwogIHRleHRBbGlnbihMRUZULCBUT1ApOwogIHRleHQoIlNlbWFudGljIFN0aW11bHVzIERpc3BsYXkiLCA0MCwgc3RpbVkgKyAyMCk7CiAgdGV4dEFsaWduKFJJR0hULCBUT1ApOwogIHRleHRTaXplKDE0KTsKICB0ZXh0KGlzQ29uZ3J1ZW50ID8gIkNvbmdydWVudCIgOiAiSW5jb25ncnVlbnQiLCB3aWR0aCAtIDQwLCBzdGltWSArIDIwKTsKfQo%3D&autorun=false" target="_blank" class="btn-brainimation">
+                                ▶️ Open in Live Editor
+                            </a>
+                            <a href="https://drive.google.com/file/d/1Wx6vYcTanexjEWluWMUBkF8IVx1AQBAo/view" target="_blank" style="color: #999; font-size: 0.85em; align-self: center; text-decoration: none; padding: 8px 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.borderColor='#4ecdc4'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+                                📄 View Code on Drive
+                            </a>
+                        </div>
+                        <p style="font-size: 0.85em; color: #999; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            💡 Code is embedded in this portfolio - opens instantly in the live BrainImation editor (no internet required!)
+                        </p>
+                    </div>
+                
+                    <div class="brainimation-card">
+                        <h5>📝 Chemello_midterm_part1 - Natasha Chemello.txt</h5>
+                        <div class="brainimation-meta" style="font-size: 0.85em; color: #999; margin: 5px 0 10px 0;">
+                            Code File • P5.js Code • 5632 characters • ✅ Embedded
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a href="https://neuroimneurostim.netlify.app/brainimation.html?code=data%3Atext%2Fplain%3Bbase64%2CLy8g8J%2BMvyBTbW9vdGhlZCBCcmFpbiBTdGF0ZSBHYXJkZW4gVHJhaW5lciDigJMgTGVzcyBGbGFzaGluZwoKbGV0IGZsb3dlcnMgPSBbXTsKbGV0IGNsb3VkcyA9IFtdOwpsZXQgZmlyZWZsaWVzID0gW107CmxldCB0YXJnZXRSYXRpbyA9IDEuODsKbGV0IHNjb3JlID0gMDsKbGV0IGxhc3RTY29yZVVwZGF0ZSA9IDA7CgovLyBCYWNrdXBzIGZvciBzbW9vdGhpbmcgdHJhbnNpdGlvbnMKbGV0IHNtb290aFByb2dyZXNzID0gMDsKbGV0IHNtb290aEF0dG4gPSAwLjU7CmxldCBzbW9vdGhNZWQgPSAwLjU7CgpmdW5jdGlvbiBzZXR1cCgpIHsKICBjb2xvck1vZGUoSFNCLCAzNjAsIDEwMCwgMTAwKTsKICBmb3IgKGxldCBpID0gMDsgaSA8IDI1OyBpKyspIGZsb3dlcnMucHVzaChtYWtlRmxvd2VyKCkpOwogIGZvciAobGV0IGkgPSAwOyBpIDwgMTQ7IGkrKykgY2xvdWRzLnB1c2gobWFrZUNsb3VkKCkpOwogIGZvciAobGV0IGkgPSAwOyBpIDwgMjU7IGkrKykgZmlyZWZsaWVzLnB1c2gobWFrZUZpcmVmbHkoKSk7Cn0KCmZ1bmN0aW9uIG1ha2VGbG93ZXIoKSB7CiAgcmV0dXJuIHsKICAgIHg6IHJhbmRvbSh3aWR0aCksCiAgICB5OiByYW5kb20oaGVpZ2h0ICogMC44NSwgaGVpZ2h0ICogMC45NSksCiAgICBzaXplOiByYW5kb20oMjUsIDQ1KSwKICAgIGJsb29tOiAwLjUsCiAgICBodWU6IHJhbmRvbSgyNjAsIDMxMCksCiAgICBzd2F5Tm9pc2U6IHJhbmRvbSgxMDAwKSwKICAgIHBldGFsczogTWF0aC5mbG9vcihyYW5kb20oNiwgOSkpCiAgfTsKfQpmdW5jdGlvbiBtYWtlQ2xvdWQoKSB7CiAgcmV0dXJuIHsKICAgIHg6IHJhbmRvbSh3aWR0aCksCiAgICB5OiByYW5kb20oaGVpZ2h0ICogMC4xLCBoZWlnaHQgKiAwLjQpLAogICAgc2l6ZTogcmFuZG9tKDEyMCwgMjUwKSwKICAgIG5vaXNlT2Zmc2V0OiByYW5kb20oMTAwMCkKICB9Owp9CmZ1bmN0aW9uIG1ha2VGaXJlZmx5KCkgewogIHJldHVybiB7CiAgICB4OiByYW5kb20od2lkdGgpLAogICAgeTogcmFuZG9tKGhlaWdodCAqIDAuNywgaGVpZ2h0KSwKICAgIGZsaWNrZXI6IHJhbmRvbShUV09fUEkpLAogICAgaHVlOiByYW5kb20oNTAsIDcwKSwKICAgIG1vdmVOb2lzZTogcmFuZG9tKDEwMDApLAogICAgb3BhY2l0eTogMC43IC8vIHN0YXJ0IHdpdGggbWlkIG9wYWNpdHkKICB9Owp9CgpmdW5jdGlvbiBkcmF3KCkgewogIGxldCBhdHRlbnRpb24gPSAodHlwZW9mIGVlZ0RhdGEuYXR0ZW50aW9uID09PSAibnVtYmVyIikgPyBlZWdEYXRhLmF0dGVudGlvbiA6ICh0eXBlb2Ygc2ltdWxhdGlvbkNvbnRyb2xzICE9PSAidW5kZWZpbmVkIiAmJiAiYXR0ZW50aW9uIiBpbiBzaW11bGF0aW9uQ29udHJvbHMgPyBzaW11bGF0aW9uQ29udHJvbHMuYXR0ZW50aW9uIDogMC41KTsKICBsZXQgbWVkaXRhdGlvbiA9ICh0eXBlb2YgZWVnRGF0YS5tZWRpdGF0aW9uID09PSAibnVtYmVyIikgPyBlZWdEYXRhLm1lZGl0YXRpb24gOiAodHlwZW9mIHNpbXVsYXRpb25Db250cm9scyAhPT0gInVuZGVmaW5lZCIgJiYgIm1lZGl0YXRpb24iIGluIHNpbXVsYXRpb25Db250cm9scyA%2FIHNpbXVsYXRpb25Db250cm9scy5tZWRpdGF0aW9uIDogMC41KTsKICBsZXQgYWxwaGEgPSBlZWdEYXRhLmFscGhhIHx8IDA7CiAgbGV0IHRoZXRhID0gZWVnRGF0YS50aGV0YSB8fCAwLjAwMDE7CiAgbGV0IHJhdGlvID0gYWxwaGEgLyB0aGV0YTsKICBsZXQgZGlmZiA9IE1hdGguYWJzKHRhcmdldFJhdGlvIC0gcmF0aW8pOwogIGxldCBwcm9ncmVzcyA9IG1hcChkaWZmLCAwLCB0YXJnZXRSYXRpbywgMSwgMCk7CiAgcHJvZ3Jlc3MgPSBjb25zdHJhaW4ocHJvZ3Jlc3MsIDAsIDEpOwoKICAvLyBTbW9vdGggaW5wdXQgdmFsdWVzIChjcnVjaWFsIGZvciB2aXN1YWxzKQogIHNtb290aFByb2dyZXNzID0gbGVycChzbW9vdGhQcm9ncmVzcywgcHJvZ3Jlc3MsIDAuMDcpOwogIHNtb290aEF0dG4gPSBsZXJwKHNtb290aEF0dG4sIGF0dGVudGlvbiwgMC4wNyk7CiAgc21vb3RoTWVkID0gbGVycChzbW9vdGhNZWQsIG1lZGl0YXRpb24sIDAuMDcpOwoKICB1cGRhdGVTY29yZShzbW9vdGhBdHRuLCBzbW9vdGhNZWQsIHNtb290aFByb2dyZXNzKTsKCiAgZHJhd1NreShzbW9vdGhQcm9ncmVzcyk7CiAgZHJhd0Nsb3VkcyhzbW9vdGhQcm9ncmVzcyk7CiAgZHJhd0dyb3VuZCgpOwogIGRyYXdGbG93ZXJzKHNtb290aFByb2dyZXNzKTsKICBkcmF3RmlyZWZsaWVzKHNtb290aFByb2dyZXNzKTsKICBkcmF3SFVEKGFscGhhLCB0aGV0YSwgcmF0aW8sIHNtb290aFByb2dyZXNzLCBzbW9vdGhBdHRuLCBzbW9vdGhNZWQpOwp9CgpmdW5jdGlvbiB1cGRhdGVTY29yZShhdHRuLCBtZWQsIHByb2dyZXNzKSB7CiAgaWYgKG1pbGxpcygpIC0gbGFzdFNjb3JlVXBkYXRlID4gMTAwMCkgewogICAgbGV0IGRlbHRhID0gKG1lZCAqIDEyKSAtIChhdHRuICogOCkgKyAocHJvZ3Jlc3MgKiA0KTsKICAgIHNjb3JlICs9IGNvbnN0cmFpbihkZWx0YSwgLTEwLCAxNCk7CiAgICBzY29yZSA9IG1heCgwLCBzY29yZSk7CiAgICBsYXN0U2NvcmVVcGRhdGUgPSBtaWxsaXMoKTsKICB9Cn0KCmZ1bmN0aW9uIGRyYXdTa3kocHJvZ3Jlc3MpIHsKICAvLyBTQVRVUkFUSU9OIGFuZCBicmlnaHRuZXNzIGNoYW5nZXMgYXJlIG1vcmUgZ3JhZHVhbAogIGxldCBodWVWID0gbGVycCgyMDAsIDI3MCwgcHJvZ3Jlc3MpOwogIGxldCBicmlnaHQgPSBsZXJwKDkwLCA1NSwgcHJvZ3Jlc3MpOwogIGxldCBzYXQgPSBsZXJwKDQwLCAzMCwgcHJvZ3Jlc3MpOwogIGJhY2tncm91bmQoaHVlViwgc2F0LCBicmlnaHQpOwp9CgpmdW5jdGlvbiBkcmF3Q2xvdWRzKHByb2dyZXNzKSB7CiAgbm9TdHJva2UoKTsKICBmb3IgKGxldCBjIG9mIGNsb3VkcykgewogICAgYy5ub2lzZU9mZnNldCArPSAwLjAwMDQgKiAoMC41ICsgcHJvZ3Jlc3MpOwogICAgYy54ID0gbWFwKG5vaXNlKGMubm9pc2VPZmZzZXQpLCAwLCAxLCAtYy5zaXplLCB3aWR0aCArIGMuc2l6ZSk7CiAgICBmaWxsKDIwMCwgMTUsIDk1LCAwLjM1KTsgLy8gbGVzcyBvcGFxdWUgY2xvdWRzCiAgICBlbGxpcHNlKGMueCwgYy55LCBjLnNpemUgKiAwLjgsIGMuc2l6ZSAqIDAuNik7CiAgICBlbGxpcHNlKGMueCArIGMuc2l6ZSAqIDAuMiwgYy55ICsgMTAsIGMuc2l6ZSAqIDAuNiwgYy5zaXplICogMC40KTsKICB9Cn0KZnVuY3Rpb24gZHJhd0dyb3VuZCgpIHsKICBub1N0cm9rZSgpOwogIGZpbGwoMTE1LCAzMCwgNzUpOyAvLyByZWR1Y2VkIHNhdCA9IGxlc3MgaGFyc2gKICByZWN0KDAsIGhlaWdodCAqIDAuOCwgd2lkdGgsIGhlaWdodCAqIDAuMjUpOwp9CmZ1bmN0aW9uIGRyYXdGbG93ZXJzKHByb2dyZXNzKSB7CiAgZm9yIChsZXQgZiBvZiBmbG93ZXJzKSB7CiAgICBmLmJsb29tID0gbGVycChmLmJsb29tLCBwcm9ncmVzcywgMC4wMjUpOwogICAgZi5zd2F5Tm9pc2UgKz0gMC4wMDEgKiAoMC41ICsgcHJvZ3Jlc3MgKiAxLjcpOwogICAgbGV0IHN3YXkgPSBtYXAobm9pc2UoZi5zd2F5Tm9pc2UpLCAwLCAxLCAtOCAqIGYuYmxvb20sIDggKiBmLmJsb29tKTsKICAgIHN0cm9rZSgxMjAsIDU1LCA0NSk7CiAgICBzdHJva2VXZWlnaHQoMyk7CiAgICBsaW5lKGYueCArIHN3YXksIGYueSwgZi54LCBmLnkgLSA3MCAqIGYuYmxvb20pOwogICAgcHVzaCgpOwogICAgdHJhbnNsYXRlKGYueCArIHN3YXksIGYueSAtIDcwICogZi5ibG9vbSk7CiAgICBkcmF3Rmxvd2VySGVhZChmLCBwcm9ncmVzcyk7CiAgICBwb3AoKTsKICB9Cn0KZnVuY3Rpb24gZHJhd0Zsb3dlckhlYWQoZiwgcHJvZ3Jlc3MpIHsKICBsZXQgcGV0YWxzID0gZi5wZXRhbHM7CiAgbGV0IHBldGFsSHVlID0gbGVycChmLmh1ZSwgKGYuaHVlICsgcHJvZ3Jlc3MgKiAzMCkgJSAzNjAsIDAuMTApOyAvLyBzbG93ZXIgY2hhbmdlcwogIGZvciAobGV0IGkgPSAwOyBpIDwgcGV0YWxzOyBpKyspIHsKICAgIHB1c2goKTsKICAgIHJvdGF0ZSgoVFdPX1BJIC8gcGV0YWxzKSAqIGkpOwogICAgZHJhd1BldGFsKGYuc2l6ZSwgZi5ibG9vbSwgcGV0YWxIdWUsIHByb2dyZXNzKTsKICAgIHBvcCgpOwogIH0KICBmaWxsKDUwLCA3NSwgOTAsIDAuODYpOyAvLyBzb2Z0ZXIsIGxlc3MgYnJpZ2h0CiAgbm9TdHJva2UoKTsKICBlbGxpcHNlKDAsIDAsIGYuc2l6ZSAqIDAuNyk7CiAgZmlsbCg1MCwgNzAsIDcwLCAwLjc4KTsKICBlbGxpcHNlKDAsIGYuc2l6ZSAqIDAuMSwgZi5zaXplICogMC4zNSk7Cn0KZnVuY3Rpb24gZHJhd1BldGFsKHNpemUsIGJsb29tLCBodWUsIHByb2dyZXNzKSB7CiAgbm9TdHJva2UoKTsKICBmaWxsKGh1ZSwgNDIgKyBwcm9ncmVzcyAqIDI1LCA5MCwgMC43Nyk7IC8vIHNvZnRlciBwZXRhbHMsIGxvd2VyIGludGVuc2l0eQogIGJlZ2luU2hhcGUoKTsKICB2ZXJ0ZXgoMCwgMCk7CiAgYmV6aWVyVmVydGV4KC1zaXplICogMC4zLCAtc2l6ZSAqIDAuMywgLXNpemUgKiAwLjMsIC1zaXplICogMS4yLCAwLCAtc2l6ZSAqICgxLjUgKyAwLjUgKiBibG9vbSkpOwogIGJlemllclZlcnRleChzaXplICogMC4zLCAtc2l6ZSAqIDEuMiwgc2l6ZSAqIDAuMywgLXNpemUgKiAwLjMsIDAsIDApOwogIGVuZFNoYXBlKENMT1NFKTsKfQpmdW5jdGlvbiBkcmF3RmlyZWZsaWVzKHByb2dyZXNzKSB7CiAgbGV0IG1heENvdW50ID0gTWF0aC5mbG9vcihtYXAocHJvZ3Jlc3MsIDAsIDEsIDgsIDI1KSk7CiAgZm9yIChsZXQgaSA9IDA7IGkgPCBtYXhDb3VudDsgaSsrKSB7CiAgICBsZXQgZmYgPSBmaXJlZmxpZXNbaV07CiAgICBmZi5mbGlja2VyICs9IDAuMDE1ICogKDEgKyBwcm9ncmVzcyk7IC8vIHJlZHVjZWQgZmxpY2tlciBzcGVlZAogICAgZmYubW92ZU5vaXNlICs9IDAuMDAxICogKDEgKyBwcm9ncmVzcyk7CiAgICBsZXQgZmxpY2tlclJhdyA9IChzaW4oZmYuZmxpY2tlcikgKyAxKSAvIDI7CiAgICAvLyBTbW9vdGhlciBvcGFjaXR5IChubyBoYXJzaCBmbGlja2VyKQogICAgZmYub3BhY2l0eSA9IGxlcnAoZmYub3BhY2l0eSwgMC40ICsgZmxpY2tlclJhdyAqIDAuMjUsIDAuMSk7IC8vIGNhcCBvcGFjaXR5IHN3aW5ncwogICAgZmlsbChmZi5odWUsIDcwLCA5MCwgZmYub3BhY2l0eSk7IC8vIGxlc3Mgc2F0dXJhdGVkICYgbGVzcyBhbHBoYQogICAgbm9TdHJva2UoKTsKICAgIGVsbGlwc2UoZmYueCArIG1hcChub2lzZShmZi5tb3ZlTm9pc2UpLCAwLCAxLCAtNSwgNSksIGZmLnksIDQuNSArIGZsaWNrZXJSYXcgKiAyLjUpOwogIH0KfQpmdW5jdGlvbiBkcmF3SFVEKGFscGhhLCB0aGV0YSwgcmF0aW8sIHByb2dyZXNzLCBhdHRuLCBtZWQpIHsKICBmaWxsKDAsIDAsIDIwLCAwLjY3KTsKICByZWN0KDAsIDAsIHdpZHRoLCA4NSk7CiAgZmlsbCgwLCAwLCA5OCk7CiAgdGV4dFNpemUoMTUpOwogIHRleHRBbGlnbihMRUZULCBUT1ApOwogIHRleHQoIlRhcmdldCDOsS%2FOuCByYXRpbzogIiArIHRhcmdldFJhdGlvLnRvRml4ZWQoMiksIDIwLCAxMCk7CiAgdGV4dCgiQ3VycmVudCDOsS%2FOuDogIiArIHJhdGlvLnRvRml4ZWQoMiksIDIwLCAyOCk7CiAgdGV4dCgiUHJvZ3Jlc3M6ICIgKyAocHJvZ3Jlc3MgKiAxMDApLnRvRml4ZWQoMSkgKyAiJSAgfCAgU2NvcmU6ICIgKyBzY29yZS50b0ZpeGVkKDApLCAyMCwgNDUpOwogIHRleHQoIkF0dGVudGlvbjogIiArIGF0dG4udG9GaXhlZCgyKSArICIgICBNZWRpdGF0aW9uOiAiICsgbWVkLnRvRml4ZWQoMiksIDIwLCA2NSk7Cn0K&autorun=false" target="_blank" class="btn-brainimation">
+                                ▶️ Open in Live Editor
+                            </a>
+                            <a href="https://drive.google.com/file/d/147pjxzdCydNg60DnR_cEEXdsJHosbc-1/view" target="_blank" style="color: #999; font-size: 0.85em; align-self: center; text-decoration: none; padding: 8px 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.borderColor='#4ecdc4'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+                                📄 View Code on Drive
+                            </a>
+                        </div>
+                        <p style="font-size: 0.85em; color: #999; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            💡 Code is embedded in this portfolio - opens instantly in the live BrainImation editor (no internet required!)
+                        </p>
+                    </div>
+                
+            </div>
+        
+        </div>
+    
+        </div>
+    </main>
+    
+    <script>
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Highlight current section in navigation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.toc a').forEach(link => {
+                        link.style.background = '';
+                    });
+                    const activeLink = document.querySelector(`.toc a[href="#${id}"]`);
+                    if (activeLink) {
+                        activeLink.style.background = 'rgba(255,255,255,0.15)';
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        document.querySelectorAll('.content-section').forEach(section => {
+            observer.observe(section);
+        });
+    
+    </script>
+</body>
+</html>
