@@ -18,3 +18,5 @@ submissions_tracker_live.html
 .emails
 .DS_Store
 venv/
+generate_submissions_table.py
+submissions_config.example.js
