@@ -311,6 +311,28 @@
             color: var(--secondary);
         }
         
+        .assignment6-supplementary {
+            background: linear-gradient(135deg, #fff 0%, #fef8fc 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(214, 51, 132, 0.1);
+            margin: 2rem 0;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .assignment6-supplementary h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-family: Spectral, Georgia, serif;
+        }
+        
+        .supplementary-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
         .media-card {
             margin: 1.5rem 0;
             padding: 1rem;
@@ -772,14 +794,14 @@
         <div class="navigation">
             <h3>Assignment 6</h3>
             <ul class="toc">
-                <li><a href="#section-0">Abstract</a></li><li><a href="#section-1">Core Technology and Measurements</a></li><li><a href="#section-2">Hardware and Design Overview</a></li><li><a href="#section-3">User Experience and Software</a></li><li><a href="#section-4">Validation and Scientific Credibility</a></li><li><a href="#section-5">Market Position and Practical Considerations</a></li><li><a href="#section-6">Limitations and Engineering Challenges</a></li><li><a href="#section-7">Potential Impact</a></li>
+                <li><a href="#section-0">Abstract</a></li><li><a href="#section-1">Core Technology and Measurements</a></li><li><a href="#section-2">Hardware and Design Overview</a></li><li><a href="#section-3">User Experience and Software</a></li><li><a href="#section-4">Validation and Scientific Credibility</a></li><li><a href="#section-5">Market Position and Practical Considerations</a></li><li><a href="#section-6">Limitations and Engineering Challenges</a></li><li><a href="#section-7">Potential Impact</a></li><li><a href="#references">📚 References</a></li>
             </ul>
             
             <div class="nav-divider"></div>
             
             <h3>Course Work</h3>
             <ul class="nav-links">
-                
+                <li><a href="#other-work">Assignment 1</a></li>
                 <li><a href="#other-work">Assignment 2</a></li>
                 <li><a href="#other-work">Midterm</a></li>
             </ul>
@@ -886,7 +908,7 @@
         <section id="section-4" class="content-section">
             <h2>Validation and Scientific Credibility</h2>
             <div class="section-content">
-                <p>Validation will take place in four stages. In the first phase, testing will occur in a controlled lab setting by comparing EEG signal quality and alpha reactivity to hospital-grade EEG equipment, aiming for less than 15 percent deviation. The fNIRS sensors will also be checked using tissue models to confirm accurate responses to oxygen changes. In the second phase, a cognitive load study with 30 participants will record EEG-fNIRS data during Stroop and n-back tasks, and the resulting focus scores are expected to show a strong correlation (r > 0.7) with task performance. The third phase will validate sleep tracking by comparing the device’s automatic detection of light, deep, and REM sleep stages with results from standard lab sleep tests, targeting less than 20 minutes of error in total sleep time. The final phase will test reliability in real-world use through 14-day trials to confirm stable readings under daily conditions.</p><p>The NeuroBand would initially launch as a wellness tracker rather than a medical device. If medical uses are pursued later, additional clinical studies would be added to demonstrate safety and accuracy against cleared EEG and fNIRS systems before submitting a formal application. The app displays confidence ranges and warns users when movement or poor contact reduces signal reliability, keeping expectations realistic and preventing users from interpreting the metrics as medical evaluations.</p>
+                <p>Validation will take place in four stages. In the first phase, testing will occur in a controlled lab setting by comparing EEG signal quality and alpha reactivity to hospital-grade EEG equipment, aiming for less than 15 percent deviation. The fNIRS sensors will also be checked using tissue models to confirm accurate responses to oxygen changes. In the second phase, a cognitive load study with 30 participants will record EEG-fNIRS data during Stroop and n-back tasks, and the resulting focus scores are expected to show a strong correlation (r > 0.7) with task performance.</p><p>The third phase will validate sleep tracking by comparing the device’s automatic detection of light, deep, and REM sleep stages with results from standard lab sleep tests, targeting less than 20 minutes of error in total sleep time. The final phase will test reliability in real-world use through 14-day trials to confirm stable readings under daily conditions.</p><p>The NeuroBand would initially launch as a wellness tracker rather than a medical device. If medical uses are pursued later, additional clinical studies would be added to demonstrate safety and accuracy against cleared EEG and fNIRS systems before submitting a formal application. The app displays confidence ranges and warns users when movement or poor contact reduces signal reliability, keeping expectations realistic and preventing users from interpreting the metrics as medical evaluations.</p>
             </div>
             
                 <div class="images">
@@ -953,10 +975,12 @@
         
             
             
-        <section class="references">
-            <h2>References</h2>
+            
+            
+        <section id="references" class="references">
+            <h2>📚 References</h2>
             <ol>
-                <li>Al-Shargie, F., Kiguchi, M., Badruddin, N., Dass, S. C., Hani, A. F. M., & Tang, T. B. (2016). Mental stress assessment using simultaneous measurement of EEG and fNIRS. Biomedical Optics Express, 7 (10), 3882–3898. https://doi.org/10.1364/BOE.7.003882</li><li>Biasiucci, A., Franceschiello, B., & Murray, M. M. (2019). Electroencephalography. Current Biology, 29 (3), R80–R85. https://doi.org/10.1016/j.cub.2018.11.052</li><li>Chen, J., Yu, K., Bi, Y., Ji, X., & Zhang, D. (2024). Strategic Integration: A Cross-Disciplinary Review of the fNIRS-EEG Dual-Modality Imaging System for Delivering Multimodal Neuroimaging to Applications. Brain Sciences, 14 (10), 1022–1022. https://doi.org/10.3390/brainsci14101022</li><li>Cooper, D. (2025, March 18). Muse’s new wearable EEG knows how hard you’re thinking. Engadget. https://www.engadget.com/wearables/muses-new-wearable-eeg-knows-how-hard-youre-thinking-120041154.html</li><li>Devices - Divergence Neuro. (2023). Divergence Neuro. https://www.divergenceneuro.com/devices/</li><li>Ehrhardt, N. M., Niehoff, C., Anna-Christina Oßwald, Antonenko, D., Lucchese, G., & Fleischmann, R. (2024). Comparison of dry and wet electroencephalography for the assessment of cognitive evoked potentials and sensor-level connectivity. Frontiers in Neuroscience, 18. https://doi.org/10.3389/fnins.2024.1441799</li><li>Ferrari, M., & Quaresima, V. (2012). A brief review on the history of human functional near-infrared spectroscopy (fNIRS) development and fields of application. NeuroImage, 63 (2), 921–935. https://doi.org/10.1016/j.neuroimage.2012.03.049</li><li>Flanagan K, Saikia MJ. Consumer-grade electroencephalogram and functional near-infrared spectroscopy neurofeedback technologies for Mental Health and Wellbeing. Sensors. 2023 Oct 15;23(20):8482. http://doi.org/10.3390/s23208482</li><li>Kernel. (n.d.). Kernel. Www.kernel.com. https://www.kernel.com/</li><li>Kislov, A., Gorin, A., Konstantinovsky, N., Klyuchnikov, V., Bazanov, B., & Klucharev, V. (2022). Central EEG Beta/Alpha Ratio Predicts the Population-Wide Efficiency of Advertisements. Brain Sciences, 13 (1), 57. https://doi.org/10.3390/brainsci13010057</li><li>Hamann, A., & Carstengerdes, N. (2022). Investigating mental workload-induced changes in cortical oxygenation and frontal theta activity during simulated flights. Scientific Reports, 12(1). https://doi.org/10.1038/s41598-022-10044-y</li><li>Ranjan, R., Chandra Sahana, B., & Kumar Bhandari, A. (2021). Ocular artifact elimination from electroencephalography signals: A systematic review. Biocybernetics and Biomedical Engineering, 41 (3), 960–996. https://doi.org/10.1016/j.bbe.2021.06.007</li><li>Vorreuther A, Tagalidou N, Vukelić M. Validation of the EMOTIBIT wearable sensor for heart-based measures under varying workload conditions. Frontiers in Neuroergonomics. 2025 Jun 18;6. http://doi.org/10.3389/fnrgo.2025.1585469</li>
+                <li>Al-Shargie, F., Kiguchi, M., Badruddin, N., Dass, S. C., Hani, A. F. M., & Tang, T. B. (2016). Mental stress assessment using simultaneous measurement of EEG and fNIRS. Biomedical Optics Express, 7(10), 3882–3898. https://doi.org/10.1364/BOE.7.003882</li><li>Biasiucci, A., Franceschiello, B., & Murray, M. M. (2019). Electroencephalography. Current Biology, 29(3), R80–R85. https://doi.org/10.1016/j.cub.2018.11.052</li><li>Chen, J., Yu, K., Bi, Y., Ji, X., & Zhang, D. (2024). Strategic Integration: A Cross-Disciplinary Review of the fNIRS-EEG Dual-Modality Imaging System for Delivering Multimodal Neuroimaging to Applications. Brain Sciences, 14(10), 1022–1022. https://doi.org/10.3390/brainsci14101022</li><li>Cooper, D. (2025, March 18). Muse’s new wearable EEG knows how hard you’re thinking. Engadget. https://www.engadget.com/wearables/muses-new-wearable-eeg-knows-how-hard-youre-thinking-120041154.html</li><li>Devices - Divergence Neuro. (2023). Divergence Neuro. https://www.divergenceneuro.com/devices/</li><li>Ehrhardt, N. M., Niehoff, C., Anna-Christina Oßwald, Antonenko, D., Lucchese, G., & Fleischmann, R. (2024). Comparison of dry and wet electroencephalography for the assessment of cognitive evoked potentials and sensor-level connectivity. Frontiers in Neuroscience, 18. https://doi.org/10.3389/fnins.2024.1441799</li><li>Ferrari, M., & Quaresima, V. (2012). A brief review on the history of human functional near-infrared spectroscopy (fNIRS) development and fields of application. NeuroImage, 63(2), 921–935. https://doi.org/10.1016/j.neuroimage.2012.03.049</li><li>Flanagan K, Saikia MJ. Consumer-grade electroencephalogram and functional near-infrared spectroscopy neurofeedback technologies for Mental Health and Wellbeing. Sensors. 2023 Oct 15;23(20):8482. http://doi.org/10.3390/s23208482</li><li>Kernel. (n.d.). Kernel. Www.kernel.com. https://www.kernel.com/</li><li>Kislov, A., Gorin, A., Konstantinovsky, N., Klyuchnikov, V., Bazanov, B., & Klucharev, V. (2022). Central EEG Beta/Alpha Ratio Predicts the Population-Wide Efficiency of Advertisements. Brain Sciences, 13(1), 57. https://doi.org/10.3390/brainsci13010057</li><li>Hamann, A., & Carstengerdes, N. (2022). Investigating mental workload-induced changes in cortical oxygenation and frontal theta activity during simulated flights. Scientific Reports, 12(1). https://doi.org/10.1038/s41598-022-10044-y</li><li>Ranjan, R., Chandra Sahana, B., & Kumar Bhandari, A. (2021). Ocular artifact elimination from electroencephalography signals: A systematic review. Biocybernetics and Biomedical Engineering, 41(3), 960–996. https://doi.org/10.1016/j.bbe.2021.06.007</li><li>Vorreuther A, Tagalidou N, Vukelić M. Validation of the EMOTIBIT wearable sensor for heart-based measures under varying workload conditions. Frontiers in Neuroergonomics. 2025 Jun 18;6. http://doi.org/10.3389/fnrgo.2025.1585469</li>
             </ol>
         </section>
     
@@ -967,6 +991,21 @@
         <div class="other-work">
             <h3>Other Course Work</h3>
             
+            <div class="assignment-section">
+                <h4>📊 Assignment 1: EEG Analysis</h4>
+                
+                    <div class="pdf-content-card">
+                        <div class="pdf-header">
+                            <h5>📄 Psych 403 Assignment 1_RaissaS.pdf</h5>
+                            <a href="https://drive.google.com/file/d/1KlrcLttLCk0v3gwKsBwMxc85klwGCkYX/view" target="_blank" class="view-original">View Original PDF</a>
+                        </div>
+                        <div class="pdf-content">
+                            <p>Figure 1. Raw and filtered EEG signals from the first 10 seconds of recording. <br>Top: Raw EEG signals from eight electrode channels, showing a large amount of background <br>activity that masks the underlying alpha wave rhythms. Bottom: Alpha-band filtered EEG (8-12 <br>Hz) from the same eight channels, after noise removal. <br>Figure 2. Power spectra of raw and filtered EEG signals.</p><p>Left: Power spectrum of raw EEG data across 8 channels, showing broad activity. Right: Power <br>spectrum of alpha-filtered EEG (8-12 Hz), displaying a peak in the alpha range after noise <br>removal.</p>
+                        </div>
+                    </div>
+                
+            </div>
+        
             
             <div class="assignment-section">
                 <h4>🎨 Assignment 2: BrainImation</h4>
