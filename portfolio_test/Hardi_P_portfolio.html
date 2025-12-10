@@ -311,6 +311,28 @@
             color: var(--secondary);
         }
         
+        .assignment6-supplementary {
+            background: linear-gradient(135deg, #fff 0%, #fef8fc 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(214, 51, 132, 0.1);
+            margin: 2rem 0;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .assignment6-supplementary h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-family: Spectral, Georgia, serif;
+        }
+        
+        .supplementary-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
         .media-card {
             margin: 1.5rem 0;
             padding: 1rem;
@@ -780,7 +802,7 @@
             <h3>Course Work</h3>
             <ul class="nav-links">
                 <li><a href="#other-work">Assignment 1</a></li>
-                
+                <li><a href="#other-work">Assignment 2</a></li>
                 <li><a href="#other-work">Midterm</a></li>
             </ul>
         </div>
@@ -813,6 +835,8 @@
         
             
             
+            
+            
         </div>
         
         <div id="other-work">
@@ -836,6 +860,33 @@
             </div>
         
             
+            <div class="assignment-section">
+                <h4>🎨 Assignment 2: BrainImation</h4>
+                
+                    <div class="pdf-content-card">
+                        <div class="pdf-header">
+                            <h5>📄 HardiPPsych 403-Assignment 2 - Google Docs.pdf</h5>
+                            <a href="https://drive.google.com/file/d/1daqVynQeAEISQY8KB2TOb-7BQOWdA_LR/view" target="_blank" class="view-original">View Original PDF</a>
+                        </div>
+                        <div class="pdf-content">
+                            <p>Connect 3: Pattern Recognition vs Critical Thinking <br>With the BrainImation platform, I have built a simple data collection tool influenced by <br>an interactive game. The concept of this design is a candy crush style game board that can be <br>played in two ways: by physically moving the tiles via the keyboard/cursor or by answering math <br>equations. The idea was to track or measure the fluctuation in alpha and beta levels during the <br>use of pattern recognition versus critical thinking. <br>In technicality, a colorful grid is manifested as representing “candy” and as one gets a <br>three-in-a-row, the score increases 10 points per square. When solving the math equation, a <br>correct answer results in an automatic tile movement that creates a 3-in-a-row. Whereas, an <br>incorrect answer deducts 5 points. Since both skills render an increase in beta brainwaves, the <br>attempt was to see what form of neural processing elicits the most focus and active <br>concentration. The code I have is not fully developed and does not work exactly as desired. As <br>the 3-in-a-row disappears, the blocks should simply fall and spawn new ones above to fill in the <br>space. However, the tiles sometimes change colors randomly when filling in the space. <br>While designing this gamified experiment, I faced multiple challenges in the creation. <br>The major challenge was creating a code (with the help of AI) that produced any visual results at <br>all. I constantly got blank screens. To fix this, I tried initiating with a simple black square, then <br>progressed to a colorful one then multiple colorful ones, etc. to finally have a functioning tile <br>grid. Another challenge was being able to create a successful alpha and beta levels tracker that <br>responded to show real-time or simulated EEG data alongside the game board. However, using <br>the same technique of building the idea from bottom up, I was able to make a functioning tracker <br>separately which then was incorporated into the game board code. The biggest thing I learned <br>was that progressing from simple to complex is the best way to yield desired results. <br>Something I would do differently next time is present two contrasting activities in which <br>one is sensitive to alertness (increased beta/gamma) and the other to a relaxed state (increased <br>alpha/theta), such as a calming jigsaw puzzle or paint-the-picture. I would also record the neural <br>data as a line graph to visualize the peaks and troughs of fluctuating brainwaves for a more <br>effective contrast. Other limitations to resolve are to allow the inputting of “-” for negative math <br>answers, being able to delete numbers if a wrong one is accidentally pressed, and labelling the <br>tracker bars appropriately for the corresponding “alpha” and “beta” levels. <br>Lastly, a point to take note of is that although my muse device paired with <br>‘Brainimation,’ a “device was not selected.” Thus, the screen recording is based on simulated <br>data and does not accurately show the change in brain states as one thinks critically or recognizes <br>patterns.</p><p>CODE: <br>// --- Match-3 game with BrainImation EEG tracker (alpha/beta) & proper vertical <br>falling --- <br>var rows = 8; <br>var cols = 8; <br>var size = 40; <br>var grid = []; <br>var selected = null; <br>var cursor = { row: 0, col: 0 }; <br>var score = 0; <br>// Neurofeedback input (0-1), updated externally <br>var alphaLevel = 0; <br>var betaLevel = 0; <br>// Smooth attention display (used for internal smoothing if needed) <br>var displayedAttention = 0; <br>// Flags to prevent continuous triggering <br>var alphaTriggered = false; <br>var betaTriggered = false; <br>// Math question <br>var mathQuestion = {}; <br>var mathAnswerInput = ""; <br>// Falling tiles tracker <br>var falling = []; // {row, col, fromY, toY, color} <br>// --- Random helpers --- <br>function randInt(min, max) { return Math.floor(Math.random()*(max-min+1))+min; } <br>function randomPiece() { return randInt(1,5); } <br>// --- Initialize board --- <br>for (var r=0;r<rows;r++){ <br>grid[r]=[]; <br>for(var c=0;c<cols;c++) grid[r][c]=randomPiece(); <br>} <br>// --- Draw loop --- <br>function draw() { <br>background(255); // white background</p><p>// Score display <br>fill(0); <br>textSize(24); <br>textAlign(CENTER); <br>text("Score: "+score,width/2,30); <br>// EEG Tracker (exact stable version) <br>drawEEGTracker(); <br>// Grid offset <br>var offsetX = (width - cols*size)/2 + 60; <br>var offsetY = (height - rows*size)/2; <br>// Draw grid <br>for(var r=0;r<rows;r++){ <br>for(var c=0;c<cols;c++){ <br>// Check if tile is falling <br>var fallTile = falling.find(f => f.row === r && f.col === c); <br>if(fallTile){ <br>drawPiece(fallTile.color, c*size+offsetX, fallTile.fromY); <br>// Update fall position <br>fallTile.fromY += (fallTile.toY - fallTile.fromY) * 0.2; // smooth speed <br>if(abs(fallTile.toY - fallTile.fromY) < 1){ <br>grid[r][c] = fallTile.color; <br>falling = falling.filter(f => f !== fallTile); <br>} <br>} else { <br>drawPiece(grid[r][c], c*size+offsetX, r*size+offsetY); <br>} <br>} <br>} <br>// Highlight selected <br>if(selected!==null){ <br>noFill(); <br>stroke("black"); <br>strokeWeight(3); <br>rect(selected.col*size+offsetX, selected.row*size+offsetY, size, size); <br>strokeWeight(1); <br>noStroke(); <br>}</p><p>// Highlight cursor <br>noFill(); <br>stroke("orange"); <br>strokeWeight(3); <br>rect(cursor.col*size+offsetX, cursor.row*size+offsetY, size, size); <br>strokeWeight(1); <br>noStroke(); <br>// Draw math question at bottom <br>fill(0); <br>textSize(20); <br>textAlign(CENTER); <br>text("Solve: "+mathQuestion.text+" = "+mathAnswerInput, width/2, height-40); <br>// --- Neurofeedback effects --- <br>updateNeurofeedback(); <br>} <br>// --- Draw a tile --- <br>function drawPiece(type,x,y){ <br>if(type===1) fill("red"); <br>else if(type===2) fill("yellow"); <br>else if(type===3) fill("blue"); <br>else if(type===4) fill("green"); <br>else if(type===5) fill("purple"); <br>else fill("white"); <br>rect(x,y,size,size); <br>} <br>// --- Mouse click selection --- <br>function mouseClicked(){ <br>var offsetX = (width - cols*size)/2 + 60; <br>var offsetY = (height - rows*size)/2; <br>var c = Math.floor((mouseX - offsetX)/size); <br>var r = Math.floor((mouseY - offsetY)/size); <br>if(c<0||c>=cols||r<0||r>=rows) return; <br>if(selected===null) selected={row:r,col:c}; <br>else { trySwap(selected,{row:r,col:c}); selected=null; } <br>} <br>// --- Keyboard controls ---</p><p>function keyPressed(){ <br>if(keyCode===LEFT_ARROW) cursor.col=max(0,cursor.col-1); <br>if(keyCode===RIGHT_ARROW) cursor.col=min(cols-1,cursor.col+1); <br>if(keyCode===UP_ARROW) cursor.row=max(0,cursor.row-1); <br>if(keyCode===DOWN_ARROW) cursor.row=min(rows-1,cursor.row+1); <br>if(keyCode===32||keyCode===ENTER){ <br>if(selected===null) selected={row:cursor.row,col:cursor.col}; <br>else { trySwap(selected,{row:cursor.row,col:cursor.col}); selected=null; } <br>} <br>} <br>// Keyboard input for math answer <br>function keyTyped(){ <br>if("0123456789.".includes(key)) mathAnswerInput += key; <br>if(keyCode===8 || key==='Backspace') mathAnswerInput = mathAnswerInput.slice(0,-1); <br>if(keyCode===13 || key==='Enter'){ // submit <br>checkMathAnswer(); <br>mathAnswerInput=""; <br>generateMathQuestion(); <br>} <br>} <br>// --- Swap & match logic --- <br>function trySwap(a,b){ <br>if(!areAdjacent(a,b)) return; <br>var temp=grid[a.row][a.col]; <br>grid[a.row][a.col]=grid[b.row][b.col]; <br>grid[b.row][b.col]=temp; <br>var matches=findMatches(); <br>if(matches.length>0){ <br>while(matches.length > 0){ <br>removeMatches(matches); <br>applyGravitySmooth(); // vertical only <br>fillTopRowHoles(); <br>matches=findMatches(); <br>} <br>} else { <br>// Swap back if no matches <br>var t2=grid[a.row][a.col]; <br>grid[a.row][a.col]=grid[b.row][b.col]; <br>grid[b.row][b.col]=t2; <br>}</p><p>} <br>function areAdjacent(a,b){ return Math.abs(a.row-b.row)+Math.abs(a.col-b.col)===1; } <br>function findMatches(){ <br>var matches=[]; <br>for(var r=0;r<rows;r++) for(var c=0;c<cols-2;c++) if(grid[r][c]!==0 && <br>grid[r][c]===grid[r][c+1] && grid[r][c]===grid[r][c+2]){ matches.push({r:r,c:c}); <br>matches.push({r:r,c:c+1}); matches.push({r:r,c:c+2}); } <br>for(var c=0;c<cols;c++) for(var r=0;r<rows-2;r++) if(grid[r][c]!==0 && <br>grid[r][c]===grid[r+1][c] && grid[r][c]===grid[r+2][c]){ matches.push({r:r,c:c}); <br>matches.push({r:r+1,c:c}); matches.push({r:r+2,c:c}); } <br>return matches; <br>} <br>function removeMatches(list){ <br>for(var i=0;i<list.length;i++){ <br>grid[list[i].r][list[i].c]=0; <br>score += 10; <br>} <br>} <br>// --- Smooth vertical gravity & top row fill --- <br>function applyGravitySmooth(){ <br>for(let c=0;c<cols;c++){ <br>for(let r=rows-1;r>=0;r--){ <br>if(grid[r][c]===0){ <br>let rr=r-1; <br>while(rr>=0 && grid[rr][c]===0) rr--; <br>if(rr>=0){ <br>// Vertical fall only <br>falling.push({row:r, col:c, fromY: rr*size + (height - rows*size)/2, toY: <br>r*size + (height - rows*size)/2, color: grid[rr][c]}); <br>grid[r][c]=grid[rr][c]; <br>grid[rr][c]=0; <br>} <br>} <br>} <br>} <br>} <br>// Fill only top-most empty rows <br>function fillTopRowHoles(){ <br>for(let c=0;c<cols;c++){ <br>for(let r=0;r<rows;r++){</p><p>if(grid[r][c]===0){ <br>let fy = (r-1>=0 ? (r-1)*size + (height - rows*size)/2 : (height - <br>rows*size)/2 - size); <br>falling.push({row:r, col:c, fromY: fy, toY:r*size + (height - rows*size)/2, <br>color: randomPiece()}); <br>grid[r][c] = falling[falling.length-1].color; <br>} else break; // stop at first non-empty tile <br>} <br>} <br>} <br>// --- Math question / scoring --- <br>function generateMathQuestion(){ <br>var ops=["+","-","*","/"]; <br>var op=ops[randInt(0,ops.length-1)]; <br>var a=randInt(1,10); <br>var b=randInt(1,10); <br>if(op=="/") a=a*b; <br>var ans; <br>if(op=="+") ans=a+b; <br>if(op=="-") ans=a-b; <br>if(op=="*") ans=a*b; <br>if(op=="/") ans=a/b; <br>mathQuestion={text:a+" "+op+" "+b, answer:ans}; <br>} <br>function checkMathAnswer(){ <br>if(parseFloat(mathAnswerInput)===mathQuestion.answer){ <br>correctMathAnswer(); <br>} else { <br>score = Math.max(0, score-5); <br>} <br>} <br>// --- Neurofeedback hooks --- <br>function updateNeurofeedback(){ <br>if(alphaLevel > 0.5 && !alphaTriggered){ <br>autoClearRow(); <br>score += 5; <br>alphaTriggered = true; <br>} <br>if(alphaLevel <= 0.5){</p><p>alphaTriggered = false; <br>} <br>if(betaLevel > 0.5 && !betaTriggered){ <br>accelerateFalling(); <br>betaTriggered = true; <br>} <br>if(betaLevel <= 0.5){ <br>betaTriggered = false; <br>} <br>} <br>// --- Example tile effect functions --- <br>function correctMathAnswer(){ <br>var r = randInt(0, rows-1); <br>var startCol = randInt(0, cols-3); <br>var value = randInt(1,5); <br>for(var i=0;i<3;i++){ <br>grid[r][startCol+i] = value; <br>} <br>var matches = findMatches(); <br>while(matches.length>0){ <br>removeMatches(matches); <br>applyGravitySmooth(); <br>fillTopRowHoles(); <br>matches=findMatches(); <br>} <br>} <br>// Placeholder functions for neuro effects <br>function autoClearRow(){ <br>var r = randInt(0, rows-1); <br>for(var c=0;c<cols;c++) grid[r][c]=randomPiece(); <br>applyGravitySmooth(); <br>fillTopRowHoles(); <br>} <br>function accelerateFalling(){ <br>// Optional speed-up logic <br>} <br>// --- BrainImation-compatible EEG tracker with alpha/beta bars and outlines ---</p><p>function drawEEGTracker() { <br>colorMode(HSB, 360, 100, 100); <br>background(255, 255, 255, 0); // transparent layer over grid <br>// --- Update from EEG (real or simulated) --- <br>if (typeof eegData !== 'undefined') { <br>alphaLevel = eegData.alpha || 0; <br>betaLevel = eegData.beta || 0; <br>} else { <br>// Simulate for testing <br>alphaLevel = (sin(frameCount * 0.02) + 1) / 2; <br>betaLevel = (cos(frameCount * 0.03) + 1) / 2; <br>} <br>let barWidth = 30; <br>let barHeight = height * 0.6; <br>let yTop = (height - barHeight) / 2; <br>// --- Draw alpha bar outline --- <br>let xAlpha = 50; <br>noFill(); <br>stroke(200, 80, 90); <br>strokeWeight(2); <br>rect(xAlpha, yTop, barWidth, barHeight); <br>// --- Draw alpha fill --- <br>let alphaFill = barHeight * alphaLevel; <br>if (alphaLevel > 0.5) fill(200, 100, 100); <br>else fill(200, 80, 90); <br>noStroke(); <br>rect(xAlpha, yTop + (barHeight - alphaFill), barWidth, alphaFill); <br>// --- Draw beta bar outline --- <br>let xBeta = 120; <br>noFill(); <br>stroke(50, 80, 90); <br>strokeWeight(2); <br>rect(xBeta, yTop, barWidth, barHeight); <br>// --- Draw beta fill --- <br>let betaFill = barHeight * betaLevel; <br>if (betaLevel > 0.5) fill(50, 100, 100);</p><p>else fill(50, 80, 90); <br>noStroke(); <br>rect(xBeta, yTop + (barHeight - betaFill), barWidth, betaFill); <br>// --- Labels --- <br>fill(0, 0, 100); <br>textSize(14); <br>textAlign(LEFT, CENTER); <br>text("Alpha", xAlpha, yTop - 20); <br>text("Beta", xBeta, yTop - 20); <br>} <br>// --- Initialize --- <br>generateMathQuestion();</p>
+                        </div>
+                    </div>
+                
+                <div class="media-card">
+                    <h5>🎥 HardiPScreen Recording 2025-12-09 at 9.20.03 PM.mov</h5>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
+                        <iframe src="https://drive.google.com/file/d/1_XOzA4r09d2WXcCBd1dXpaXhzeem5_oh/preview" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                                allow="autoplay; fullscreen"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="video-note">💡 Videos require Google Drive access. <a href="https://drive.google.com/file/d/1_XOzA4r09d2WXcCBd1dXpaXhzeem5_oh/view" target="_blank">Open in new tab</a> if it doesn't load.</p>
+                </div>
+            
+            </div>
+        
             
             <div class="assignment-section">
                 <h4>🎯 Midterm Project</h4>
