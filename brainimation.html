@@ -3009,13 +3009,7 @@ function draw() {
               // Extract code from data URI
               // Format: data:text/plain;base64,ENCODED_DATA
               const base64Data = sketchParam.split(',')[1];
-              // Decode base64 to binary string, then convert to UTF-8
-              const binaryString = atob(base64Data);
-              const bytes = new Uint8Array(binaryString.length);
-              for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-              }
-              code = new TextDecoder().decode(bytes);
+              code = decodeURIComponent(escape(atob(base64Data)));
               
               console.log('✅ Decoded embedded code:', code.length, 'characters');
             } else {
