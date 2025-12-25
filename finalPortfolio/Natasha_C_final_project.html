@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natasha C. - Final Project Portfolio</title>
+    <style>
+        
+        :root {
+            --primary: #6366f1;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --muted: #9ca3af;
+            --text: #1f2937;
+            --bg: #f3f4f6;
+            --sidebar-bg: #1f2937;
+            --sidebar-text: #f9fafb;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .student-info h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .course {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+        }
+        
+        .navigation h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin: 2rem 0 1rem;
+        }
+        
+        .toc {
+            list-style: none;
+        }
+        
+        .toc li {
+            margin: 0.5rem 0;
+        }
+        
+        .toc a {
+            color: var(--sidebar-text);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .toc a:hover {
+            background: rgba(255,255,255,0.1);
+            padding-left: 1rem;
+        }
+        
+        .back-link {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .back-link a {
+            color: var(--sidebar-text);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .back-link a:hover {
+            opacity: 1;
+        }
+        
+        /* Main Content */
+        .content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem;
+            max-width: 900px;
+        }
+        
+        .portfolio-header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .project-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .portfolio-header h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .byline {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .info-banner {
+            margin-top: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 6px;
+        }
+        
+        .info-banner p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 2rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .section-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .section-content h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--secondary);
+        }
+        
+        .section-content p {
+            margin: 1rem 0;
+        }
+        
+        .section-content ul, .section-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        
+        .section-content li {
+            margin: 0.5rem 0;
+        }
+        
+        .section-content pre {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--primary);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', 'Courier New', Consolas, monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .section-content code {
+            background: #f8fafc;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'JetBrains Mono', 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .section-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .section-content a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .section-content a:hover {
+            border-bottom-color: var(--primary);
+        }
+        
+        .images {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .images figure {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .images img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        figure {
+            margin: 0;
+        }
+        
+        figcaption {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #6b7280;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        .brainimation-demo-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(16,185,129,0.05));
+            border-radius: 16px;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .brainimation-demo-section h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .demo-intro {
+            color: #555;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .brainimation-embed-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 75%; /* 4:3 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+            background: #1a1a2e;
+        }
+        
+        .brainimation-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+        
+        .brainimation-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-brainimation-fullscreen {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-brainimation-fullscreen:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .supplementary-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .supplementary-section h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .supplementary-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .media-card {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .media-card h5 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .media-caption {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        .video-note {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--accent);
+            border-radius: 4px;
+        }
+        
+        .video-note a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .file-link {
+            margin: 0.75rem 0;
+            padding: 0.75rem 1rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .file-link a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .file-link a:hover {
+            color: var(--primary);
+        }
+        
+        .brainimation-card {
+            background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(16,185,129,0.05));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            margin: 1rem 0;
+        }
+        
+        .brainimation-card h5 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .btn-brainimation {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-brainimation:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+        }
+        
+        .notebook-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(249, 115, 22, 0.05));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            margin: 1.5rem 0;
+        }
+        
+        .notebook-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .notebook-header h5 {
+            margin: 0;
+            color: #f97316;
+            font-size: 1.1rem;
+        }
+        
+        .notebook-badge {
+            background: #f97316;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+        
+        .notebook-meta {
+            margin-bottom: 1rem;
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+        
+        .notebook-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-colab {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-colab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.5);
+        }
+        
+        .btn-drive-link {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.85em;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+        }
+        
+        .btn-drive-link:hover {
+            border-color: #f97316;
+            color: #f97316;
+        }
+        
+        .p5-embed-card {
+            background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(16,185,129,0.05));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            margin: 1.5rem 0;
+        }
+        
+        .p5-embed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .p5-badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .p5-length {
+            color: #9ca3af;
+            font-size: 0.85em;
+        }
+        
+        .p5-code-preview {
+            display: none;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', 'Courier New', Consolas, monospace;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .p5-embed-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .btn-brainimation-inline {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-brainimation-inline:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-show-code {
+            padding: 10px 18px;
+            background: #f8fafc;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-show-code:hover {
+            background: #f1f5f9;
+            border-color: var(--primary);
+        }
+        
+        .references {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .references h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .references ol {
+            padding-left: 2rem;
+        }
+        
+        .references li {
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content {
+                margin-left: 240px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                padding: 2rem 1rem;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="student-info">
+            <h1>Natasha C.</h1>
+            <p class="course">PSYCH 403A1<br>Final Project</p>
+        </div>
+        
+        <div class="navigation">
+            <h3>Contents</h3>
+            <ul class="toc">
+                <li><a href="#section-0">Final Project</a></li>
+                <li><a href="#video-demo">🎥 Video Demo</a></li>
+                <li><a href="#brainimation-demo">🧠 Live Brainimation</a></li>
+                <li><a href="#supplementary-materials">📎 Project Materials</a></li>
+            </ul>
+        </div>
+        
+        <div class="back-link">
+            <a href="javascript:history.back()">← Back</a>
+        </div>
+    </nav>
+    
+    <main class="content">
+        <header class="portfolio-header">
+            <div class="project-badge">🎓 Final Project</div>
+            <h1>Final Project Portfolio</h1>
+            <p class="byline">by Natasha C.</p>
+            <div class="info-banner">
+                <p>📄 This portfolio showcases the Final Project for PSYCH 403A1: Neuroimaging & Neurostimulation. 
+                Includes a video demonstration and a live interactive Brainimation demo you can play in your browser!</p>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            
+        <section id="section-0" class="content-section">
+            <h2>Final Project</h2>
+            <div class="section-content">
+                <p>This portfolio showcases the Final Project for PSYCH 403A1: Neuroimaging & Neurostimulation.</p>
+                <h3>Wolf Island Run: A Brain-Responsive Game</h3>
+                <p>This project demonstrates a real-time brain-computer interface game that adapts to the player's mental state. The game uses EEG data to control difficulty, visual effects, and player abilities based on attention and meditation levels.</p>
+                
+                <h3>Key Features</h3>
+                <ul>
+                    <li><strong>Brain-Responsive Gameplay:</strong> Game difficulty automatically adjusts based on attention and meditation levels</li>
+                    <li><strong>Dynamic Visual Feedback:</strong> Aurora displays, sky colors, and auras respond to brain state</li>
+                    <li><strong>Adaptive Abilities:</strong> Player speed and jump strength increase with higher focus</li>
+                    <li><strong>Real-Time EEG Integration:</strong> Connects with Muse headset for live brainwave data</li>
+                </ul>
+            </div>
+            
+        </section>
+        
+            <!-- Video Demo Section -->
+            <section id="video-demo" class="content-section">
+                <h2>🎥 Video Demo</h2>
+                <div class="section-content">
+                    <p>Watch a demonstration of the Wolf Island Run game in action:</p>
+                    <div class="media-card">
+                        <h5>Wolf Island Run Gameplay</h5>
+                        <video controls style="width: 100%; border-radius: 8px; margin-top: 1rem;">
+                            <source src="nchemellFinal.mov" type="video/quicktime">
+                            <source src="nchemellFinal.mov" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <p class="media-caption">Gameplay demonstration showing brain-responsive features and adaptive difficulty</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Brainimation Live Demo Section -->
+            <section id="brainimation-demo" class="brainimation-demo-section">
+                <h2>🧠 Live Interactive Demo</h2>
+                <p class="demo-intro">
+                    Experience the Wolf Island Run game directly in your browser! This interactive demo runs in the Brainimation environment, 
+                    allowing you to play with simulated brain data or connect your own Muse EEG headset.
+                </p>
+                
+                <div class="brainimation-embed-container">
+                    <iframe class="brainimation-iframe" 
+                            src="../brainimation.html?sketch=finalPortfolio/nchemellSketch.js&autorun=true"
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div class="brainimation-actions">
+                    <a href="../brainimation.html?sketch=finalPortfolio/nchemellSketch.js&autorun=true" 
+                       target="_blank" 
+                       class="btn-brainimation-fullscreen">
+                        🎮 Open Fullscreen Demo
+                    </a>
+                </div>
+                
+                <div class="section-content" style="margin-top: 2rem;">
+                    <h3>How to Play</h3>
+                    <ul>
+                        <li><strong>Arrow Keys:</strong> Left/Right to move, Up to jump</li>
+                        <li><strong>R Key:</strong> Restart the game</li>
+                        <li><strong>Stay Focused:</strong> Higher attention and meditation = easier gameplay and special effects!</li>
+                    </ul>
+                    
+                    <h3>Technical Details</h3>
+                    <p>The game uses p5.js for graphics and animation, integrating with the Brainimation platform's EEG data API. 
+                    Key brain metrics (alpha, beta, theta, attention, meditation) are used to dynamically adjust:</p>
+                    <ul>
+                        <li>Island spawning patterns and gaps</li>
+                        <li>Player movement speed and jump height</li>
+                        <li>Visual effects including aurora displays and star fields</li>
+                        <li>Sky gradient colors based on attention vs. meditation dominance</li>
+                    </ul>
+                </div>
+            </section>
+            
+            
+            
+            <section id="supplementary-materials" class="supplementary-section">
+                <h2>📎 Project Materials</h2>
+                <div class="supplementary-content">
+                    <div class="file-link"><a href="https://drive.google.com/file/d/1VP71TNxbP_JXpxKXPEs9zdv-GgQriL1L/view" target="_blank">📄 PSYCH 403 final project-20251215T181347Z-3-001 - Natasha Chemello.zip</a></div>
+                </div>
+            </section>
+        
+            
+            
+        </div>
+    </main>
+    
+    <script>
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Highlight current section in navigation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.toc a').forEach(link => {
+                        link.style.background = '';
+                    });
+                    const activeLink = document.querySelector(`.toc a[href="#${id}"]`);
+                    if (activeLink) {
+                        activeLink.style.background = 'rgba(255,255,255,0.15)';
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        document.querySelectorAll('.content-section').forEach(section => {
+            observer.observe(section);
+        });
+    
+    </script>
+</body>
+</html>

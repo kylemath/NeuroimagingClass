@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainImation Link Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0a0f;
+            --bg-surface: #13131a;
+            --bg-elevated: #1a1a24;
+            --border: #2a2a3a;
+            --text-primary: #e8e8f0;
+            --text-secondary: #8888a0;
+            --accent-cyan: #00e5ff;
+            --accent-magenta: #ff00aa;
+            --accent-green: #00ff88;
+            --gradient-glow: linear-gradient(135deg, #00e5ff20 0%, #ff00aa20 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 170, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 8px var(--accent-cyan)); }
+            50% { filter: drop-shadow(0 0 20px var(--accent-magenta)); }
+        }
+
+        .logo-text {
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            height: calc(100vh - 180px);
+            min-height: 500px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: var(--bg-elevated);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-body {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #code-input {
+            flex: 1;
+            width: 100%;
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            resize: none;
+            line-height: 1.6;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #code-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+        }
+
+        #code-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .options-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .option-group label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-deep);
+            border: 1px solid var(--border);
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-secondary);
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            border-color: transparent;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+            background-color: white;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            color: var(--bg-deep);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 229, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-success {
+            background: var(--accent-green);
+            color: var(--bg-deep);
+        }
+
+        .actions-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .output-box {
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .output-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .output-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+            color: var(--accent-cyan);
+            max-height: 80px;
+            overflow-y: auto;
+        }
+
+        .output-content.full-url {
+            max-height: 150px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.75rem;
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-deep);
+            border-color: var(--accent-cyan);
+        }
+
+        .copy-btn.copied {
+            background: var(--accent-green);
+            color: var(--bg-deep);
+            border-color: var(--accent-green);
+        }
+
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .preview-frame {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            background: var(--bg-deep);
+            min-height: 300px;
+        }
+
+        .preview-placeholder {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-deep);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            gap: 1rem;
+        }
+
+        .preview-placeholder-icon {
+            font-size: 4rem;
+            opacity: 0.5;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .alert-error {
+            background: rgba(255, 0, 100, 0.1);
+            border: 1px solid #ff0064;
+            color: #ff6090;
+        }
+
+        .sample-sketches {
+            margin-top: 1rem;
+        }
+
+        .sample-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px dashed var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sample-btn:hover {
+            border-style: solid;
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+        }
+
+        footer {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border);
+            padding: 1rem 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🧠</span>
+                <span class="logo-text">BrainImation Link Generator</span>
+            </div>
+            <span class="subtitle">Create shareable p5.js sketch links</span>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Input Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">✍️ Paste Your p5.js Code</span>
+                    <div class="sample-sketches">
+                        <button class="sample-btn" onclick="loadSample('circles')">🔵 Circles</button>
+                        <button class="sample-btn" onclick="loadSample('waves')">🌊 Waves</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <textarea id="code-input" placeholder="// Paste your p5.js code here...
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(220);
+  ellipse(mouseX, mouseY, 50, 50);
+}"></textarea>
+                    
+                    <div class="options-row">
+                        <div class="option-group">
+                            <label>Auto-run on load:</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="autorun-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="actions-row">
+                        <button class="btn btn-primary" onclick="generateLink()">
+                            🔗 Generate Link
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearAll()">
+                            🗑️ Clear
+                        </button>
+                    </div>
+
+                    <div id="alert" class="alert"></div>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">📤 Generated Output</span>
+                </div>
+                <div class="panel-body output-section">
+                    <div class="output-box">
+                        <div class="output-label">Full BrainImation URL</div>
+                        <div class="output-content full-url" id="full-url">Generate a link to see output...</div>
+                        <button class="copy-btn" onclick="copyToClipboard('full-url', this)">📋 Copy</button>
+                    </div>
+
+                    <div class="output-box">
+                        <div class="output-label">Base64 Encoded Data URI</div>
+                        <div class="output-content" id="data-uri">—</div>
+                        <button class="copy-btn" onclick="copyToClipboard('data-uri', this)">📋 Copy</button>
+                    </div>
+
+                    <div class="stats" id="stats" style="display: none;">
+                        <div class="stat">
+                            <div class="stat-value" id="stat-chars">0</div>
+                            <div class="stat-label">Characters</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="stat-lines">0</div>
+                            <div class="stat-label">Lines</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="stat-encoded">0</div>
+                            <div class="stat-label">Encoded Size</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="stat-url">0</div>
+                            <div class="stat-label">URL Length</div>
+                        </div>
+                    </div>
+
+                    <div class="actions-row">
+                        <button class="btn btn-success" id="open-btn" onclick="openInBrainimation()" disabled>
+                            ▶️ Open in BrainImation
+                        </button>
+                        <button class="btn btn-secondary" id="copy-md-btn" onclick="copyMarkdownLink()" disabled>
+                            📝 Copy Markdown Link
+                        </button>
+                    </div>
+
+                    <div id="preview-container" style="flex: 1; display: flex; margin-top: 1rem;">
+                        <div class="preview-placeholder" id="preview-placeholder">
+                            <div class="preview-placeholder-icon">🎨</div>
+                            <div>Preview will appear after generating link</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        Part of the <a href="brainimation.html">BrainImation</a> toolkit for the Neuroimaging Class
+    </footer>
+
+    <script>
+        const BRAINIMATION_URL = 'https://neuroimneurostim.netlify.app/brainimation.html';
+        let generatedUrl = '';
+
+        const samples = {
+            circles: `function setup() {
+  createCanvas(400, 400);
+  background(20);
+}
+
+function draw() {
+  // Colorful following circles
+  let r = random(100, 255);
+  let g = random(50, 150);
+  let b = random(150, 255);
+  
+  fill(r, g, b, 100);
+  noStroke();
+  
+  let size = random(10, 50);
+  ellipse(mouseX, mouseY, size, size);
+}`,
+            waves: `let t = 0;
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(10, 20, 40);
+  noFill();
+  
+  for (let i = 0; i < 10; i++) {
+    let hue = map(i, 0, 10, 150, 250);
+    stroke(hue, 200, 255, 150);
+    strokeWeight(2);
+    
+    beginShape();
+    for (let x = 0; x <= width; x += 5) {
+      let y = height/2 + sin(x * 0.02 + t + i * 0.5) * (50 + i * 10);
+      vertex(x, y);
+    }
+    endShape();
+  }
+  
+  t += 0.03;
+}`
+        };
+
+        function loadSample(name) {
+            document.getElementById('code-input').value = samples[name];
+            showAlert('Sample code loaded! Click "Generate Link" to create a shareable URL.', 'success');
+        }
+
+        function generateLink() {
+            const code = document.getElementById('code-input').value.trim();
+            
+            if (!code) {
+                showAlert('Please paste some p5.js code first!', 'error');
+                return;
+            }
+
+            try {
+                // Encode the code (handle Unicode properly)
+                const base64Code = btoa(unescape(encodeURIComponent(code)));
+                const dataUri = 'data:text/plain;base64,' + base64Code;
+                
+                // Get autorun setting
+                const autorun = document.getElementById('autorun-toggle').checked;
+                
+                // Build the full URL
+                const encodedDataUri = encodeURIComponent(dataUri);
+                generatedUrl = `${BRAINIMATION_URL}?code=${encodedDataUri}&autorun=${autorun}`;
+                
+                // Update the display
+                document.getElementById('full-url').textContent = generatedUrl;
+                document.getElementById('data-uri').textContent = dataUri;
+                
+                // Update stats
+                const lines = code.split('\n').length;
+                document.getElementById('stat-chars').textContent = code.length;
+                document.getElementById('stat-lines').textContent = lines;
+                document.getElementById('stat-encoded').textContent = formatBytes(base64Code.length);
+                document.getElementById('stat-url').textContent = formatBytes(generatedUrl.length);
+                document.getElementById('stats').style.display = 'flex';
+                
+                // Enable buttons
+                document.getElementById('open-btn').disabled = false;
+                document.getElementById('copy-md-btn').disabled = false;
+                
+                showAlert('Link generated successfully! The URL contains your entire sketch.', 'success');
+                
+            } catch (error) {
+                showAlert('Error encoding code: ' + error.message, 'error');
+            }
+        }
+
+        function formatBytes(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function copyToClipboard(elementId, button) {
+            const text = document.getElementById(elementId).textContent;
+            if (text === '—' || text.includes('Generate a link')) {
+                showAlert('Nothing to copy yet! Generate a link first.', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = '✅ Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = '📋 Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                showAlert('Failed to copy: ' + err.message, 'error');
+            });
+        }
+
+        function copyMarkdownLink() {
+            if (!generatedUrl) {
+                showAlert('Generate a link first!', 'error');
+                return;
+            }
+            
+            const markdown = `[▶️ Run in BrainImation](${generatedUrl})`;
+            navigator.clipboard.writeText(markdown).then(() => {
+                showAlert('Markdown link copied to clipboard!', 'success');
+            }).catch(err => {
+                showAlert('Failed to copy: ' + err.message, 'error');
+            });
+        }
+
+        function openInBrainimation() {
+            if (!generatedUrl) {
+                showAlert('Generate a link first!', 'error');
+                return;
+            }
+            window.open(generatedUrl, '_blank');
+        }
+
+        function clearAll() {
+            document.getElementById('code-input').value = '';
+            document.getElementById('full-url').textContent = 'Generate a link to see output...';
+            document.getElementById('data-uri').textContent = '—';
+            document.getElementById('stats').style.display = 'none';
+            document.getElementById('open-btn').disabled = true;
+            document.getElementById('copy-md-btn').disabled = true;
+            generatedUrl = '';
+            hideAlert();
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = 'alert alert-' + type;
+            alert.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(hideAlert, 4000);
+            }
+        }
+
+        function hideAlert() {
+            document.getElementById('alert').style.display = 'none';
+        }
+
+        // Auto-generate on paste if code is detected
+        document.getElementById('code-input').addEventListener('paste', (e) => {
+            setTimeout(() => {
+                const code = document.getElementById('code-input').value;
+                // Check if it looks like p5.js code
+                if (code.includes('function setup') || code.includes('function draw') || 
+                    code.includes('createCanvas') || code.includes('background(')) {
+                    generateLink();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+

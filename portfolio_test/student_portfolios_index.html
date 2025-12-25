@@ -254,6 +254,39 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
+        .final-project-btn {
+            display: block;
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
+        }
+        
+        .final-project-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(214, 51, 132, 0.5);
+        }
+        
+        .final-project-btn.unavailable {
+            display: none;
+        }
+        
+        .final-project-btn .checking {
+            font-size: 0.7rem;
+        }
+        
         .status-indicator {
             position: absolute;
             top: 6px;
@@ -370,7 +403,7 @@
         
         <section class="student-grid">
             
-            <a href="Tori_A_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Tori_A_portfolio.html" data-image-file="ToriA.png">
+            <a href="Tori_A_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Tori_A_portfolio.html" data-image-file="ToriA.png" data-final-project="Tori_A_final_project.html">
                 <div class="card-image-container">
                     <img src="ToriA.png" alt="Tori Anderson's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -383,6 +416,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Tori_A_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -393,7 +430,7 @@
                 </div>
             </a>
         
-            <a href="Caitlyn_A_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Caitlyn_A_portfolio.html" data-image-file="CaitlynA.png">
+            <a href="Caitlyn_A_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Caitlyn_A_portfolio.html" data-image-file="CaitlynA.png" data-final-project="Caitlyn_A_final_project.html">
                 <div class="card-image-container">
                     <img src="CaitlynA.png" alt="Caitlyn Archibald's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -406,6 +443,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Caitlyn_A_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -416,7 +457,7 @@
                 </div>
             </a>
         
-            <a href="Sarah_B_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Sarah_B_portfolio.html" data-image-file="SarahB.png">
+            <a href="Sarah_B_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Sarah_B_portfolio.html" data-image-file="SarahB.png" data-final-project="Sarah_B_final_project.html">
                 <div class="card-image-container">
                     <img src="SarahB.png" alt="Sarah Badran's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -429,6 +470,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Sarah_B_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -439,7 +484,7 @@
                 </div>
             </a>
         
-            <a href="Kora_B_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kora_B_portfolio.html" data-image-file="KoraB.png">
+            <a href="Kora_B_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kora_B_portfolio.html" data-image-file="KoraB.png" data-final-project="Kora_B_final_project.html">
                 <div class="card-image-container">
                     <img src="KoraB.png" alt="Kora Budzyk's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -452,6 +497,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Kora_B_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -462,7 +511,7 @@
                 </div>
             </a>
         
-            <a href="Natasha_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Natasha_C_portfolio.html" data-image-file="NatashaC.png">
+            <a href="Natasha_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Natasha_C_portfolio.html" data-image-file="NatashaC.png" data-final-project="Natasha_C_final_project.html">
                 <div class="card-image-container">
                     <img src="NatashaC.png" alt="Natasha Chemello's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -475,6 +524,10 @@
                                 <span class="mini-badge">MT</span>
                                 
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Natasha_C_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -485,7 +538,7 @@
                 </div>
             </a>
         
-            <a href="Hannah_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hannah_C_portfolio.html" data-image-file="HannahC.png">
+            <a href="Hannah_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hannah_C_portfolio.html" data-image-file="HannahC.png" data-final-project="Hannah_C_final_project.html">
                 <div class="card-image-container">
                     <img src="HannahC.png" alt="Hannah Cooper's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -498,6 +551,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Hannah_C_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -508,7 +565,7 @@
                 </div>
             </a>
         
-            <a href="Kyle_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kyle_C_portfolio.html" data-image-file="KyleC.png">
+            <a href="Kyle_C_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kyle_C_portfolio.html" data-image-file="KyleC.png" data-final-project="Kyle_C_final_project.html">
                 <div class="card-image-container">
                     <img src="KyleC.png" alt="Kyle Cordez's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -521,6 +578,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Kyle_C_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -531,7 +592,7 @@
                 </div>
             </a>
         
-            <a href="Jake_G_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Jake_G_portfolio.html" data-image-file="JakeG.png">
+            <a href="Jake_G_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Jake_G_portfolio.html" data-image-file="JakeG.png" data-final-project="Jake_G_final_project.html">
                 <div class="card-image-container">
                     <img src="JakeG.png" alt="Jake Gannon's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -544,6 +605,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Jake_G_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -554,7 +619,7 @@
                 </div>
             </a>
         
-            <a href="Jia_G_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Jia_G_portfolio.html" data-image-file="JiaG.png">
+            <a href="Jia_G_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Jia_G_portfolio.html" data-image-file="JiaG.png" data-final-project="Jia_G_final_project.html">
                 <div class="card-image-container">
                     <img src="JiaG.png" alt="Jia Guina's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -567,6 +632,10 @@
                                 <span class="mini-badge">MT</span>
                                 
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Jia_G_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -577,7 +646,7 @@
                 </div>
             </a>
         
-            <a href="Samir_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Samir_J_portfolio.html" data-image-file="SamirJ.png">
+            <a href="Samir_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Samir_J_portfolio.html" data-image-file="SamirJ.png" data-final-project="Samir_J_final_project.html">
                 <div class="card-image-container">
                     <img src="SamirJ.png" alt="Samir Jaber's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -590,6 +659,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Samir_J_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -600,7 +673,7 @@
                 </div>
             </a>
         
-            <a href="Ayaan_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ayaan_J_portfolio.html" data-image-file="AyaanJ.png">
+            <a href="Ayaan_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ayaan_J_portfolio.html" data-image-file="AyaanJ.png" data-final-project="Ayaan_J_final_project.html">
                 <div class="card-image-container">
                     <img src="AyaanJ.png" alt="Ayaan Jimale's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -613,6 +686,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Ayaan_J_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -623,7 +700,7 @@
                 </div>
             </a>
         
-            <a href="Mohamed_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Mohamed_J_portfolio.html" data-image-file="MohamedJ.png">
+            <a href="Mohamed_J_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Mohamed_J_portfolio.html" data-image-file="MohamedJ.png" data-final-project="Mohamed_J_final_project.html">
                 <div class="card-image-container">
                     <img src="MohamedJ.png" alt="Mohamed Jomha's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -636,6 +713,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Mohamed_J_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -646,7 +727,7 @@
                 </div>
             </a>
         
-            <a href="Amna_K_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Amna_K_portfolio.html" data-image-file="AmnaK.png">
+            <a href="Amna_K_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Amna_K_portfolio.html" data-image-file="AmnaK.png" data-final-project="Amna_K_final_project.html">
                 <div class="card-image-container">
                     <img src="AmnaK.png" alt="Amna Khan's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -659,6 +740,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Amna_K_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -669,7 +754,7 @@
                 </div>
             </a>
         
-            <a href="Ivan_L_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ivan_L_portfolio.html" data-image-file="IvanL.png">
+            <a href="Ivan_L_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ivan_L_portfolio.html" data-image-file="IvanL.png" data-final-project="Ivan_L_final_project.html">
                 <div class="card-image-container">
                     <img src="IvanL.png" alt="Ivan Espino Lopez's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -682,6 +767,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Ivan_L_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -692,7 +781,7 @@
                 </div>
             </a>
         
-            <a href="Yan_L_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Yan_L_portfolio.html" data-image-file="YanL.png">
+            <a href="Yan_L_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Yan_L_portfolio.html" data-image-file="YanL.png" data-final-project="Yan_L_final_project.html">
                 <div class="card-image-container">
                     <img src="YanL.png" alt="Yan Luo's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -705,6 +794,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Yan_L_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -715,7 +808,7 @@
                 </div>
             </a>
         
-            <a href="Angel_N_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Angel_N_portfolio.html" data-image-file="AngelN.png">
+            <a href="Angel_N_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Angel_N_portfolio.html" data-image-file="AngelN.png" data-final-project="Angel_N_final_project.html">
                 <div class="card-image-container">
                     <img src="AngelN.png" alt="Angel Nwaka's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -728,6 +821,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Angel_N_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -738,7 +835,7 @@
                 </div>
             </a>
         
-            <a href="Alicia_O_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Alicia_O_portfolio.html" data-image-file="AliciaO.png">
+            <a href="Alicia_O_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Alicia_O_portfolio.html" data-image-file="AliciaO.png" data-final-project="Alicia_O_final_project.html">
                 <div class="card-image-container">
                     <img src="AliciaO.png" alt="Alicia Osorio's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -751,6 +848,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Alicia_O_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -761,7 +862,7 @@
                 </div>
             </a>
         
-            <a href="Ryan_P_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ryan_P_portfolio.html" data-image-file="RyanP.png">
+            <a href="Ryan_P_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ryan_P_portfolio.html" data-image-file="RyanP.png" data-final-project="Ryan_P_final_project.html">
                 <div class="card-image-container">
                     <img src="RyanP.png" alt="Ryan Park's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -774,6 +875,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Ryan_P_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -784,7 +889,7 @@
                 </div>
             </a>
         
-            <a href="Hardi_P_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hardi_P_portfolio.html" data-image-file="HardiP.png">
+            <a href="Hardi_P_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hardi_P_portfolio.html" data-image-file="HardiP.png" data-final-project="Hardi_P_final_project.html">
                 <div class="card-image-container">
                     <img src="HardiP.png" alt="Hardi Patel's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -797,6 +902,10 @@
                                 <span class="mini-badge">MT</span>
                                 
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Hardi_P_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -807,7 +916,7 @@
                 </div>
             </a>
         
-            <a href="Rana_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Rana_R_portfolio.html" data-image-file="RanaR.png">
+            <a href="Rana_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Rana_R_portfolio.html" data-image-file="RanaR.png" data-final-project="Rana_R_final_project.html">
                 <div class="card-image-container">
                     <img src="RanaR.png" alt="Rana Radiansyah's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -820,6 +929,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Rana_R_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -830,7 +943,7 @@
                 </div>
             </a>
         
-            <a href="Hamza_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hamza_R_portfolio.html" data-image-file="HamzaR.png">
+            <a href="Hamza_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Hamza_R_portfolio.html" data-image-file="HamzaR.png" data-final-project="Hamza_R_final_project.html">
                 <div class="card-image-container">
                     <img src="HamzaR.png" alt="Hamza Razzo's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -843,6 +956,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Hamza_R_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -853,7 +970,7 @@
                 </div>
             </a>
         
-            <a href="Kiara_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kiara_R_portfolio.html" data-image-file="KiaraR.png">
+            <a href="Kiara_R_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Kiara_R_portfolio.html" data-image-file="KiaraR.png" data-final-project="Kiara_R_final_project.html">
                 <div class="card-image-container">
                     <img src="KiaraR.png" alt="Kiara Ruda's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -866,6 +983,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Kiara_R_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -876,7 +997,7 @@
                 </div>
             </a>
         
-            <a href="Marinaya_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Marinaya_S_portfolio.html" data-image-file="MarinayaS.png">
+            <a href="Marinaya_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Marinaya_S_portfolio.html" data-image-file="MarinayaS.png" data-final-project="Marinaya_S_final_project.html">
                 <div class="card-image-container">
                     <img src="MarinayaS.png" alt="Marinaya Saigh's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -889,6 +1010,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Marinaya_S_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -899,7 +1024,7 @@
                 </div>
             </a>
         
-            <a href="Zainab_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Zainab_S_portfolio.html" data-image-file="ZainabS.png">
+            <a href="Zainab_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Zainab_S_portfolio.html" data-image-file="ZainabS.png" data-final-project="Zainab_S_final_project.html">
                 <div class="card-image-container">
                     <img src="ZainabS.png" alt="Zainab Samiuddin's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -912,6 +1037,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Zainab_S_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -922,7 +1051,7 @@
                 </div>
             </a>
         
-            <a href="Bani_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Bani_S_portfolio.html" data-image-file="BaniS.png">
+            <a href="Bani_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Bani_S_portfolio.html" data-image-file="BaniS.png" data-final-project="Bani_S_final_project.html">
                 <div class="card-image-container">
                     <img src="BaniS.png" alt="Bani Sekhon's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -935,6 +1064,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Bani_S_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -945,7 +1078,7 @@
                 </div>
             </a>
         
-            <a href="Raissa_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Raissa_S_portfolio.html" data-image-file="RaissaS.png">
+            <a href="Raissa_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Raissa_S_portfolio.html" data-image-file="RaissaS.png" data-final-project="Raissa_S_final_project.html">
                 <div class="card-image-container">
                     <img src="RaissaS.png" alt="Raissa Shariff's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -958,6 +1091,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Raissa_S_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -968,7 +1105,7 @@
                 </div>
             </a>
         
-            <a href="Grace_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Grace_S_portfolio.html" data-image-file="GraceS.png">
+            <a href="Grace_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Grace_S_portfolio.html" data-image-file="GraceS.png" data-final-project="Grace_S_final_project.html">
                 <div class="card-image-container">
                     <img src="GraceS.png" alt="Grace Shin's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -981,6 +1118,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Grace_S_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -991,7 +1132,7 @@
                 </div>
             </a>
         
-            <a href="Chloe_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Chloe_S_portfolio.html" data-image-file="ChloeS.png">
+            <a href="Chloe_S_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Chloe_S_portfolio.html" data-image-file="ChloeS.png" data-final-project="Chloe_S_final_project.html">
                 <div class="card-image-container">
                     <img src="ChloeS.png" alt="Chloe Sorochan's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -1004,6 +1145,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Chloe_S_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1014,7 +1159,7 @@
                 </div>
             </a>
         
-            <a href="Ella_T_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ella_T_portfolio.html" data-image-file="EllaT.png">
+            <a href="Ella_T_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Ella_T_portfolio.html" data-image-file="EllaT.png" data-final-project="Ella_T_final_project.html">
                 <div class="card-image-container">
                     <img src="EllaT.png" alt="Ella Thorsen-Bell's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -1027,6 +1172,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Ella_T_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1037,7 +1186,7 @@
                 </div>
             </a>
         
-            <a href="Portia_W_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Portia_W_portfolio.html" data-image-file="PortiaW.png">
+            <a href="Portia_W_portfolio.html" target="_blank" rel="noopener noreferrer" class="portfolio-card" data-portfolio-file="Portia_W_portfolio.html" data-image-file="PortiaW.png" data-final-project="Portia_W_final_project.html">
                 <div class="card-image-container">
                     <img src="PortiaW.png" alt="Portia Wainwright's work" class="card-image" onerror="this.parentElement.classList.add('image-error')">
                     <div class="image-overlay">
@@ -1050,6 +1199,10 @@
                                 <span class="mini-badge">MT</span>
                                 <span class="mini-badge">A6</span>
                             </div>
+                            <button class="final-project-btn" data-final-url="../finalPortfolio/Portia_W_final_project.html">
+                                <span class="checking">⟳ Checking...</span>
+                                <span class="final-label" style="display:none;">🎓 Final Project</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1079,10 +1232,37 @@
             const checkPromises = Array.from(cards).map(async (card) => {
                 const portfolioFile = card.dataset.portfolioFile;
                 const imageFile = card.dataset.imageFile;
+                const finalProject = card.dataset.finalProject;
                 const statusIndicator = card.querySelector('.status-indicator');
                 const checkingSpan = statusIndicator.querySelector('.checking');
                 const availableSpan = statusIndicator.querySelector('.available');
                 const unavailableSpan = statusIndicator.querySelector('.unavailable');
+                
+                // Check final project button
+                const finalProjectBtn = card.querySelector('.final-project-btn');
+                if (finalProjectBtn) {
+                    const btnChecking = finalProjectBtn.querySelector('.checking');
+                    const btnLabel = finalProjectBtn.querySelector('.final-label');
+                    
+                    try {
+                        const finalProjectPath = `../finalPortfolio/${finalProject}`;
+                        const finalProjectResponse = await fetch(finalProjectPath, { method: 'HEAD' });
+                        
+                        if (finalProjectResponse.ok) {
+                            // Final project exists - show the button
+                            btnChecking.style.display = 'none';
+                            btnLabel.style.display = 'inline';
+                        } else {
+                            // Final project doesn't exist - hide the button
+                            finalProjectBtn.classList.add('unavailable');
+                            btnChecking.style.display = 'none';
+                        }
+                    } catch (error) {
+                        // If fetch fails, hide the button
+                        finalProjectBtn.classList.add('unavailable');
+                        btnChecking.style.display = 'none';
+                    }
+                }
                 
                 try {
                     // Check portfolio file
@@ -1132,6 +1312,18 @@
             
             // Check portfolio availability
             checkPortfolioAvailability();
+            
+            // Add click handlers to final project buttons
+            document.querySelectorAll('.final-project-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent card click
+                    e.preventDefault();
+                    const url = btn.dataset.finalUrl;
+                    if (url && !btn.classList.contains('unavailable')) {
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                    }
+                });
+            });
             
             // Optional: Add live search
             const searchInput = document.getElementById('search');
